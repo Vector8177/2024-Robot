@@ -25,11 +25,10 @@ public class ShooterIOSparkMax implements ShooterIO {
   private final AbsoluteEncoder shooterPivotAbsoluteEncoder;
 
   public ShooterIOSparkMax() {
-    shooterTopFixedSparkMax = new CANSparkMax(Constants.placeHolderMotorID, MotorType.kBrushless);
-    shooterBottomFixedSparkMax =
-        new CANSparkMax(Constants.placeHolderMotorID, MotorType.kBrushless);
-    shooterPivotSparkMax = new CANSparkMax(Constants.placeHolderMotorID, MotorType.kBrushless);
-    shooterIndexerSparkMax = new CANSparkMax(Constants.placeHolderMotorID, MotorType.kBrushless);
+    shooterTopFixedSparkMax = new CANSparkMax(ShooterConstants.SHOOTER_TOP_ID, MotorType.kBrushless);
+    shooterBottomFixedSparkMax = new CANSparkMax(ShooterConstants.SHOOTER_BOTTOM_ID, MotorType.kBrushless);
+    shooterPivotSparkMax = new CANSparkMax(ShooterConstants.SHOOTER_PIVOT_ID, MotorType.kBrushless);
+    shooterIndexerSparkMax = new CANSparkMax(ShooterConstants.SHOOTER_INDEXER_ID, MotorType.kBrushless);
 
     shooterTopFixedSparkMax.restoreFactoryDefaults();
     shooterBottomFixedSparkMax.restoreFactoryDefaults();

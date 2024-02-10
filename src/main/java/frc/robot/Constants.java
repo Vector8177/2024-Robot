@@ -29,6 +29,10 @@ public final class Constants {
   public static final int placeHolderMotorID = Integer.MAX_VALUE;
 
   public static final class IntakeConstants {
+    public static final int LEFT_MOTOR_ID = 1;
+    public static final int RIGHT_MOTOR_ID = 2;
+    public static final int INDEXER_MOTOR_ID = 3;
+
     public static final int maxIntakeMotorVoltage = 9;
 
     public static final double intakePositionKP = 1d;
@@ -37,6 +41,9 @@ public final class Constants {
   }
 
   public static final class ClimberConstants {
+    public static final int RIGHT_MOTOR_ID = 50;
+    public static final int LEFT_MOTOR_ID = 51;
+
     public static final double rightClimberAbsoluteEncoderOffset = 0d;
     public static final double leftClimberAbsoluteEncoderOffset = 0d;
 
@@ -48,6 +55,7 @@ public final class Constants {
   }
 
   public static final class HoodConstants {
+    public static final int HOOD_MOTOR_ID = 40;
     public static final int maxHoodMotorVoltage = 12;
 
     public static final double hoodPivotKP = 1d;
@@ -142,10 +150,10 @@ public final class Constants {
   }
 
   public final class ShooterConstants {
-    public static final int SHOOTER_TOP_ID = 0;
-    public static final int SHOOTER_BOTTOM_ID = 0;
-    public static final int SHOOTER_PIVOT_ID = 0;
-    public static final int SHOOTER_INDEXER_ID = 0;
+    public static final int SHOOTER_PIVOT_ID = 30;
+    public static final int SHOOTER_TOP_ID = 31;
+    public static final int SHOOTER_BOTTOM_ID = 32;
+    public static final int SHOOTER_INDEXER_ID = 33;
 
     public static final double SHOOTER_GEAR_RATIO = 1 / 1.5;
     public static final double ABSOLUTE_OFFSET = 0d;

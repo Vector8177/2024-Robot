@@ -6,7 +6,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import edu.wpi.first.math.util.Units;
-import frc.robot.Constants;
+import frc.robot.Constants.ClimberConstants;
 
 public class ClimberIOSparkMax implements ClimberIO {
   private final CANSparkMax leftClimberSparkMax;
@@ -17,8 +17,8 @@ public class ClimberIOSparkMax implements ClimberIO {
   private final SparkAbsoluteEncoder rightClimberAbsoluteEncoder;
 
   public ClimberIOSparkMax() {
-    leftClimberSparkMax = new CANSparkMax(Constants.placeHolderMotorID, MotorType.kBrushless);
-    rightClimberSparkMax = new CANSparkMax(Constants.placeHolderMotorID, MotorType.kBrushless);
+    leftClimberSparkMax = new CANSparkMax(ClimberConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
+    rightClimberSparkMax = new CANSparkMax(ClimberConstants.RIGHT_MOTOR_ID, MotorType.kBrushless);
 
     leftClimberSparkMax.restoreFactoryDefaults();
     leftClimberSparkMax.setCANTimeout(250);
@@ -50,7 +50,7 @@ public class ClimberIOSparkMax implements ClimberIO {
     inputs.leftClimberCurrentAmps = new double[] {leftClimberSparkMax.getOutputCurrent()};
     inputs.leftClimberAbsoluteEncoderPosition =
         ((leftClimberAbsoluteEncoder.getPosition() * 2 * Math.PI)
-                - Constants.ClimberConstants.leftClimberAbsoluteEncoderOffset)
+                - ClimberConstants.leftClimberAbsoluteEncoderOffset)
             / 25d;
     inputs.leftClimberEncoderPosition = leftClimberAbsoluteEncoder.getPosition();
 
@@ -61,7 +61,7 @@ public class ClimberIOSparkMax implements ClimberIO {
     inputs.rightClimberCurrentAmps = new double[] {rightClimberSparkMax.getOutputCurrent()};
     inputs.rightClimberAbsoluteEncoderPosition =
         ((rightClimberAbsoluteEncoder.getPosition() * 2 * Math.PI)
-                - Constants.ClimberConstants.rightClimberAbsoluteEncoderOffset)
+                - ClimberConstants.rightClimberAbsoluteEncoderOffset)
             / 25d;
     inputs.rightClimberEncoderPosition = rightClimberEncoder.getPosition();
   }

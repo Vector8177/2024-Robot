@@ -4,7 +4,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.util.Units;
-import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;;
 
 public class IntakeIOSparkMax implements IntakeIO {
   private final CANSparkMax intakeLeftSparkMax;
@@ -15,9 +15,9 @@ public class IntakeIOSparkMax implements IntakeIO {
   private final RelativeEncoder intakeIndexerEncoder;
 
   public IntakeIOSparkMax() {
-    intakeLeftSparkMax = new CANSparkMax(Constants.placeHolderMotorID, MotorType.kBrushless);
-    intakeRightSparkMax = new CANSparkMax(Constants.placeHolderMotorID, MotorType.kBrushless);
-    intakeIndexerSparkMax = new CANSparkMax(Constants.placeHolderMotorID, MotorType.kBrushless);
+    intakeLeftSparkMax = new CANSparkMax(IntakeConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
+    intakeRightSparkMax = new CANSparkMax(IntakeConstants.RIGHT_MOTOR_ID, MotorType.kBrushless);
+    intakeIndexerSparkMax = new CANSparkMax(IntakeConstants.INDEXER_MOTOR_ID, MotorType.kBrushless);
 
     intakeLeftSparkMax.restoreFactoryDefaults();
     intakeLeftSparkMax.setCANTimeout(250);
