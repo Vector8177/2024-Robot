@@ -28,6 +28,34 @@ public final class Constants {
 
   public static final int placeHolderMotorID = Integer.MAX_VALUE;
 
+  public static final class IntakeConstants {
+    public static final int maxIntakeMotorVoltage = 9;
+
+    public static final double intakePositionKP = 1d;
+    public static final double intakePositionKI = 0d;
+    public static final double intakePositionKD = 0d;
+  }
+
+  public static final class ClimberConstants {
+    public static final double rightClimberAbsoluteEncoderOffset = 0d;
+    public static final double leftClimberAbsoluteEncoderOffset = 0d;
+
+    public static final int maxClimberMotorVoltage = 12;
+
+    public static final double climberKP = 1d;
+    public static final double climberKI = 0d;
+    public static final double climberKD = 0d;
+  }
+
+  public static final class HoodConstants {
+    public static final int maxHoodMotorVoltage = 12;
+
+    public static final double hoodPivotKP = 1d;
+    public static final double hoodPivotKI = 0d;
+    public static final double hoodPivotKD = 0d;
+  }
+
+  
   public static enum Mode {
     /** Running on a real robot. */
     REAL,

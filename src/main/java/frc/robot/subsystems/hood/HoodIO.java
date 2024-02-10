@@ -8,6 +8,7 @@ public interface HoodIO {
     double hoodPivotVelocityRadPerSec = 0d;
     double hoodPivotAppliedVolts = 0d;
     double[] hoodPivotCurrentAmps = new double[] {};
+    double hoodPivotEncoderPosition = 0d;
   }
 
   default void updateInputs(HoodIOInputs inputs) {}
