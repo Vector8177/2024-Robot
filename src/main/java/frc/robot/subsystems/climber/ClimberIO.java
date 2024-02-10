@@ -5,17 +5,23 @@ import org.littletonrobotics.junction.AutoLog;
 public interface ClimberIO {
   @AutoLog
   public static class ClimberIOInputs {
-    double climberLeftVelocityRadPerSec = 0d;
-    double climberRightVelocityRadPerSec = 0d;
-    double climberLeftAppliedVolts = 0d;
-    double climberRightAppliedVolts = 0d;
-    double[] climberLeftCurrentAmps = new double[] {};
-    double[] climberRightCurrentAmps = new double[] {};
+    double leftClimberVelocityRadPerSec = 0d;
+    double rightClimberVelocityRadPerSec = 0d;
+    double leftClimberAppliedVolts = 0d;
+    double rightClimberAppliedVolts = 0d;
+    double[] leftClimberCurrentAmps = new double[] {};
+    double[] rightClimberCurrentAmps = new double[] {};
+    double leftClimberAbsoluteEncoderPosition = 0d;
+    double rightClimberAbsoluteEncoderPosition = 0d;
+    double leftClimberEncoderPosition = 0d;
+    double rightClimberEncoderPosition = 0d;
   }
 
   default void updateInputs(ClimberIOInputs inputs) {}
 
-  default void setClimberVoltage(double volts) {}
+  default void setLeftClimberVoltage(double volts) {}
+
+  default void setRightClimberVoltage(double volts) {}
 
   default void stop() {}
 }
