@@ -7,18 +7,19 @@ public interface IntakeIO {
   public static class IntakeIOInputs {
     double intakeLeftVelocityRadPerSec = 0d;
     double intakeRightVelocityRadPerSec = 0d;
-    double indexerVelocityRadPerSec = 0d;
+    double intakeIndexerVelocityRadPerSec = 0d;
     double intakeLeftAppliedVolts = 0d;
     double intakeRightAppliedVolts = 0d;
-    double indexerAppliedVolts = 0d;
+    double intakeIndexerAppliedVolts = 0d;
     double[] intakeLeftCurrentAmps = new double[] {};
     double[] intakeRightCurrentAmps = new double[] {};
-    double[] indexerCurrentAmps = new double[] {};
+    double[] intakeIndexerCurrentAmps = new double[] {};
+    double intakeEncoderPosition = 0d;
   }
 
   default void updateInputs(IntakeIOInputs inputs) {}
 
-  default void setIntakeVoltage(double volts) {}
+  default void setPositionVoltage(double volts) {}
 
   default void setIndexerVoltage(double volts) {}
 

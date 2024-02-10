@@ -96,7 +96,7 @@ public class Module {
       // Run closed loop drive control
       // Only allowed if closed loop turn control is running
       if (speedSetpoint != null) {
-        // Scale velocity based on turn error
+        // Scale velocity based on turcn error
         //
         // When the error is 90°, the velocity setpoint should be 0. As the wheel turns
         // towards the setpoint, its velocity should increase. This is achieved by

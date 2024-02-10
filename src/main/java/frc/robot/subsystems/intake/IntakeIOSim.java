@@ -9,17 +9,17 @@ public class IntakeIOSim implements IntakeIO {
 
   private DCMotorSim intakeLeftSim = new DCMotorSim(DCMotor.getNeo550(1), 1, 0.025);
   private DCMotorSim intakeRightSim = new DCMotorSim(DCMotor.getNeo550(1), 1, 0.025);
-  private DCMotorSim indexerSim = new DCMotorSim(DCMotor.getNEO(1), 1, 0.004);
+  private DCMotorSim intakeIndexerSim = new DCMotorSim(DCMotor.getNEO(1), 1, 0.004);
 
   private double intakeLeftAppliedVolts = 0d;
   private double intakeRightAppliedVolts = 0d;
-  private double indexerAppliedVolts = 0d;
+  private double intakeIndexerAppliedVolts = 0d;
 
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
     intakeLeftSim.update(LOOP_PERIOD_SECS);
     intakeRightSim.update(LOOP_PERIOD_SECS);
-    indexerSim.update(LOOP_PERIOD_SECS);
+    intakeIndexerSim.update(LOOP_PERIOD_SECS);
 
     inputs.intakeLeftAppliedVolts = intakeLeftAppliedVolts;
     inputs.intakeLeftVelocityRadPerSec = intakeLeftSim.getAngularVelocityRadPerSec();
@@ -29,13 +29,14 @@ public class IntakeIOSim implements IntakeIO {
     inputs.intakeRightVelocityRadPerSec = intakeRightSim.getAngularVelocityRadPerSec();
     inputs.intakeRightCurrentAmps = new double[] {Math.abs(intakeRightSim.getCurrentDrawAmps())};
 
-    inputs.indexerAppliedVolts = indexerAppliedVolts;
-    inputs.indexerVelocityRadPerSec = indexerSim.getAngularVelocityRadPerSec();
-    inputs.indexerCurrentAmps = new double[] {Math.abs(indexerSim.getCurrentDrawAmps())};
+    inputs.intakeIndexerAppliedVolts = intakeIndexerAppliedVolts;
+    inputs.intakeIndexerVelocityRadPerSec = intakeIndexerSim.getAngularVelocityRadPerSec();
+    inputs.intakeIndexerCurrentAmps =
+        new double[] {Math.abs(intakeIndexerSim.getCurrentDrawAmps())};
   }
 
   @Override
-  public void setIntakeVoltage(double volts) {
+  public void setPositionVoltage(double volts) {
     intakeLeftAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
     intakeRightAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
 
@@ -45,18 +46,18 @@ public class IntakeIOSim implements IntakeIO {
 
   @Override
   public void setIndexerVoltage(double volts) {
-    indexerAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
-    indexerSim.setInputVoltage(indexerAppliedVolts);
+    intakeIndexerAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
+    intakeIndexerSim.setInputVoltage(intakeIndexerAppliedVolts);
   }
 
   @Override
   public void stop() {
     intakeLeftAppliedVolts = 0;
     intakeRightAppliedVolts = 0;
-    indexerAppliedVolts = 0;
+    intakeIndexerAppliedVolts = 0;
 
     intakeLeftSim.setInputVoltage(intakeLeftAppliedVolts);
     intakeRightSim.setInputVoltage(intakeRightAppliedVolts);
-    indexerSim.setInputVoltage(indexerAppliedVolts);
+    intakeIndexerSim.setInputVoltage(intakeIndexerAppliedVolts);
   }
 }
