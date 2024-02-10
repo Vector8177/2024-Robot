@@ -1,6 +1,8 @@
 package frc.robot.subsystems.shooter;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkAbsoluteEncoder.Type;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.util.Units;
@@ -8,13 +10,16 @@ import frc.robot.Constants;
 
 public class ShooterIOSparkMax implements ShooterIO {
   private final CANSparkMax shooterTopFixedSparkMax;
-  private final RelativeEncoder shooterTopFixedEncoder;
-  private final CANSparkMax shooterBottomFixedSparkMax;
-  private final RelativeEncoder shooterBottomFixedEncoder;
   private final CANSparkMax shooterPivotSparkMax;
-  private final RelativeEncoder shooterPivotEncoder;
+  private final CANSparkMax shooterBottomFixedSparkMax;
   private final CANSparkMax shooterIndexerSparkMax;
+
+  private final RelativeEncoder shooterTopFixedEncoder;
+  private final RelativeEncoder shooterBottomFixedEncoder;
+  private final RelativeEncoder shooterPivotEncoder;
   private final RelativeEncoder shooterIndexerEncoder;
+
+  private final AbsoluteEncoder shooterPivotAbsoluteEncoder;
 
   public ShooterIOSparkMax() {
     shooterTopFixedSparkMax = new CANSparkMax(Constants.placeHolderMotorID, MotorType.kBrushless);
@@ -24,12 +29,13 @@ public class ShooterIOSparkMax implements ShooterIO {
     shooterIndexerSparkMax = new CANSparkMax(Constants.placeHolderMotorID, MotorType.kBrushless);
 
     shooterTopFixedSparkMax.restoreFactoryDefaults();
-    shooterTopFixedSparkMax.setCANTimeout(250);
     shooterBottomFixedSparkMax.restoreFactoryDefaults();
-    shooterBottomFixedSparkMax.setCANTimeout(250);
     shooterPivotSparkMax.restoreFactoryDefaults();
-    shooterPivotSparkMax.setCANTimeout(250);
     shooterIndexerSparkMax.restoreFactoryDefaults();
+
+    shooterTopFixedSparkMax.setCANTimeout(250);
+    shooterBottomFixedSparkMax.setCANTimeout(250);
+    shooterPivotSparkMax.setCANTimeout(250);
     shooterIndexerSparkMax.setCANTimeout(250);
 
     shooterTopFixedSparkMax.setSmartCurrentLimit(20);
@@ -38,12 +44,17 @@ public class ShooterIOSparkMax implements ShooterIO {
     shooterIndexerSparkMax.setSmartCurrentLimit(20);
 
     shooterTopFixedEncoder = shooterTopFixedSparkMax.getEncoder();
-    shooterTopFixedSparkMax.enableVoltageCompensation(12d);
     shooterBottomFixedEncoder = shooterBottomFixedSparkMax.getEncoder();
-    shooterBottomFixedSparkMax.enableVoltageCompensation(12d);
     shooterPivotEncoder = shooterPivotSparkMax.getEncoder();
-    shooterPivotSparkMax.enableVoltageCompensation(12d);
     shooterIndexerEncoder = shooterIndexerSparkMax.getEncoder();
+
+    shooterPivotAbsoluteEncoder = shooterPivotSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
+    shooterPivotAbsoluteEncoder.setPositionConversionFactor(2 * Math.PI);
+    shooterPivotEncoder.setPosition(shooterPivotAbsoluteEncoder.getPosition());
+
+    shooterTopFixedSparkMax.enableVoltageCompensation(12d);
+    shooterBottomFixedSparkMax.enableVoltageCompensation(12d);
+    shooterPivotSparkMax.enableVoltageCompensation(12d);
     shooterIndexerSparkMax.enableVoltageCompensation(12d);
 
     shooterTopFixedEncoder.setMeasurementPeriod(50);

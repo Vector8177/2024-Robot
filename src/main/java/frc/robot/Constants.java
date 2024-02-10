@@ -13,6 +13,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -26,14 +28,6 @@ public final class Constants {
 
   public static final int placeHolderMotorID = Integer.MAX_VALUE;
 
-  public static final class IntakeConstants {
-    public static final int maxIntakeMotorVoltage = 9;
-
-    public static final double intakePositionKP = 1d;
-    public static final double intakePositionKI = 0d;
-    public static final double intakePositionKD = 0d;
-  }
-
   public static enum Mode {
     /** Running on a real robot. */
     REAL,
@@ -43,5 +37,42 @@ public final class Constants {
 
     /** Replaying from a log file. */
     REPLAY
+  }
+
+  public final class SwerveConstants
+  {
+    public static final double MAX_LINEAR_SPEED = Units.feetToMeters(16.5);
+    public static final double TRACK_WIDTH_X = Units.inchesToMeters(25.0);
+    public static final double TRACK_WIDTH_Y = Units.inchesToMeters(25.0);
+    public static final double DRIVE_BASE_RADIUS =
+      Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
+    public static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
+
+    // SDS Mk4I L3 Gear Ratio - 16.5ft/s
+    public static final double DRIVE_GEAR_RATIO = (50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0);
+    public static final double TURN_GEAR_RATIO = 150.0 / 7.0;
+
+    public static enum CanIDs
+    {
+      FL_TURN(10),
+      FL_DRIVE(20),
+      FR_TURN(11),
+      FR_DRIVE(21),
+      BL_TURN(12),
+      BL_DRIVE(22),
+      BR_TURN(13),
+      BR_DRIVE(23),
+      PIGEON(6);
+
+      private int id;
+      CanIDs(int id)
+      {
+        this.id = id;
+      }
+
+      public int getID() { return id; }
+    }
+
+    
   }
 }
