@@ -45,6 +45,14 @@ public final class Constants {
     public static final double climberKD = 0d;
   }
 
+  public static final class HoodConstants {
+    public static final int maxHoodMotorVoltage = 12;
+
+    public static final double hoodPivotKP = 1d;
+    public static final double hoodPivotKI = 0d;
+    public static final double hoodPivotKD = 0d;
+  }
+
   public static enum Mode {
     /** Running on a real robot. */
     REAL,

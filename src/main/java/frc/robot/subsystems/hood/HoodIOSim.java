@@ -22,14 +22,14 @@ public class HoodIOSim implements HoodIO {
 
   @Override
   public void setHoodPivotVoltage(double volts) {
-    hoodPivotAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
+    hoodPivotAppliedVolts = MathUtil.clamp(volts, -12d, 12d);
 
     hoodPivotSim.setInputVoltage(hoodPivotAppliedVolts);
   }
 
   @Override
   public void stop() {
-    hoodPivotAppliedVolts = 0;
+    hoodPivotAppliedVolts = 0d;
     hoodPivotSim.setInputVoltage(hoodPivotAppliedVolts);
   }
 }

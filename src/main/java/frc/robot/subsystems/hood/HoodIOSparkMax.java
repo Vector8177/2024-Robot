@@ -31,6 +31,7 @@ public class HoodIOSparkMax implements HoodIO {
     inputs.hoodPivotVelocityRadPerSec =
         Units.rotationsPerMinuteToRadiansPerSecond(hoodPivotEncoder.getVelocity());
     inputs.hoodPivotCurrentAmps = new double[] {hoodPivotSparkMax.getOutputCurrent()};
+    inputs.hoodPivotEncoderPosition = hoodPivotEncoder.getPosition();
   }
 
   @Override
