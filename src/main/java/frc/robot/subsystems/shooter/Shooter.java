@@ -1,7 +1,5 @@
 package frc.robot.subsystems.shooter;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
@@ -9,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ShooterConstants.PivotUnweightedPIDConstants;
 import frc.robot.Constants.ShooterConstants.ShooterUnweightedPIDConstants;
+import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
   private double targetPosition;
@@ -27,23 +26,33 @@ public class Shooter extends SubsystemBase {
   public Shooter(ShooterIO io) {
     this.io = io;
 
-    pivotPidController = new PIDController(PivotUnweightedPIDConstants.P.getVal(),
-        PivotUnweightedPIDConstants.I.getVal(), PivotUnweightedPIDConstants.D.getVal());
+    pivotPidController =
+        new PIDController(
+            PivotUnweightedPIDConstants.P.getVal(),
+            PivotUnweightedPIDConstants.I.getVal(),
+            PivotUnweightedPIDConstants.D.getVal());
     pivotPidController.enableContinuousInput(0, Math.PI * 2);
     pivotPidController.setTolerance(ShooterConstants.PIVOT_TOLERANCE);
 
-    pivotFeedForward = new ArmFeedforward(
-        PivotUnweightedPIDConstants.S.getVal(),
-        PivotUnweightedPIDConstants.G.getVal(),
-        PivotUnweightedPIDConstants.V.getVal(),
-        PivotUnweightedPIDConstants.A.getVal());
+    pivotFeedForward =
+        new ArmFeedforward(
+            PivotUnweightedPIDConstants.S.getVal(),
+            PivotUnweightedPIDConstants.G.getVal(),
+            PivotUnweightedPIDConstants.V.getVal(),
+            PivotUnweightedPIDConstants.A.getVal());
 
-    shooterTopSpeedPidController = new PIDController(ShooterUnweightedPIDConstants.P.getVal(),
-        ShooterUnweightedPIDConstants.I.getVal(), ShooterUnweightedPIDConstants.D.getVal());
+    shooterTopSpeedPidController =
+        new PIDController(
+            ShooterUnweightedPIDConstants.P.getVal(),
+            ShooterUnweightedPIDConstants.I.getVal(),
+            ShooterUnweightedPIDConstants.D.getVal());
     shooterTopSpeedPidController.setTolerance(ShooterConstants.SHOOTER_SPEED_TOLERANCE);
 
-    shooterBottomSpeedPidController = new PIDController(ShooterUnweightedPIDConstants.P.getVal(),
-        ShooterUnweightedPIDConstants.I.getVal(), ShooterUnweightedPIDConstants.D.getVal());
+    shooterBottomSpeedPidController =
+        new PIDController(
+            ShooterUnweightedPIDConstants.P.getVal(),
+            ShooterUnweightedPIDConstants.I.getVal(),
+            ShooterUnweightedPIDConstants.D.getVal());
     shooterBottomSpeedPidController.setTolerance(ShooterConstants.SHOOTER_SPEED_TOLERANCE);
   }
 
@@ -84,23 +93,33 @@ public class Shooter extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter", inputs);
 
-    double pivotMotorSpeed = 
-      pivotPidController.calculate(inputs.shooterPivotAbsolutePosition.getRadians(),targetPosition)
-        + pivotFeedForward.calculate(inputs.shooterPivotAbsolutePosition.getRadians(), 0);
-      
-    io.setShooterPositionVoltage(
-      MathUtil.clamp(pivotMotorSpeed, -ShooterConstants.MAX_MOTOR_VOLTAGE, ShooterConstants.MAX_MOTOR_VOLTAGE)
-    );
+    double pivotMotorSpeed =
+        pivotPidController.calculate(
+                inputs.shooterPivotAbsolutePosition.getRadians(), targetPosition)
+            + pivotFeedForward.calculate(inputs.shooterPivotAbsolutePosition.getRadians(), 0);
 
-    double shooterTopSpeed = 
-      shooterTopSpeedPidController.calculate(inputs.shooterTopFixedVelocityRadPerSec, targetTopSpeed);
-    double shooterBottomSpeed = 
-      shooterBottomSpeedPidController.calculate(inputs.shooterBottomFixedVelocityRadPerSec, targetBottomSpeed);
-    
+    io.setShooterPositionVoltage(
+        MathUtil.clamp(
+            pivotMotorSpeed,
+            -ShooterConstants.MAX_MOTOR_VOLTAGE,
+            ShooterConstants.MAX_MOTOR_VOLTAGE));
+
+    double shooterTopSpeed =
+        shooterTopSpeedPidController.calculate(
+            inputs.shooterTopFixedVelocityRadPerSec, targetTopSpeed);
+    double shooterBottomSpeed =
+        shooterBottomSpeedPidController.calculate(
+            inputs.shooterBottomFixedVelocityRadPerSec, targetBottomSpeed);
+
     io.setShooterSpeedVoltage(
-      MathUtil.clamp(shooterTopSpeed, -ShooterConstants.MAX_MOTOR_VOLTAGE, ShooterConstants.MAX_MOTOR_VOLTAGE), 
-      MathUtil.clamp(shooterBottomSpeed, -ShooterConstants.MAX_MOTOR_VOLTAGE, ShooterConstants.MAX_MOTOR_VOLTAGE)
-    );
+        MathUtil.clamp(
+            shooterTopSpeed,
+            -ShooterConstants.MAX_MOTOR_VOLTAGE,
+            ShooterConstants.MAX_MOTOR_VOLTAGE),
+        MathUtil.clamp(
+            shooterBottomSpeed,
+            -ShooterConstants.MAX_MOTOR_VOLTAGE,
+            ShooterConstants.MAX_MOTOR_VOLTAGE));
   }
 
   public void stop() {

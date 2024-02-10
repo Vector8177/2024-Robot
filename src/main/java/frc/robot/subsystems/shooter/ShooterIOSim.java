@@ -43,9 +43,10 @@ public class ShooterIOSim implements ShooterIO {
     inputs.shooterIndexerVelocityRadPerSec = shooterIndexerSim.getAngularVelocityRadPerSec();
     inputs.shooterIndexerCurrentAmps =
         new double[] {Math.abs(shooterIndexerSim.getCurrentDrawAmps())};
-    
+
     inputs.shooterOffset = ShooterConstants.ABSOLUTE_OFFSET;
-    inputs.shooterPivotRelativePosition = Rotation2d.fromRadians(shooterPivotSim.getAngularPositionRad());
+    inputs.shooterPivotRelativePosition =
+        Rotation2d.fromRadians(shooterPivotSim.getAngularPositionRad());
     inputs.shooterPivotAbsolutePosition = inputs.shooterPivotRelativePosition;
   }
 

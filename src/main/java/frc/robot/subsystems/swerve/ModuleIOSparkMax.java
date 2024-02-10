@@ -16,18 +16,15 @@ package frc.robot.subsystems.swerve;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
-import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import java.util.Queue;
-
-import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.Constants.SwerveConstants.CanIDs;;
+import frc.robot.Constants.SwerveConstants.CanIDs;
+import java.util.Queue;
 
 /**
  * Module IO implementation for SparkMax drive motor controller, SparkMax turn motor controller (NEO
@@ -55,8 +52,6 @@ public class ModuleIOSparkMax implements ModuleIO {
 
   private final boolean isTurnMotorInverted = true;
   private final Rotation2d absoluteEncoderOffset;
-
-
 
   public ModuleIOSparkMax(int index) {
     switch (index) {
@@ -136,7 +131,8 @@ public class ModuleIOSparkMax implements ModuleIO {
     inputs.drivePositionRad =
         Units.rotationsToRadians(driveEncoder.getPosition()) / SwerveConstants.DRIVE_GEAR_RATIO;
     inputs.driveVelocityRadPerSec =
-        Units.rotationsPerMinuteToRadiansPerSecond(driveEncoder.getVelocity()) / SwerveConstants.DRIVE_GEAR_RATIO;
+        Units.rotationsPerMinuteToRadiansPerSecond(driveEncoder.getVelocity())
+            / SwerveConstants.DRIVE_GEAR_RATIO;
     inputs.driveAppliedVolts = driveSparkMax.getAppliedOutput() * driveSparkMax.getBusVoltage();
     inputs.driveCurrentAmps = new double[] {driveSparkMax.getOutputCurrent()};
 
@@ -144,7 +140,8 @@ public class ModuleIOSparkMax implements ModuleIO {
         new Rotation2d((1 - turnAbsoluteEncoder.getPosition()) * 2.0 * Math.PI)
             .minus(absoluteEncoderOffset);
     inputs.turnPosition =
-        Rotation2d.fromRotations(turnRelativeEncoder.getPosition() / SwerveConstants.TURN_GEAR_RATIO);
+        Rotation2d.fromRotations(
+            turnRelativeEncoder.getPosition() / SwerveConstants.TURN_GEAR_RATIO);
     inputs.turnVelocityRadPerSec =
         Units.rotationsPerMinuteToRadiansPerSecond(turnRelativeEncoder.getVelocity())
             / SwerveConstants.TURN_GEAR_RATIO;
@@ -155,11 +152,14 @@ public class ModuleIOSparkMax implements ModuleIO {
         timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
     inputs.odometryDrivePositionsRad =
         drivePositionQueue.stream()
-            .mapToDouble((Double value) -> Units.rotationsToRadians(value) / SwerveConstants.DRIVE_GEAR_RATIO)
+            .mapToDouble(
+                (Double value) ->
+                    Units.rotationsToRadians(value) / SwerveConstants.DRIVE_GEAR_RATIO)
             .toArray();
     inputs.odometryTurnPositions =
         turnPositionQueue.stream()
-            .map((Double value) -> Rotation2d.fromRotations(value / SwerveConstants.TURN_GEAR_RATIO))
+            .map(
+                (Double value) -> Rotation2d.fromRotations(value / SwerveConstants.TURN_GEAR_RATIO))
             .toArray(Rotation2d[]::new);
     timestampQueue.clear();
     drivePositionQueue.clear();

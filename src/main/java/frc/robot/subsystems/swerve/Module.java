@@ -20,9 +20,9 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
-import org.littletonrobotics.junction.Logger;
 import frc.robot.Constants.SwerveConstants.RealSwervePID;
 import frc.robot.Constants.SwerveConstants.SimSwervePID;
+import org.littletonrobotics.junction.Logger;
 
 public class Module {
   private static final double WHEEL_RADIUS = Units.inchesToMeters(2.0);
@@ -49,36 +49,34 @@ public class Module {
     switch (Constants.currentMode) {
       case REAL:
       case REPLAY:
-        driveFeedforward = new SimpleMotorFeedforward(
-          RealSwervePID.DRIVE_FF_S.getVal(), 
-          RealSwervePID.DRIVE_FF_V.getVal()
-          );
-        driveFeedback = new PIDController(
-          RealSwervePID.DRIVE_P.getVal(), 
-          RealSwervePID.DRIVE_I.getVal(), 
-          RealSwervePID.DRIVE_D.getVal()
-          );
-        turnFeedback = new PIDController(
-          RealSwervePID.TURN_P.getVal(),
-          RealSwervePID.TURN_I.getVal(),
-          RealSwervePID.TURN_D.getVal()
-          );
+        driveFeedforward =
+            new SimpleMotorFeedforward(
+                RealSwervePID.DRIVE_FF_S.getVal(), RealSwervePID.DRIVE_FF_V.getVal());
+        driveFeedback =
+            new PIDController(
+                RealSwervePID.DRIVE_P.getVal(),
+                RealSwervePID.DRIVE_I.getVal(),
+                RealSwervePID.DRIVE_D.getVal());
+        turnFeedback =
+            new PIDController(
+                RealSwervePID.TURN_P.getVal(),
+                RealSwervePID.TURN_I.getVal(),
+                RealSwervePID.TURN_D.getVal());
         break;
       case SIM:
-        driveFeedforward = new SimpleMotorFeedforward(
-          SimSwervePID.DRIVE_FF_S.getVal(), 
-          SimSwervePID.DRIVE_FF_V.getVal()
-          );
-        driveFeedback = new PIDController(
-          SimSwervePID.DRIVE_P.getVal(), 
-          SimSwervePID.DRIVE_I.getVal(), 
-          SimSwervePID.DRIVE_D.getVal()
-          );
-        turnFeedback = new PIDController(
-          SimSwervePID.TURN_P.getVal(),
-          SimSwervePID.TURN_I.getVal(),
-          SimSwervePID.TURN_D.getVal()
-          );
+        driveFeedforward =
+            new SimpleMotorFeedforward(
+                SimSwervePID.DRIVE_FF_S.getVal(), SimSwervePID.DRIVE_FF_V.getVal());
+        driveFeedback =
+            new PIDController(
+                SimSwervePID.DRIVE_P.getVal(),
+                SimSwervePID.DRIVE_I.getVal(),
+                SimSwervePID.DRIVE_D.getVal());
+        turnFeedback =
+            new PIDController(
+                SimSwervePID.TURN_P.getVal(),
+                SimSwervePID.TURN_I.getVal(),
+                SimSwervePID.TURN_D.getVal());
         break;
       default:
         driveFeedforward = new SimpleMotorFeedforward(0.0, 0.0);

@@ -63,7 +63,6 @@ public final class Constants {
     public static final double hoodPivotKD = 0d;
   }
 
-  
   public static enum Mode {
     /** Running on a real robot. */
     REAL,
@@ -80,15 +79,14 @@ public final class Constants {
     public static final double TRACK_WIDTH_X = Units.inchesToMeters(25.0);
     public static final double TRACK_WIDTH_Y = Units.inchesToMeters(25.0);
     public static final double DRIVE_BASE_RADIUS =
-      Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
+        Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
     public static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
 
     // SDS Mk4I L3 Gear Ratio - 16.5ft/s
     public static final double DRIVE_GEAR_RATIO = (50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0);
     public static final double TURN_GEAR_RATIO = 150.0 / 7.0;
 
-    public static enum CanIDs
-    {
+    public static enum CanIDs {
       FL_TURN(10),
       FL_DRIVE(20),
       FR_TURN(11),
@@ -100,12 +98,14 @@ public final class Constants {
       PIGEON(6);
 
       private int id;
-      CanIDs(int id)
-      {
+
+      CanIDs(int id) {
         this.id = id;
       }
 
-      public int getID() { return id; }
+      public int getID() {
+        return id;
+      }
     }
 
     public static enum RealSwervePID {
@@ -120,12 +120,13 @@ public final class Constants {
 
       private double val;
 
-      RealSwervePID(double v)
-      {
+      RealSwervePID(double v) {
         this.val = v;
       }
 
-      public double getVal() { return this.val; }
+      public double getVal() {
+        return this.val;
+      }
     }
 
     public static enum SimSwervePID {
@@ -140,12 +141,13 @@ public final class Constants {
 
       private double val;
 
-      SimSwervePID(double v)
-      {
+      SimSwervePID(double v) {
         this.val = v;
       }
 
-      public double getVal() { return this.val; }
+      public double getVal() {
+        return this.val;
+      }
     }
   }
 
@@ -169,13 +171,11 @@ public final class Constants {
 
       private double val;
 
-      PivotUnweightedPIDConstants(double d)
-      {
+      PivotUnweightedPIDConstants(double d) {
         this.val = d;
       }
 
-      public double getVal()
-      {
+      public double getVal() {
         return this.val;
       }
     }
@@ -187,13 +187,11 @@ public final class Constants {
 
       private double val;
 
-      ShooterUnweightedPIDConstants(double d)
-      {
+      ShooterUnweightedPIDConstants(double d) {
         this.val = d;
       }
 
-      public double getVal()
-      {
+      public double getVal() {
         return this.val;
       }
     }

@@ -21,7 +21,6 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.SwerveConstants.CanIDs;
-
 import java.util.Queue;
 
 /** IO implementation for Pigeon2 */

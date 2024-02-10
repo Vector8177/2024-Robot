@@ -4,7 +4,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.util.Units;
-import frc.robot.Constants.IntakeConstants;;
+import frc.robot.Constants.IntakeConstants;
 
 public class IntakeIOSparkMax implements IntakeIO {
   private final CANSparkMax intakeLeftSparkMax;
