@@ -100,7 +100,45 @@ public final class Constants {
       public int getID() { return id; }
     }
 
+    public static enum RealSwervePID {
+      DRIVE_FF_S(0.1),
+      DRIVE_FF_V(0.13),
+      DRIVE_P(0.05),
+      DRIVE_I(0.0),
+      DRIVE_D(0.0),
+      TURN_P(7.0),
+      TURN_I(0.0),
+      TURN_D(0.0);
 
+      private double val;
+
+      RealSwervePID(double v)
+      {
+        this.val = v;
+      }
+
+      public double getVal() { return this.val; }
+    }
+
+    public static enum SimSwervePID {
+      DRIVE_FF_S(0.0),
+      DRIVE_FF_V(0.13),
+      DRIVE_P(0.1),
+      DRIVE_I(0.0),
+      DRIVE_D(0.0),
+      TURN_P(10.0),
+      TURN_I(0.0),
+      TURN_D(0.0);
+
+      private double val;
+
+      SimSwervePID(double v)
+      {
+        this.val = v;
+      }
+
+      public double getVal() { return this.val; }
+    }
   }
 
   public final class ShooterConstants {
