@@ -19,16 +19,20 @@ import org.littletonrobotics.junction.AutoLog;
 public interface ModuleIO {
   @AutoLog
   public static class ModuleIOInputs {
-    public double drivePositionRad = 0d;
-    public double driveVelocityRadPerSec = 0d;
-    public double driveAppliedVolts = 0d;
+    public double drivePositionRad = 0.0;
+    public double driveVelocityRadPerSec = 0.0;
+    public double driveAppliedVolts = 0.0;
     public double[] driveCurrentAmps = new double[] {};
 
     public Rotation2d turnAbsolutePosition = new Rotation2d();
     public Rotation2d turnPosition = new Rotation2d();
-    public double turnVelocityRadPerSec = 0d;
-    public double turnAppliedVolts = 0d;
+    public double turnVelocityRadPerSec = 0.0;
+    public double turnAppliedVolts = 0.0;
     public double[] turnCurrentAmps = new double[] {};
+
+    public double[] odometryTimestamps = new double[] {};
+    public double[] odometryDrivePositionsRad = new double[] {};
+    public Rotation2d[] odometryTurnPositions = new Rotation2d[] {};
   }
 
   /** Updates the set of loggable inputs. */
