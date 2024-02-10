@@ -16,6 +16,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.ShooterCommands;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.climber.ClimberIOSim;
@@ -152,6 +154,13 @@ public class RobotContainer {
                             new Pose2d(swerve.getPose().getTranslation(), new Rotation2d())),
                     swerve)
                 .ignoringDisable(true));
+
+    controller
+        .povDown()
+        .onTrue(Commands.runOnce(() -> ShooterCommands.SetSpeed(shooter, 3), shooter));
+    controller
+        .povUp()
+        .onTrue(Commands.runOnce(() -> ShooterCommands.SetSpeed(shooter, 0), shooter));
   }
 
   /**
