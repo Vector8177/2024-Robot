@@ -93,6 +93,9 @@ public class Shooter extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter", inputs);
 
+    Logger.recordOutput("Shooter/SetPoints/TopSpeed", targetTopSpeed);
+    Logger.recordOutput("Shooter/SetPoints/BottomSpeed", targetBottomSpeed);
+
     double pivotMotorSpeed =
         pivotPidController.calculate(
                 inputs.shooterPivotAbsolutePosition.getRadians(), targetPosition)
@@ -110,6 +113,9 @@ public class Shooter extends SubsystemBase {
     double shooterBottomSpeed =
         shooterBottomSpeedPidController.calculate(
             inputs.shooterBottomFixedVelocityRadPerSec, targetBottomSpeed);
+
+    // DriverStation.reportWarning(
+    //     "TOP: " + shooterTopSpeed + "; BOTTOM: " + shooterBottomSpeed, false);
 
     io.setShooterSpeedVoltage(
         MathUtil.clamp(

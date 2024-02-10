@@ -16,7 +16,6 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -24,19 +23,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.ShooterCommands;
-import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.ClimberIO;
-import frc.robot.subsystems.climber.ClimberIOSim;
-import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.hood.HoodIO;
-import frc.robot.subsystems.hood.HoodIOSim;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.IntakeIO;
-import frc.robot.subsystems.intake.IntakeIOSim;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterIO;
-import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.swerve.GyroIO;
 import frc.robot.subsystems.swerve.GyroIOPigeon2;
 import frc.robot.subsystems.swerve.ModuleIO;
@@ -54,10 +40,10 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Swerve swerve;
-  private final Shooter shooter;
-  private final Intake intake;
-  private final Hood hood;
-  private final Climber climber;
+  // private final Shooter shooter;
+  // private final Intake intake;
+  // private final Hood hood;
+  // private final Climber climber;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -77,10 +63,10 @@ public class RobotContainer {
                 new ModuleIOSparkMax(1),
                 new ModuleIOSparkMax(2),
                 new ModuleIOSparkMax(3));
-        shooter = null;
-        intake = null;
-        hood = null;
-        climber = null;
+        // shooter = null;
+        // intake = null;
+        // hood = null;
+        // climber = null;
         break;
 
       case SIM:
@@ -92,10 +78,10 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-        shooter = new Shooter(new ShooterIOSim());
-        intake = new Intake(new IntakeIOSim());
-        hood = new Hood(new HoodIOSim());
-        climber = new Climber(new ClimberIOSim());
+        // shooter = new Shooter(new ShooterIOSim());
+        // intake = new Intake(new IntakeIOSim());
+        // hood = new Hood(new HoodIOSim());
+        // climber = new Climber(new ClimberIOSim());
         break;
 
       default:
@@ -107,10 +93,10 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        shooter = new Shooter(new ShooterIO() {});
-        intake = new Intake(new IntakeIO() {});
-        hood = new Hood(new HoodIO() {});
-        climber = new Climber(new ClimberIO() {});
+        // shooter = new Shooter(new ShooterIO() {});
+        // intake = new Intake(new IntakeIO() {});
+        // hood = new Hood(new HoodIO() {});
+        // climber = new Climber(new ClimberIO() {});
         break;
     }
 
@@ -155,12 +141,12 @@ public class RobotContainer {
                     swerve)
                 .ignoringDisable(true));
 
-    controller
-        .povDown()
-        .onTrue(Commands.runOnce(() -> ShooterCommands.SetSpeed(shooter, 3), shooter));
-    controller
-        .povUp()
-        .onTrue(Commands.runOnce(() -> ShooterCommands.SetSpeed(shooter, 0), shooter));
+    // controller
+    //     .povDown()
+    //     .onTrue(Commands.runOnce(() -> ShooterCommands.SetSpeed(shooter, 3), shooter));
+    // controller
+    //     .povUp()
+    //     .onTrue(Commands.runOnce(() -> ShooterCommands.SetSpeed(shooter, 0), shooter));
   }
 
   /**
