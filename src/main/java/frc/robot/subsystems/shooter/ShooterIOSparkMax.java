@@ -5,8 +5,11 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
+import frc.robot.Constants.ShooterConstants;
 
 public class ShooterIOSparkMax implements ShooterIO {
   private final CANSparkMax shooterTopFixedSparkMax;
@@ -50,12 +53,14 @@ public class ShooterIOSparkMax implements ShooterIO {
 
     shooterPivotAbsoluteEncoder = shooterPivotSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
     shooterPivotAbsoluteEncoder.setPositionConversionFactor(2 * Math.PI);
+    shooterPivotAbsoluteEncoder.setZeroOffset(ShooterConstants.ABSOLUTE_OFFSET);
     shooterPivotEncoder.setPosition(shooterPivotAbsoluteEncoder.getPosition());
+    shooterPivotEncoder.setPositionConversionFactor(2 * Math.PI);
 
-    shooterTopFixedSparkMax.enableVoltageCompensation(12d);
-    shooterBottomFixedSparkMax.enableVoltageCompensation(12d);
-    shooterPivotSparkMax.enableVoltageCompensation(12d);
-    shooterIndexerSparkMax.enableVoltageCompensation(12d);
+    shooterTopFixedSparkMax.enableVoltageCompensation(12);
+    shooterBottomFixedSparkMax.enableVoltageCompensation(12);
+    shooterPivotSparkMax.enableVoltageCompensation(12);
+    shooterIndexerSparkMax.enableVoltageCompensation(12);
 
     shooterTopFixedEncoder.setMeasurementPeriod(50);
     shooterBottomFixedEncoder.setMeasurementPeriod(50);
@@ -94,6 +99,10 @@ public class ShooterIOSparkMax implements ShooterIO {
     inputs.shooterIndexerVelocityRadPerSec =
         Units.rotationsPerMinuteToRadiansPerSecond(shooterIndexerEncoder.getVelocity());
     inputs.shooterIndexerCurrentAmps = new double[] {shooterIndexerSparkMax.getOutputCurrent()};
+
+    inputs.shooterOffset = ShooterConstants.ABSOLUTE_OFFSET;
+    inputs.shooterPivotRelativePosition = Rotation2d.fromRadians(shooterPivotEncoder.getPosition());
+    inputs.shooterPivotAbsolutePosition = Rotation2d.fromRadians(shooterPivotAbsoluteEncoder.getPosition());
   }
 
   @Override

@@ -39,8 +39,7 @@ public final class Constants {
     REPLAY
   }
 
-  public final class SwerveConstants
-  {
+  public final class SwerveConstants {
     public static final double MAX_LINEAR_SPEED = Units.feetToMeters(16.5);
     public static final double TRACK_WIDTH_X = Units.inchesToMeters(25.0);
     public static final double TRACK_WIDTH_Y = Units.inchesToMeters(25.0);
@@ -73,6 +72,61 @@ public final class Constants {
       public int getID() { return id; }
     }
 
-    
+
+  }
+
+  public final class ShooterConstants {
+    public static final int SHOOTER_TOP_ID = 0;
+    public static final int SHOOTER_BOTTOM_ID = 0;
+    public static final int SHOOTER_PIVOT_ID = 0;
+    public static final int SHOOTER_INDEXER_ID = 0;
+
+    public static final double SHOOTER_GEAR_RATIO = 1 / 1.5;
+    public static final double ABSOLUTE_OFFSET = 0d;
+
+    public static enum PivotUnweightedPIDConstants {
+      P(.1),
+      I(0d),
+      D(0d),
+      S(0d),
+      G(0d),
+      V(0d),
+      A(0d);
+
+      private double val;
+
+      PivotUnweightedPIDConstants(double d)
+      {
+        this.val = d;
+      }
+
+      public double getVal()
+      {
+        return this.val;
+      }
+    }
+
+    public static enum ShooterUnweightedPIDConstants {
+      P(.1),
+      I(0d),
+      D(0d);
+
+      private double val;
+
+      ShooterUnweightedPIDConstants(double d)
+      {
+        this.val = d;
+      }
+
+      public double getVal()
+      {
+        return this.val;
+      }
+    }
+
+    public static final double PIVOT_TOLERANCE = 0.2;
+    public static final double SHOOTER_SPEED_TOLERANCE = 0.5;
+
+    public static final double MAX_MOTOR_VOLTAGE = 12.0;
   }
 }
