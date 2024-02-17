@@ -9,7 +9,7 @@ import java.util.function.BooleanSupplier;
 public class ClimberCommands {
   private ClimberCommands() {}
   
-  public static Command setPosition(
+  public static Command runClimber(
       Climber climber,
       BooleanSupplier leftIncrease,
       BooleanSupplier leftDecrease,

@@ -34,6 +34,9 @@ public final class Constants {
     public static final int INDEXER_MOTOR_ID = 3;
 
     public static final int maxIntakeMotorVoltage = 9;
+
+    public static final double FEEDER_SPEED = .2d;
+    public static final double INDEXER_SPEED = .2d;
   }
 
   public static final class ClimberConstants {
