@@ -56,26 +56,46 @@ public class ModuleIOSparkMax implements ModuleIO {
   public ModuleIOSparkMax(int index) {
     switch (index) {
       case 0:
+<<<<<<< Updated upstream
         driveSparkMax = new CANSparkMax(CanID.FL_DRIVE, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(CanID.FL_TURN, MotorType.kBrushless);
+=======
+        driveSparkMax = new CANSparkMax(CanIDs.FL_DRIVE.getID(), MotorType.kBrushless);
+        turnSparkMax = new CANSparkMax(CanIDs.FL_TURN.getID(), MotorType.kBrushless);
+>>>>>>> Stashed changes
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
         absoluteEncoderOffset = new Rotation2d(Math.PI); // MUST BE CALIBRATED
         break;
       case 1:
+<<<<<<< Updated upstream
         driveSparkMax = new CANSparkMax(CanID.FR_DRIVE, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(CanID.FR_TURN, MotorType.kBrushless);
+=======
+        driveSparkMax = new CANSparkMax(CanIDs.FR_DRIVE.getID(), MotorType.kBrushless);
+        turnSparkMax = new CANSparkMax(CanIDs.FR_TURN.getID(), MotorType.kBrushless);
+>>>>>>> Stashed changes
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
         absoluteEncoderOffset = new Rotation2d(Math.PI); // MUST BE CALIBRATED
         break;
       case 2:
+<<<<<<< Updated upstream
         driveSparkMax = new CANSparkMax(CanID.BL_DRIVE, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(CanID.BL_TURN, MotorType.kBrushless);
+=======
+        driveSparkMax = new CANSparkMax(CanIDs.BL_DRIVE.getID(), MotorType.kBrushless);
+        turnSparkMax = new CANSparkMax(CanIDs.BL_TURN.getID(), MotorType.kBrushless);
+>>>>>>> Stashed changes
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
         absoluteEncoderOffset = new Rotation2d(Math.PI); // MUST BE CALIBRATED
         break;
       case 3:
+<<<<<<< Updated upstream
         driveSparkMax = new CANSparkMax(CanID.BR_DRIVE, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(CanID.BR_TURN, MotorType.kBrushless);
+=======
+        driveSparkMax = new CANSparkMax(CanIDs.BR_DRIVE.getID(), MotorType.kBrushless);
+        turnSparkMax = new CANSparkMax(CanIDs.BR_TURN.getID(), MotorType.kBrushless);
+>>>>>>> Stashed changes
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
         absoluteEncoderOffset = new Rotation2d(0); // MUST BE CALIBRATED
         break;
