@@ -33,25 +33,21 @@ public class Climber extends SubsystemBase {
   }
 
   public void setLeftClimberPosition(double meters) {
-    if(meters > ClimberConstants.climberTopLimit){
+    if (meters > ClimberConstants.climberTopLimit) {
       desiredLeftClimberPosition = ClimberConstants.climberTopLimit;
-    }
-    else if(meters < ClimberConstants.climberBottomLimit){
+    } else if (meters < ClimberConstants.climberBottomLimit) {
       desiredLeftClimberPosition = ClimberConstants.climberBottomLimit;
-    }
-    else{
+    } else {
       desiredLeftClimberPosition = meters;
     }
   }
 
   public void setRightClimberPosition(double meters) {
-    if(meters > ClimberConstants.climberTopLimit){
+    if (meters > ClimberConstants.climberTopLimit) {
       desiredRightClimberPosition = ClimberConstants.climberTopLimit;
-    }
-    else if(meters < ClimberConstants.climberBottomLimit){
+    } else if (meters < ClimberConstants.climberBottomLimit) {
       desiredRightClimberPosition = ClimberConstants.climberBottomLimit;
-    }
-    else{
+    } else {
       desiredRightClimberPosition = meters;
     }
   }

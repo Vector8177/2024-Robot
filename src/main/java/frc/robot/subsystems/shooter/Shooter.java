@@ -60,16 +60,16 @@ public class Shooter extends SubsystemBase {
         inputs.shooterPivotAbsolutePosition.minus(inputs.shooterPivotRelativePosition);
   }
 
-  public void setTargetShooterSpeed(double topSpeed, double bottomSpeed) {
+  public void setShooterSpeed(double topSpeed, double bottomSpeed) {
     targetTopSpeed = topSpeed;
     targetBottomSpeed = bottomSpeed;
   }
 
-  public void setTargetShooterPosition(double rad) {
+  public void setPosition(double rad) {
     targetPosition = Rotation2d.fromRadians(rad);
   }
 
-  public void setTargetShooterIndexer(double speed) {
+  public void setIndexerSpeed(double speed) {
     io.setShooterIndexerVoltage(speed);
   }
 
@@ -81,12 +81,8 @@ public class Shooter extends SubsystemBase {
     return inputs.shooterBottomFixedVelocityRadPerSec;
   }
 
-  public double getShooterPositionVelocity() {
-    return inputs.shooterPivotVelocityRadPerSec;
-  }
-
-  public double getShooterIndexerVelocity() {
-    return inputs.shooterIndexerVelocityRadPerSec;
+  public double getIRSensorVoltage() {
+    return inputs.shooterSensorTriggerVoltage;
   }
 
   @Override

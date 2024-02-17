@@ -122,6 +122,8 @@ public final class Constants {
     public static final int SHOOTER_BOTTOM_ID = 32;
     public static final int SHOOTER_INDEXER_ID = 33;
 
+    public static final int SHOOTER_IR_SENSOR_PORT = 0;
+
     public static final double SHOOTER_GEAR_RATIO = 1 / 1.5;
     public static final double ABSOLUTE_OFFSET = 0d;
 
@@ -148,6 +150,10 @@ public final class Constants {
     public static final double SHOOTER_ARM_KG = 0d;
     public static final double SHOOTER_ARM_KV = 0d;
     public static final double SHOOTER_ARM_KA = 0d;
+
+    public static final double SHOOTER_INDEXER_SPEED = .1d;
+
+    public static final double SHOOTER_IR_TARGET_VOLTAGE = 3d;
 
     public static final double MAX_MOTOR_VOLTAGE = 12d;
   }

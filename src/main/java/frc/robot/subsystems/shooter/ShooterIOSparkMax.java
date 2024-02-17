@@ -7,7 +7,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.AnalogInput;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterIOSparkMax implements ShooterIO {
@@ -23,7 +23,7 @@ public class ShooterIOSparkMax implements ShooterIO {
 
   private final AbsoluteEncoder shooterPivotAbsoluteEncoder;
 
-  private final DigitalInput shooterBeamBreak;
+  private final AnalogInput shooterIRSensor;
 
   public ShooterIOSparkMax() {
     shooterTopFixedSparkMax =
@@ -34,7 +34,7 @@ public class ShooterIOSparkMax implements ShooterIO {
     shooterIndexerSparkMax =
         new CANSparkMax(ShooterConstants.SHOOTER_INDEXER_ID, MotorType.kBrushless);
 
-    shooterBeamBreak = new DigitalInput(0);
+    shooterIRSensor = new AnalogInput(ShooterConstants.SHOOTER_IR_SENSOR_PORT);
 
     shooterTopFixedSparkMax.restoreFactoryDefaults();
     shooterBottomFixedSparkMax.restoreFactoryDefaults();
@@ -109,7 +109,7 @@ public class ShooterIOSparkMax implements ShooterIO {
     inputs.shooterPivotAbsolutePosition =
         Rotation2d.fromRadians(shooterPivotAbsoluteEncoder.getPosition());
 
-    inputs.shooterSensorTrigger = shooterBeamBreak.get();
+    inputs.shooterSensorTriggerVoltage = shooterIRSensor.getVoltage();
   }
 
   @Override

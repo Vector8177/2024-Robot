@@ -8,7 +8,7 @@ import java.util.function.BooleanSupplier;
 
 public class ClimberCommands {
   private ClimberCommands() {}
-  
+
   public static Command runClimber(
       Climber climber,
       BooleanSupplier leftIncrease,

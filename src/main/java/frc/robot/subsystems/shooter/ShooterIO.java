@@ -24,7 +24,7 @@ public interface ShooterIO {
     public double[] shooterPivotCurrentAmps = new double[] {};
     public double[] shooterIndexerCurrentAmps = new double[] {};
 
-    public boolean shooterSensorTrigger = false;
+    public double shooterSensorTriggerVoltage = 0d;
   }
 
   public default void updateInputs(ShooterIOInputs inputs) {}
