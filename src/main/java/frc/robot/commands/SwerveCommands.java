@@ -24,10 +24,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.swerve.Swerve;
 import java.util.function.DoubleSupplier;
 
-public class DriveCommands {
+public class SwerveCommands {
   private static final double DEADBAND = 0.1;
 
-  private DriveCommands() {}
+  private SwerveCommands() {}
 
   /**
    * Field relative drive command using two joysticks (controlling linear and angular velocities).

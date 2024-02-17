@@ -50,6 +50,11 @@ public final class Constants {
     public static final double climberKP = 1d;
     public static final double climberKI = 0d;
     public static final double climberKD = 0d;
+
+    public static final double climberSpeed = 1d;
+
+    public static final double climberTopLimit = 10d;
+    public static final double climberBottomLimit = 0d;
   }
 
   public static final class HoodConstants {
