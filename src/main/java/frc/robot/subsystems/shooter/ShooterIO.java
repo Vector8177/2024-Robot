@@ -18,12 +18,13 @@ public interface ShooterIO {
 
     public Rotation2d shooterPivotRelativePosition = new Rotation2d();
     public Rotation2d shooterPivotAbsolutePosition = new Rotation2d();
-    public double shooterOffset = 0d;
 
     public double[] shooterTopFixedCurrentAmps = new double[] {};
     public double[] shooterBottomFixedCurrentAmps = new double[] {};
     public double[] shooterPivotCurrentAmps = new double[] {};
     public double[] shooterIndexerCurrentAmps = new double[] {};
+
+    public boolean shooterSensorTrigger = false;
   }
 
   public default void updateInputs(ShooterIOInputs inputs) {}

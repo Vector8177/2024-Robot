@@ -29,20 +29,18 @@ public final class Constants {
   public static final int placeHolderMotorID = Integer.MAX_VALUE;
 
   public static final class IntakeConstants {
-    public static final int LEFT_MOTOR_ID = 1;
-    public static final int RIGHT_MOTOR_ID = 2;
+    public static final int LEFT_FEEDER_MOTOR_ID = 1;
+    public static final int RIGHT_FEEDER_MOTOR_ID = 2;
     public static final int INDEXER_MOTOR_ID = 3;
 
     public static final int maxIntakeMotorVoltage = 9;
-
-    public static final double intakePositionKP = 1d;
-    public static final double intakePositionKI = 0d;
-    public static final double intakePositionKD = 0d;
   }
 
   public static final class ClimberConstants {
     public static final int RIGHT_MOTOR_ID = 50;
     public static final int LEFT_MOTOR_ID = 51;
+
+    public static final double CLIMBER_GEAR_RATIO = 1 / 25d;
 
     public static final double rightClimberAbsoluteEncoderOffset = 0d;
     public static final double leftClimberAbsoluteEncoderOffset = 0d;
@@ -61,17 +59,6 @@ public final class Constants {
     public static final double hoodPivotKP = 1d;
     public static final double hoodPivotKI = 0d;
     public static final double hoodPivotKD = 0d;
-  }
-
-  public static enum Mode {
-    /** Running on a real robot. */
-    REAL,
-
-    /** Running a physics simulator. */
-    SIM,
-
-    /** Replaying from a log file. */
-    REPLAY
   }
 
   public final class SwerveConstants {
@@ -160,45 +147,41 @@ public final class Constants {
     public static final double SHOOTER_GEAR_RATIO = 1 / 1.5;
     public static final double ABSOLUTE_OFFSET = 0d;
 
-    public static enum PivotUnweightedPIDConstants {
-      P(.1),
-      I(0d),
-      D(0d),
-      S(0d),
-      G(0d),
-      V(0d),
-      A(0d);
-
-      private double val;
-
-      PivotUnweightedPIDConstants(double d) {
-        this.val = d;
-      }
-
-      public double getVal() {
-        return this.val;
-      }
-    }
-
-    public static enum ShooterUnweightedPIDConstants {
-      P(.1),
-      I(0d),
-      D(0d);
-
-      private double val;
-
-      ShooterUnweightedPIDConstants(double d) {
-        this.val = d;
-      }
-
-      public double getVal() {
-        return this.val;
-      }
-    }
-
+    // Shooter Pivot PID
+    public static final double SHOOTER_PIVOT_KP = 1d;
+    public static final double SHOOTER_PIVOT_KI = 0d;
+    public static final double SHOOTER_PIVOT_KD = 0d;
     public static final double PIVOT_TOLERANCE = 0.2;
+
+    // Shooter Top Wheel PID
+    public static final double SHOOTER_TOP_KP = 1d;
+    public static final double SHOOTER_TOP_KI = 0d;
+    public static final double SHOOTER_TOP_KD = 0d;
+
+    // Shooter Bottom Wheel PID
+    public static final double SHOOTER_BOTTOM_KP = 1d;
+    public static final double SHOOTER_BOTTOM_KI = 0d;
+    public static final double SHOOTER_BOTTOM_KD = 0d;
+
     public static final double SHOOTER_SPEED_TOLERANCE = 0.5;
 
-    public static final double MAX_MOTOR_VOLTAGE = 12.0;
+    // Arm Feed Forward
+    public static final double SHOOTER_ARM_KS = 0d;
+    public static final double SHOOTER_ARM_KG = 0d;
+    public static final double SHOOTER_ARM_KV = 0d;
+    public static final double SHOOTER_ARM_KA = 0d;
+
+    public static final double MAX_MOTOR_VOLTAGE = 12d;
+  }
+
+  public static enum Mode {
+    /** Running on a real robot. */
+    REAL,
+
+    /** Running a physics simulator. */
+    SIM,
+
+    /** Replaying from a log file. */
+    REPLAY
   }
 }

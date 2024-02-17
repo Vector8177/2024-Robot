@@ -7,27 +7,29 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 public class IntakeIOSim implements IntakeIO {
   private static final double LOOP_PERIOD_SECS = 0.02;
 
-  private DCMotorSim intakeLeftSim = new DCMotorSim(DCMotor.getNeo550(1), 1, 0.025);
-  private DCMotorSim intakeRightSim = new DCMotorSim(DCMotor.getNeo550(1), 1, 0.025);
+  private DCMotorSim intakeLeftFeederSim = new DCMotorSim(DCMotor.getNeo550(1), 1, 0.025);
+  private DCMotorSim intakeRightFeederSim = new DCMotorSim(DCMotor.getNeo550(1), 1, 0.025);
   private DCMotorSim intakeIndexerSim = new DCMotorSim(DCMotor.getNEO(1), 1, 0.004);
 
-  private double intakeLeftAppliedVolts = 0d;
-  private double intakeRightAppliedVolts = 0d;
+  private double intakeLeftFeederAppliedVolts = 0d;
+  private double intakeRightFeederAppliedVolts = 0d;
   private double intakeIndexerAppliedVolts = 0d;
 
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
-    intakeLeftSim.update(LOOP_PERIOD_SECS);
-    intakeRightSim.update(LOOP_PERIOD_SECS);
+    intakeLeftFeederSim.update(LOOP_PERIOD_SECS);
+    intakeRightFeederSim.update(LOOP_PERIOD_SECS);
     intakeIndexerSim.update(LOOP_PERIOD_SECS);
 
-    inputs.intakeLeftAppliedVolts = intakeLeftAppliedVolts;
-    inputs.intakeLeftVelocityRadPerSec = intakeLeftSim.getAngularVelocityRadPerSec();
-    inputs.intakeLeftCurrentAmps = new double[] {Math.abs(intakeLeftSim.getCurrentDrawAmps())};
+    inputs.intakeLeftFeederAppliedVolts = intakeLeftFeederAppliedVolts;
+    inputs.intakeLeftFeederVelocityRadPerSec = intakeLeftFeederSim.getAngularVelocityRadPerSec();
+    inputs.intakeLeftFeederCurrentAmps =
+        new double[] {Math.abs(intakeLeftFeederSim.getCurrentDrawAmps())};
 
-    inputs.intakeRightAppliedVolts = intakeRightAppliedVolts;
-    inputs.intakeRightVelocityRadPerSec = intakeRightSim.getAngularVelocityRadPerSec();
-    inputs.intakeRightCurrentAmps = new double[] {Math.abs(intakeRightSim.getCurrentDrawAmps())};
+    inputs.intakeRightFeederAppliedVolts = intakeRightFeederAppliedVolts;
+    inputs.intakeRightFeederVelocityRadPerSec = intakeRightFeederSim.getAngularVelocityRadPerSec();
+    inputs.intakeRightFeederCurrentAmps =
+        new double[] {Math.abs(intakeRightFeederSim.getCurrentDrawAmps())};
 
     inputs.intakeIndexerAppliedVolts = intakeIndexerAppliedVolts;
     inputs.intakeIndexerVelocityRadPerSec = intakeIndexerSim.getAngularVelocityRadPerSec();
@@ -36,12 +38,12 @@ public class IntakeIOSim implements IntakeIO {
   }
 
   @Override
-  public void setPositionVoltage(double volts) {
-    intakeLeftAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
-    intakeRightAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
+  public void setFeederVoltage(double volts) {
+    intakeLeftFeederAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
+    intakeRightFeederAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
 
-    intakeLeftSim.setInputVoltage(intakeLeftAppliedVolts);
-    intakeRightSim.setInputVoltage(intakeRightAppliedVolts);
+    intakeLeftFeederSim.setInputVoltage(intakeLeftFeederAppliedVolts);
+    intakeRightFeederSim.setInputVoltage(intakeRightFeederAppliedVolts);
   }
 
   @Override
@@ -52,12 +54,12 @@ public class IntakeIOSim implements IntakeIO {
 
   @Override
   public void stop() {
-    intakeLeftAppliedVolts = 0;
-    intakeRightAppliedVolts = 0;
+    intakeLeftFeederAppliedVolts = 0;
+    intakeRightFeederAppliedVolts = 0;
     intakeIndexerAppliedVolts = 0;
 
-    intakeLeftSim.setInputVoltage(intakeLeftAppliedVolts);
-    intakeRightSim.setInputVoltage(intakeRightAppliedVolts);
+    intakeLeftFeederSim.setInputVoltage(intakeLeftFeederAppliedVolts);
+    intakeRightFeederSim.setInputVoltage(intakeRightFeederAppliedVolts);
     intakeIndexerSim.setInputVoltage(intakeIndexerAppliedVolts);
   }
 }

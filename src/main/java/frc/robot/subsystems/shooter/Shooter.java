@@ -3,72 +3,73 @@ package frc.robot.subsystems.shooter;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.ShooterConstants.PivotUnweightedPIDConstants;
-import frc.robot.Constants.ShooterConstants.ShooterUnweightedPIDConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
-  private double targetPosition;
-  private double targetTopSpeed;
-  private double targetBottomSpeed;
+  private final ShooterIO io;
+  private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
   private final PIDController pivotPidController;
-  private ArmFeedforward pivotFeedForward;
-
   private final PIDController shooterTopSpeedPidController;
   private final PIDController shooterBottomSpeedPidController;
 
-  private final ShooterIO io;
-  private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
+  private final ArmFeedforward pivotFeedForward;
+
+  private Rotation2d pivotRelativeOffset;
+  private Rotation2d targetPosition;
+
+  private double targetTopSpeed;
+  private double targetBottomSpeed;
 
   public Shooter(ShooterIO io) {
     this.io = io;
 
     pivotPidController =
         new PIDController(
-            PivotUnweightedPIDConstants.P.getVal(),
-            PivotUnweightedPIDConstants.I.getVal(),
-            PivotUnweightedPIDConstants.D.getVal());
+            ShooterConstants.SHOOTER_PIVOT_KP,
+            ShooterConstants.SHOOTER_PIVOT_KI,
+            ShooterConstants.SHOOTER_PIVOT_KD);
     pivotPidController.enableContinuousInput(0, Math.PI * 2);
     pivotPidController.setTolerance(ShooterConstants.PIVOT_TOLERANCE);
 
     pivotFeedForward =
         new ArmFeedforward(
-            PivotUnweightedPIDConstants.S.getVal(),
-            PivotUnweightedPIDConstants.G.getVal(),
-            PivotUnweightedPIDConstants.V.getVal(),
-            PivotUnweightedPIDConstants.A.getVal());
+            ShooterConstants.SHOOTER_ARM_KS,
+            ShooterConstants.SHOOTER_ARM_KG,
+            ShooterConstants.SHOOTER_ARM_KV,
+            ShooterConstants.SHOOTER_ARM_KA);
 
     shooterTopSpeedPidController =
         new PIDController(
-            ShooterUnweightedPIDConstants.P.getVal(),
-            ShooterUnweightedPIDConstants.I.getVal(),
-            ShooterUnweightedPIDConstants.D.getVal());
+            ShooterConstants.SHOOTER_TOP_KP,
+            ShooterConstants.SHOOTER_TOP_KI,
+            ShooterConstants.SHOOTER_TOP_KD);
     shooterTopSpeedPidController.setTolerance(ShooterConstants.SHOOTER_SPEED_TOLERANCE);
 
     shooterBottomSpeedPidController =
         new PIDController(
-            ShooterUnweightedPIDConstants.P.getVal(),
-            ShooterUnweightedPIDConstants.I.getVal(),
-            ShooterUnweightedPIDConstants.D.getVal());
+            ShooterConstants.SHOOTER_BOTTOM_KP,
+            ShooterConstants.SHOOTER_BOTTOM_KP,
+            ShooterConstants.SHOOTER_BOTTOM_KP);
     shooterBottomSpeedPidController.setTolerance(ShooterConstants.SHOOTER_SPEED_TOLERANCE);
+
+    pivotRelativeOffset =
+        inputs.shooterPivotAbsolutePosition.minus(inputs.shooterPivotRelativePosition);
   }
 
   public void setTargetShooterSpeed(double topSpeed, double bottomSpeed) {
-    // TODO
     targetTopSpeed = topSpeed;
     targetBottomSpeed = bottomSpeed;
   }
 
   public void setTargetShooterPosition(double rad) {
-    // TODO
-    targetPosition = rad;
+    targetPosition = Rotation2d.fromRadians(rad);
   }
 
   public void setTargetShooterIndexer(double speed) {
-    // TODO
     io.setShooterIndexerVoltage(speed);
   }
 
@@ -98,8 +99,11 @@ public class Shooter extends SubsystemBase {
 
     double pivotMotorSpeed =
         pivotPidController.calculate(
-                inputs.shooterPivotAbsolutePosition.getRadians(), targetPosition)
-            + pivotFeedForward.calculate(inputs.shooterPivotAbsolutePosition.getRadians(), 0);
+                inputs.shooterPivotRelativePosition.getRadians() + pivotRelativeOffset.getRadians(),
+                targetPosition.getRadians())
+            + pivotFeedForward.calculate(
+                inputs.shooterPivotRelativePosition.getRadians() + pivotRelativeOffset.getRadians(),
+                0);
 
     io.setShooterPositionVoltage(
         MathUtil.clamp(

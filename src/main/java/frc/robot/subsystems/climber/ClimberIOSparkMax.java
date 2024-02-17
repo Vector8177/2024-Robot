@@ -51,8 +51,8 @@ public class ClimberIOSparkMax implements ClimberIO {
     inputs.leftClimberAbsoluteEncoderPosition =
         ((leftClimberAbsoluteEncoder.getPosition() * 2 * Math.PI)
                 - ClimberConstants.leftClimberAbsoluteEncoderOffset)
-            / 25d;
-    inputs.leftClimberEncoderPosition = leftClimberAbsoluteEncoder.getPosition();
+            * ClimberConstants.CLIMBER_GEAR_RATIO;
+    inputs.leftClimberEncoderPosition = leftClimberEncoder.getPosition();
 
     inputs.rightClimberAppliedVolts =
         rightClimberSparkMax.getAppliedOutput() * rightClimberSparkMax.getBusVoltage();
@@ -62,7 +62,7 @@ public class ClimberIOSparkMax implements ClimberIO {
     inputs.rightClimberAbsoluteEncoderPosition =
         ((rightClimberAbsoluteEncoder.getPosition() * 2 * Math.PI)
                 - ClimberConstants.rightClimberAbsoluteEncoderOffset)
-            / 25d;
+            * ClimberConstants.CLIMBER_GEAR_RATIO;
     inputs.rightClimberEncoderPosition = rightClimberEncoder.getPosition();
   }
 

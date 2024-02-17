@@ -7,74 +7,74 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeIOSparkMax implements IntakeIO {
-  private final CANSparkMax intakeLeftSparkMax;
-  private final RelativeEncoder intakeLeftEncoder;
-  private final CANSparkMax intakeRightSparkMax;
-  private final RelativeEncoder intakeRightEncoder;
+  private final CANSparkMax intakeLeftFeederSparkMax;
+  private final RelativeEncoder intakeLeftFeederEncoder;
+  private final CANSparkMax intakeRightFeederSparkMax;
+  private final RelativeEncoder intakeRightFeederEncoder;
   private final CANSparkMax intakeIndexerSparkMax;
   private final RelativeEncoder intakeIndexerEncoder;
 
   public IntakeIOSparkMax() {
-    intakeLeftSparkMax = new CANSparkMax(IntakeConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
-    intakeRightSparkMax = new CANSparkMax(IntakeConstants.RIGHT_MOTOR_ID, MotorType.kBrushless);
+    intakeLeftFeederSparkMax =
+        new CANSparkMax(IntakeConstants.LEFT_FEEDER_MOTOR_ID, MotorType.kBrushless);
+    intakeRightFeederSparkMax =
+        new CANSparkMax(IntakeConstants.RIGHT_FEEDER_MOTOR_ID, MotorType.kBrushless);
     intakeIndexerSparkMax = new CANSparkMax(IntakeConstants.INDEXER_MOTOR_ID, MotorType.kBrushless);
 
-    intakeLeftSparkMax.restoreFactoryDefaults();
-    intakeLeftSparkMax.setCANTimeout(250);
-    intakeRightSparkMax.restoreFactoryDefaults();
-    intakeRightSparkMax.setCANTimeout(250);
+    intakeLeftFeederSparkMax.restoreFactoryDefaults();
+    intakeLeftFeederSparkMax.setCANTimeout(250);
+    intakeRightFeederSparkMax.restoreFactoryDefaults();
+    intakeRightFeederSparkMax.setCANTimeout(250);
     intakeIndexerSparkMax.restoreFactoryDefaults();
     intakeIndexerSparkMax.setCANTimeout(250);
 
-    intakeLeftSparkMax.setSmartCurrentLimit(20);
-    intakeRightSparkMax.setSmartCurrentLimit(20);
+    intakeLeftFeederSparkMax.setSmartCurrentLimit(20);
+    intakeRightFeederSparkMax.setSmartCurrentLimit(20);
     intakeIndexerSparkMax.setSmartCurrentLimit(20);
 
-    intakeLeftEncoder = intakeLeftSparkMax.getEncoder();
-    intakeLeftSparkMax.enableVoltageCompensation(12d);
-    intakeRightEncoder = intakeLeftSparkMax.getEncoder();
-    intakeRightSparkMax.enableVoltageCompensation(12d);
-    intakeIndexerEncoder = intakeLeftSparkMax.getEncoder();
+    intakeLeftFeederEncoder = intakeLeftFeederSparkMax.getEncoder();
+    intakeLeftFeederSparkMax.enableVoltageCompensation(12d);
+    intakeRightFeederEncoder = intakeLeftFeederSparkMax.getEncoder();
+    intakeRightFeederSparkMax.enableVoltageCompensation(12d);
+    intakeIndexerEncoder = intakeLeftFeederSparkMax.getEncoder();
     intakeIndexerSparkMax.enableVoltageCompensation(12d);
 
-    intakeLeftEncoder.setMeasurementPeriod(50);
+    intakeLeftFeederEncoder.setMeasurementPeriod(50);
     intakeIndexerEncoder.setMeasurementPeriod(50);
 
-    intakeRightSparkMax.follow(intakeLeftSparkMax);
-    intakeRightSparkMax.setInverted(true);
+    intakeRightFeederSparkMax.follow(intakeLeftFeederSparkMax);
+    intakeRightFeederSparkMax.setInverted(true);
 
-    intakeLeftSparkMax.burnFlash();
-    intakeRightSparkMax.burnFlash();
+    intakeLeftFeederSparkMax.burnFlash();
+    intakeRightFeederSparkMax.burnFlash();
     intakeIndexerSparkMax.burnFlash();
   }
 
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
-    inputs.intakeLeftAppliedVolts =
-        intakeLeftSparkMax.getAppliedOutput() * intakeLeftSparkMax.getBusVoltage();
-    inputs.intakeLeftVelocityRadPerSec =
-        Units.rotationsPerMinuteToRadiansPerSecond(intakeLeftEncoder.getVelocity());
-    inputs.intakeLeftCurrentAmps = new double[] {intakeLeftSparkMax.getOutputCurrent()};
+    inputs.intakeLeftFeederAppliedVolts =
+        intakeLeftFeederSparkMax.getAppliedOutput() * intakeLeftFeederSparkMax.getBusVoltage();
+    inputs.intakeLeftFeederVelocityRadPerSec =
+        Units.rotationsPerMinuteToRadiansPerSecond(intakeLeftFeederEncoder.getVelocity());
+    inputs.intakeLeftFeederCurrentAmps = new double[] {intakeLeftFeederSparkMax.getOutputCurrent()};
 
-    inputs.intakeRightAppliedVolts =
-        intakeRightSparkMax.getAppliedOutput() * intakeRightSparkMax.getBusVoltage();
-    inputs.intakeRightVelocityRadPerSec =
-        Units.rotationsPerMinuteToRadiansPerSecond(intakeRightEncoder.getVelocity());
-    inputs.intakeRightCurrentAmps = new double[] {intakeRightSparkMax.getOutputCurrent()};
+    inputs.intakeRightFeederAppliedVolts =
+        intakeRightFeederSparkMax.getAppliedOutput() * intakeRightFeederSparkMax.getBusVoltage();
+    inputs.intakeRightFeederVelocityRadPerSec =
+        Units.rotationsPerMinuteToRadiansPerSecond(intakeRightFeederEncoder.getVelocity());
+    inputs.intakeRightFeederCurrentAmps =
+        new double[] {intakeRightFeederSparkMax.getOutputCurrent()};
 
     inputs.intakeIndexerAppliedVolts =
         intakeIndexerSparkMax.getAppliedOutput() * intakeIndexerSparkMax.getBusVoltage();
     inputs.intakeIndexerVelocityRadPerSec =
         Units.rotationsPerMinuteToRadiansPerSecond(intakeIndexerEncoder.getVelocity());
     inputs.intakeIndexerCurrentAmps = new double[] {intakeIndexerSparkMax.getOutputCurrent()};
-
-    inputs.intakeEncoderPosition =
-        (intakeLeftEncoder.getPosition() + intakeRightEncoder.getPosition()) / 2d;
   }
 
   @Override
-  public void setPositionVoltage(double volts) {
-    intakeLeftSparkMax.setVoltage(volts);
+  public void setFeederVoltage(double volts) {
+    intakeLeftFeederSparkMax.setVoltage(volts);
   }
 
   @Override
@@ -84,7 +84,7 @@ public class IntakeIOSparkMax implements IntakeIO {
 
   @Override
   public void stop() {
-    intakeLeftSparkMax.setVoltage(0);
+    intakeLeftFeederSparkMax.setVoltage(0);
     intakeIndexerSparkMax.setVoltage(0);
   }
 }

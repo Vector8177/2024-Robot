@@ -4,7 +4,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import frc.robot.Constants.ShooterConstants;
 
 public class ShooterIOSim implements ShooterIO {
   private static final double LOOP_PERIOD_SECS = 0.02;
@@ -44,7 +43,6 @@ public class ShooterIOSim implements ShooterIO {
     inputs.shooterIndexerCurrentAmps =
         new double[] {Math.abs(shooterIndexerSim.getCurrentDrawAmps())};
 
-    inputs.shooterOffset = ShooterConstants.ABSOLUTE_OFFSET;
     inputs.shooterPivotRelativePosition =
         Rotation2d.fromRadians(shooterPivotSim.getAngularPositionRad());
     inputs.shooterPivotAbsolutePosition = inputs.shooterPivotRelativePosition;
