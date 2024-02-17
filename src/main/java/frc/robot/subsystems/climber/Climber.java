@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ClimberConstants;
 
 public class Climber extends SubsystemBase {
   private final ClimberIO io;
@@ -32,11 +33,35 @@ public class Climber extends SubsystemBase {
   }
 
   public void setLeftClimberPosition(double meters) {
-    desiredLeftClimberPosition = meters;
+    if(meters > ClimberConstants.climberTopLimit){
+      desiredLeftClimberPosition = ClimberConstants.climberTopLimit;
+    }
+    else if(meters < ClimberConstants.climberBottomLimit){
+      desiredLeftClimberPosition = ClimberConstants.climberBottomLimit;
+    }
+    else{
+      desiredLeftClimberPosition = meters;
+    }
   }
 
   public void setRightClimberPosition(double meters) {
-    desiredRightClimberPosition = meters;
+    if(meters > ClimberConstants.climberTopLimit){
+      desiredRightClimberPosition = ClimberConstants.climberTopLimit;
+    }
+    else if(meters < ClimberConstants.climberBottomLimit){
+      desiredRightClimberPosition = ClimberConstants.climberBottomLimit;
+    }
+    else{
+      desiredRightClimberPosition = meters;
+    }
+  }
+
+  public double getRightClimberPosition() {
+    return inputs.rightClimberEncoderPosition + rightClimberRelativeOffset;
+  }
+
+  public double getLeftClimberPosition() {
+    return inputs.leftClimberEncoderPosition + leftClimberRelativeOffset;
   }
 
   public double getLeftClimberVelocity() {
