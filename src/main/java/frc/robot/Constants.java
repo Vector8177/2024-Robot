@@ -75,7 +75,7 @@ public final class Constants {
   }
 
   public final class SwerveConstants {
-    public static final double MAX_LINEAR_SPEED = Units.feetToMeters(16.5);
+    public static final double MAX_LINEAR_SPEED = Units.feetToMeters(6.5);
     public static final double TRACK_WIDTH_X = Units.inchesToMeters(25.0);
     public static final double TRACK_WIDTH_Y = Units.inchesToMeters(25.0);
     public static final double DRIVE_BASE_RADIUS =
@@ -86,68 +86,38 @@ public final class Constants {
     public static final double DRIVE_GEAR_RATIO = (50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0);
     public static final double TURN_GEAR_RATIO = 150.0 / 7.0;
 
-    public static enum CanIDs {
-      FL_TURN(10),
-      FL_DRIVE(20),
-      FR_TURN(11),
-      FR_DRIVE(21),
-      BL_TURN(12),
-      BL_DRIVE(22),
-      BR_TURN(13),
-      BR_DRIVE(23),
-      PIGEON(6);
-
-      private int id;
-
-      CanIDs(int id) {
-        this.id = id;
-      }
-
-      public int getID() {
-        return id;
-      }
+    public final class CanID {
+      public static final int FL_TURN = 10;
+      public static final int FL_DRIVE = 20;
+      public static final int FR_TURN = 11;
+      public static final int FR_DRIVE = 21;
+      public static final int BL_TURN = 12;
+      public static final int BL_DRIVE = 22;
+      public static final int BR_TURN = 13;
+      public static final int BR_DRIVE = 23;
+      public static final int PIGEON = 6;
     }
 
-    public static enum RealSwervePID {
-      DRIVE_FF_S(0.1),
-      DRIVE_FF_V(0.13),
-      DRIVE_P(0.05),
-      DRIVE_I(0.0),
-      DRIVE_D(0.0),
-      TURN_P(7.0),
-      TURN_I(0.0),
-      TURN_D(0.0);
-
-      private double val;
-
-      RealSwervePID(double v) {
-        this.val = v;
-      }
-
-      public double getVal() {
-        return this.val;
-      }
+    public final class RealPID {
+      public static final double FF_S = 0.1d;
+      public static final double FF_V = 0.13d;
+      public static final double DRIVE_P = 0.05d;
+      public static final double DRIVE_I = 0d;
+      public static final double DRIVE_D = 0d;
+      public static final double TURN_P = 7.0d;
+      public static final double TURN_I = 0d;
+      public static final double TURN_D = 0d;
     }
 
-    public static enum SimSwervePID {
-      DRIVE_FF_S(0.0),
-      DRIVE_FF_V(0.13),
-      DRIVE_P(0.1),
-      DRIVE_I(0.0),
-      DRIVE_D(0.0),
-      TURN_P(10.0),
-      TURN_I(0.0),
-      TURN_D(0.0);
-
-      private double val;
-
-      SimSwervePID(double v) {
-        this.val = v;
-      }
-
-      public double getVal() {
-        return this.val;
-      }
+    public final class SimPID {
+      public static final double FF_S = 0d;
+      public static final double FF_V = 0.13d;
+      public static final double DRIVE_P = 0.1d;
+      public static final double DRIVE_I = 0d;
+      public static final double DRIVE_D = 0d;
+      public static final double TURN_P = 10.0d;
+      public static final double TURN_I = 0d;
+      public static final double TURN_D = 0d;
     }
   }
 
