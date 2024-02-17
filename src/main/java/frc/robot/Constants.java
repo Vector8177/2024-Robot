@@ -62,7 +62,7 @@ public final class Constants {
   }
 
   public final class SwerveConstants {
-    public static final double MAX_LINEAR_SPEED = Units.feetToMeters(6.5);
+    public static final double MAX_LINEAR_SPEED = Units.feetToMeters(16.5);
     public static final double TRACK_WIDTH_X = Units.inchesToMeters(25.0);
     public static final double TRACK_WIDTH_Y = Units.inchesToMeters(25.0);
     public static final double DRIVE_BASE_RADIUS =
