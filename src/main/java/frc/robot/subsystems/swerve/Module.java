@@ -49,34 +49,14 @@ public class Module {
     switch (Constants.currentMode) {
       case REAL:
       case REPLAY:
-        driveFeedforward =
-            new SimpleMotorFeedforward(
-                RealPID.FF_S, RealPID.FF_V);
-        driveFeedback =
-            new PIDController(
-                RealPID.DRIVE_P,
-                RealPID.DRIVE_I,
-                RealPID.DRIVE_D);
-        turnFeedback =
-            new PIDController(
-                RealPID.TURN_P,
-                RealPID.TURN_I,
-                RealPID.TURN_D);
+        driveFeedforward = new SimpleMotorFeedforward(RealPID.FF_S, RealPID.FF_V);
+        driveFeedback = new PIDController(RealPID.DRIVE_P, RealPID.DRIVE_I, RealPID.DRIVE_D);
+        turnFeedback = new PIDController(RealPID.TURN_P, RealPID.TURN_I, RealPID.TURN_D);
         break;
       case SIM:
-        driveFeedforward =
-            new SimpleMotorFeedforward(
-                SimPID.FF_S, SimPID.FF_V);
-        driveFeedback =
-            new PIDController(
-                SimPID.DRIVE_P,
-                SimPID.DRIVE_I,
-                SimPID.DRIVE_D);
-        turnFeedback =
-            new PIDController(
-                SimPID.TURN_P,
-                SimPID.TURN_I,
-                SimPID.TURN_D);
+        driveFeedforward = new SimpleMotorFeedforward(SimPID.FF_S, SimPID.FF_V);
+        driveFeedback = new PIDController(SimPID.DRIVE_P, SimPID.DRIVE_I, SimPID.DRIVE_D);
+        turnFeedback = new PIDController(SimPID.TURN_P, SimPID.TURN_I, SimPID.TURN_D);
         break;
       default:
         driveFeedforward = new SimpleMotorFeedforward(0.0, 0.0);
