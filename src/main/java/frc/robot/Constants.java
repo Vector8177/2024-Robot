@@ -31,9 +31,9 @@ public final class Constants {
   public static final int placeHolderMotorID = Integer.MAX_VALUE;
 
   public static final class IntakeConstants {
-    public static final int LEFT_FEEDER_MOTOR_ID = 1;
-    public static final int RIGHT_FEEDER_MOTOR_ID = 2;
-    public static final int INDEXER_MOTOR_ID = 3;
+    public static final int LEFT_FEEDER_MOTOR_ID = 61;
+    public static final int RIGHT_FEEDER_MOTOR_ID = 62;
+    public static final int INDEXER_MOTOR_ID = 63;
 
     public static final int maxIntakeMotorVoltage = 9;
 
