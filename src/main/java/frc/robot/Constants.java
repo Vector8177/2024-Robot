@@ -13,6 +13,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -70,16 +72,31 @@ public final class Constants {
   }
 
   public final class SwerveConstants {
-    public static final double MAX_LINEAR_SPEED = Units.feetToMeters(16.5);
+    public static final double MAX_LINEAR_VELOCITY = Units.feetToMeters(16.5);
     public static final double TRACK_WIDTH_X = Units.inchesToMeters(25.0);
     public static final double TRACK_WIDTH_Y = Units.inchesToMeters(25.0);
     public static final double DRIVE_BASE_RADIUS =
         Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
-    public static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
+    public static final double MAX_ANGULAR_VELOCITY = MAX_LINEAR_VELOCITY / DRIVE_BASE_RADIUS;
+
+    public static final ModuleLimits MODULE_LIMITS =
+        new ModuleLimits(
+            MAX_LINEAR_VELOCITY, MAX_LINEAR_VELOCITY * 5.0, Units.degreesToRadians(1080));
 
     // SDS Mk4I L3 Gear Ratio - 16.5ft/s
     public static final double DRIVE_GEAR_RATIO = (50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0);
     public static final double TURN_GEAR_RATIO = 150.0 / 7.0;
+
+    public static final Translation2d[] MODULE_TRANSLATIONS =
+        new Translation2d[] {
+          new Translation2d(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0),
+          new Translation2d(TRACK_WIDTH_X / 2.0, -TRACK_WIDTH_Y / 2.0),
+          new Translation2d(-TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0),
+          new Translation2d(-TRACK_WIDTH_X / 2.0, -TRACK_WIDTH_Y / 2.0)
+        };
+
+    public static final SwerveDriveKinematics KINEMATICS =
+        new SwerveDriveKinematics(MODULE_TRANSLATIONS);
 
     public final class CanID {
       public static final int FL_TURN = 10;
@@ -114,6 +131,18 @@ public final class Constants {
       public static final double TURN_I = 0d;
       public static final double TURN_D = 0d;
     }
+
+    public record ModuleLimits(
+        double maxDriveVelocity, double maxDriveAcceleration, double maxSteeringVelocity) {}
+
+    public record DriveConfig(
+        double wheelRadius,
+        double trackWidthX,
+        double trackwidthY,
+        double maxLinearVelocity,
+        double maxLinearAcceleration,
+        double maxAngularVelocity,
+        double maxAngularAcceleration) {}
   }
 
   public final class ShooterConstants {
