@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -47,8 +48,9 @@ public class Swerve extends SubsystemBase {
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
   private final SysIdRoutine sysId;
+  private final ModuleLimits limits = MODULE_LIMITS;
 
-  private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
+  private SwerveDriveKinematics kinematics = SwerveConstants.KINEMATICS;
   private Rotation2d rawGyroRotation = new Rotation2d();
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
       new SwerveModulePosition[] {
@@ -57,6 +59,7 @@ public class Swerve extends SubsystemBase {
         new SwerveModulePosition(),
         new SwerveModulePosition()
       };
+  private double lastTimeStamp = 0.0;
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
 
@@ -83,7 +86,7 @@ public class Swerve extends SubsystemBase {
         () -> kinematics.toChassisSpeeds(getModuleStates()),
         this::runVelocity,
         new HolonomicPathFollowerConfig(
-            MAX_LINEAR_SPEED, DRIVE_BASE_RADIUS, new ReplanningConfig()),
+            MAX_LINEAR_VELOCITY, DRIVE_BASE_RADIUS, new ReplanningConfig()),
         () ->
             DriverStation.getAlliance().isPresent()
                 && DriverStation.getAlliance().get() == Alliance.Red,
@@ -145,18 +148,43 @@ public class Swerve extends SubsystemBase {
     double[] sampleTimestamps =
         modules[0].getOdometryTimestamps(); // All signals are sampled together
     int sampleCount = sampleTimestamps.length;
+
     for (int i = 0; i < sampleCount; i++) {
-      // Read wheel positions and deltas from each module
+      boolean includeSample = true;
       SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
       SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
-      for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
-        modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
-        moduleDeltas[moduleIndex] =
-            new SwerveModulePosition(
-                modulePositions[moduleIndex].distanceMeters
-                    - lastModulePositions[moduleIndex].distanceMeters,
-                modulePositions[moduleIndex].angle);
-        lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
+      // Read wheel positions and deltas from each module
+      if (sampleTimestamps[i] - lastTimeStamp != 0.0) {
+        double dt = sampleTimestamps[i] - lastTimeStamp;
+
+        for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
+          modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
+
+          double velocity =
+              (modulePositions[moduleIndex].distanceMeters
+                      - lastModulePositions[moduleIndex].distanceMeters)
+                  / dt;
+
+          double omega =
+              modulePositions[moduleIndex]
+                      .angle
+                      .minus(lastModulePositions[moduleIndex].angle)
+                      .getRadians()
+                  / dt;
+
+          if (Math.abs(omega) <= limits.maxSteeringVelocity()
+              && Math.abs(velocity) <= limits.maxDriveVelocity()) {
+            moduleDeltas[moduleIndex] =
+                new SwerveModulePosition(
+                    modulePositions[moduleIndex].distanceMeters
+                        - lastModulePositions[moduleIndex].distanceMeters,
+                    modulePositions[moduleIndex].angle);
+
+            lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
+          } else {
+            break;
+          }
+        }
       }
 
       // Update gyro angle
@@ -183,7 +211,7 @@ public class Swerve extends SubsystemBase {
     // Calculate module setpoints
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, MAX_LINEAR_SPEED);
+    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, MAX_LINEAR_VELOCITY);
 
     // Send setpoints to modules
     SwerveModuleState[] optimizedSetpointStates = new SwerveModuleState[4];
@@ -272,21 +300,16 @@ public class Swerve extends SubsystemBase {
 
   /** Returns the maximum linear speed in meters per sec. */
   public double getMaxLinearSpeedMetersPerSec() {
-    return MAX_LINEAR_SPEED;
+    return MAX_LINEAR_VELOCITY;
   }
 
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
-    return MAX_ANGULAR_SPEED;
+    return MAX_ANGULAR_VELOCITY;
   }
 
   /** Returns an array of module translations. */
   public static Translation2d[] getModuleTranslations() {
-    return new Translation2d[] {
-      new Translation2d(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0),
-      new Translation2d(TRACK_WIDTH_X / 2.0, -TRACK_WIDTH_Y / 2.0),
-      new Translation2d(-TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0),
-      new Translation2d(-TRACK_WIDTH_X / 2.0, -TRACK_WIDTH_Y / 2.0)
-    };
+    return SwerveConstants.MODULE_TRANSLATIONS;
   }
 }
