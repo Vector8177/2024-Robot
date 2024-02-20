@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ShooterIO {
@@ -9,14 +10,21 @@ public interface ShooterIO {
     public double shooterBottomFixedVelocityRadPerSec = 0d;
     public double shooterPivotVelocityRadPerSec = 0d;
     public double shooterIndexerVelocityRadPerSec = 0d;
+
     public double shooterTopFixedAppliedVolts = 0d;
     public double shooterBottomFixedAppliedVolts = 0d;
     public double shooterPivotAppliedVolts = 0d;
     public double shooterIndexerAppliedVolts = 0d;
+
+    public Rotation2d shooterPivotRelativePosition = new Rotation2d();
+    public Rotation2d shooterPivotAbsolutePosition = new Rotation2d();
+
     public double[] shooterTopFixedCurrentAmps = new double[] {};
     public double[] shooterBottomFixedCurrentAmps = new double[] {};
     public double[] shooterPivotCurrentAmps = new double[] {};
     public double[] shooterIndexerCurrentAmps = new double[] {};
+
+    public double shooterSensorTriggerVoltage = 0d;
   }
 
   public default void updateInputs(ShooterIOInputs inputs) {}

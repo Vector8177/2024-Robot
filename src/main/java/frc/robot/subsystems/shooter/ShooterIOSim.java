@@ -1,6 +1,7 @@
 package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
@@ -41,6 +42,10 @@ public class ShooterIOSim implements ShooterIO {
     inputs.shooterIndexerVelocityRadPerSec = shooterIndexerSim.getAngularVelocityRadPerSec();
     inputs.shooterIndexerCurrentAmps =
         new double[] {Math.abs(shooterIndexerSim.getCurrentDrawAmps())};
+
+    inputs.shooterPivotRelativePosition =
+        Rotation2d.fromRadians(shooterPivotSim.getAngularPositionRad());
+    inputs.shooterPivotAbsolutePosition = inputs.shooterPivotRelativePosition;
   }
 
   @Override

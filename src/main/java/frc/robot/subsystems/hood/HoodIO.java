@@ -1,5 +1,6 @@
 package frc.robot.subsystems.hood;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface HoodIO {
@@ -8,6 +9,7 @@ public interface HoodIO {
     double hoodPivotVelocityRadPerSec = 0d;
     double hoodPivotAppliedVolts = 0d;
     double[] hoodPivotCurrentAmps = new double[] {};
+    Rotation2d hoodPivotEncoderPosition = new Rotation2d();
   }
 
   default void updateInputs(HoodIOInputs inputs) {}

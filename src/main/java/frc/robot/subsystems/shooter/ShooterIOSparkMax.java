@@ -1,35 +1,49 @@
 package frc.robot.subsystems.shooter;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkAbsoluteEncoder.Type;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.Constants;
+import edu.wpi.first.wpilibj.AnalogInput;
+import frc.robot.Constants.ShooterConstants;
 
 public class ShooterIOSparkMax implements ShooterIO {
   private final CANSparkMax shooterTopFixedSparkMax;
-  private final RelativeEncoder shooterTopFixedEncoder;
-  private final CANSparkMax shooterBottomFixedSparkMax;
-  private final RelativeEncoder shooterBottomFixedEncoder;
   private final CANSparkMax shooterPivotSparkMax;
-  private final RelativeEncoder shooterPivotEncoder;
+  private final CANSparkMax shooterBottomFixedSparkMax;
   private final CANSparkMax shooterIndexerSparkMax;
+
+  private final RelativeEncoder shooterTopFixedEncoder;
+  private final RelativeEncoder shooterBottomFixedEncoder;
+  private final RelativeEncoder shooterPivotEncoder;
   private final RelativeEncoder shooterIndexerEncoder;
 
+  private final AbsoluteEncoder shooterPivotAbsoluteEncoder;
+
+  private final AnalogInput shooterIRSensor;
+
   public ShooterIOSparkMax() {
-    shooterTopFixedSparkMax = new CANSparkMax(Constants.placeHolderMotorID, MotorType.kBrushless);
+    shooterTopFixedSparkMax =
+        new CANSparkMax(ShooterConstants.SHOOTER_TOP_ID, MotorType.kBrushless);
     shooterBottomFixedSparkMax =
-        new CANSparkMax(Constants.placeHolderMotorID, MotorType.kBrushless);
-    shooterPivotSparkMax = new CANSparkMax(Constants.placeHolderMotorID, MotorType.kBrushless);
-    shooterIndexerSparkMax = new CANSparkMax(Constants.placeHolderMotorID, MotorType.kBrushless);
+        new CANSparkMax(ShooterConstants.SHOOTER_BOTTOM_ID, MotorType.kBrushless);
+    shooterPivotSparkMax = new CANSparkMax(ShooterConstants.SHOOTER_PIVOT_ID, MotorType.kBrushless);
+    shooterIndexerSparkMax =
+        new CANSparkMax(ShooterConstants.SHOOTER_INDEXER_ID, MotorType.kBrushless);
+
+    shooterIRSensor = new AnalogInput(ShooterConstants.SHOOTER_IR_SENSOR_PORT);
 
     shooterTopFixedSparkMax.restoreFactoryDefaults();
-    shooterTopFixedSparkMax.setCANTimeout(250);
     shooterBottomFixedSparkMax.restoreFactoryDefaults();
-    shooterBottomFixedSparkMax.setCANTimeout(250);
     shooterPivotSparkMax.restoreFactoryDefaults();
-    shooterPivotSparkMax.setCANTimeout(250);
     shooterIndexerSparkMax.restoreFactoryDefaults();
+
+    shooterTopFixedSparkMax.setCANTimeout(250);
+    shooterBottomFixedSparkMax.setCANTimeout(250);
+    shooterPivotSparkMax.setCANTimeout(250);
     shooterIndexerSparkMax.setCANTimeout(250);
 
     shooterTopFixedSparkMax.setSmartCurrentLimit(20);
@@ -38,13 +52,20 @@ public class ShooterIOSparkMax implements ShooterIO {
     shooterIndexerSparkMax.setSmartCurrentLimit(20);
 
     shooterTopFixedEncoder = shooterTopFixedSparkMax.getEncoder();
-    shooterTopFixedSparkMax.enableVoltageCompensation(12d);
     shooterBottomFixedEncoder = shooterBottomFixedSparkMax.getEncoder();
-    shooterBottomFixedSparkMax.enableVoltageCompensation(12d);
     shooterPivotEncoder = shooterPivotSparkMax.getEncoder();
-    shooterPivotSparkMax.enableVoltageCompensation(12d);
     shooterIndexerEncoder = shooterIndexerSparkMax.getEncoder();
-    shooterIndexerSparkMax.enableVoltageCompensation(12d);
+
+    shooterPivotAbsoluteEncoder = shooterPivotSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
+    shooterPivotAbsoluteEncoder.setPositionConversionFactor(2 * Math.PI);
+    shooterPivotAbsoluteEncoder.setZeroOffset(ShooterConstants.ABSOLUTE_OFFSET);
+    shooterPivotEncoder.setPosition(shooterPivotAbsoluteEncoder.getPosition());
+    shooterPivotEncoder.setPositionConversionFactor(2 * Math.PI);
+
+    shooterTopFixedSparkMax.enableVoltageCompensation(12);
+    shooterBottomFixedSparkMax.enableVoltageCompensation(12);
+    shooterPivotSparkMax.enableVoltageCompensation(12);
+    shooterIndexerSparkMax.enableVoltageCompensation(12);
 
     shooterTopFixedEncoder.setMeasurementPeriod(50);
     shooterBottomFixedEncoder.setMeasurementPeriod(50);
@@ -83,6 +104,12 @@ public class ShooterIOSparkMax implements ShooterIO {
     inputs.shooterIndexerVelocityRadPerSec =
         Units.rotationsPerMinuteToRadiansPerSecond(shooterIndexerEncoder.getVelocity());
     inputs.shooterIndexerCurrentAmps = new double[] {shooterIndexerSparkMax.getOutputCurrent()};
+
+    inputs.shooterPivotRelativePosition = Rotation2d.fromRadians(shooterPivotEncoder.getPosition());
+    inputs.shooterPivotAbsolutePosition =
+        Rotation2d.fromRadians(shooterPivotAbsoluteEncoder.getPosition());
+
+    inputs.shooterSensorTriggerVoltage = shooterIRSensor.getVoltage();
   }
 
   @Override

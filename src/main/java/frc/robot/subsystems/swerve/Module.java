@@ -20,6 +20,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
+import frc.robot.Constants.SwerveConstants.RealPID;
+import frc.robot.Constants.SwerveConstants.SimPID;
 import org.littletonrobotics.junction.Logger;
 
 public class Module {
@@ -47,14 +49,14 @@ public class Module {
     switch (Constants.currentMode) {
       case REAL:
       case REPLAY:
-        driveFeedforward = new SimpleMotorFeedforward(0.1, 0.13);
-        driveFeedback = new PIDController(0.05, 0.0, 0.0);
-        turnFeedback = new PIDController(7.0, 0.0, 0.0);
+        driveFeedforward = new SimpleMotorFeedforward(RealPID.FF_S, RealPID.FF_V);
+        driveFeedback = new PIDController(RealPID.DRIVE_P, RealPID.DRIVE_I, RealPID.DRIVE_D);
+        turnFeedback = new PIDController(RealPID.TURN_P, RealPID.TURN_I, RealPID.TURN_D);
         break;
       case SIM:
-        driveFeedforward = new SimpleMotorFeedforward(0.0, 0.13);
-        driveFeedback = new PIDController(0.1, 0.0, 0.0);
-        turnFeedback = new PIDController(10.0, 0.0, 0.0);
+        driveFeedforward = new SimpleMotorFeedforward(SimPID.FF_S, SimPID.FF_V);
+        driveFeedback = new PIDController(SimPID.DRIVE_P, SimPID.DRIVE_I, SimPID.DRIVE_D);
+        turnFeedback = new PIDController(SimPID.TURN_P, SimPID.TURN_I, SimPID.TURN_D);
         break;
       default:
         driveFeedforward = new SimpleMotorFeedforward(0.0, 0.0);
@@ -92,7 +94,7 @@ public class Module {
       // Run closed loop drive control
       // Only allowed if closed loop turn control is running
       if (speedSetpoint != null) {
-        // Scale velocity based on turn error
+        // Scale velocity based on turcn error
         //
         // When the error is 90°, the velocity setpoint should be 0. As the wheel turns
         // towards the setpoint, its velocity should increase. This is achieved by
