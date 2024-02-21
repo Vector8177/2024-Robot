@@ -278,6 +278,12 @@ public class Swerve extends SubsystemBase {
     return poseEstimator.getEstimatedPosition();
   }
 
+  @AutoLogOutput(key = "Odometry/ChassisSpeeds")
+  public ChassisSpeeds getSpeeds()
+  {
+    return kinematics.toChassisSpeeds(getModuleStates());
+  }
+
   /** Returns the current odometry rotation. */
   public Rotation2d getRotation() {
     return getPose().getRotation();
