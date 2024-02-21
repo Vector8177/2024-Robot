@@ -154,6 +154,11 @@ public final class Constants {
         double maxLinearAcceleration,
         double maxAngularVelocity,
         double maxAngularAcceleration) {}
+
+    public enum DriveMode {
+      TELEOP,
+      AUTO_ALIGN
+    }
   }
 
   public final class ShooterConstants {
