@@ -26,7 +26,7 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static final Mode currentMode = Mode.REAL;
+  public static final Mode currentMode = Mode.SIM;
 
   public static final int placeHolderMotorID = Integer.MAX_VALUE;
 
@@ -71,6 +71,9 @@ public final class Constants {
     public static final double hoodPivotKP = 1d;
     public static final double hoodPivotKI = 0d;
     public static final double hoodPivotKD = 0d;
+
+    public static final double TOP_POSE = 1.0;
+    public static final double BOTTOM_POSE = 0.0;
   }
 
   public final class SwerveConstants {
@@ -154,6 +157,11 @@ public final class Constants {
         double maxLinearAcceleration,
         double maxAngularVelocity,
         double maxAngularAcceleration) {}
+
+    public enum DriveMode {
+      TELEOP,
+      AUTO_ALIGN
+    }
   }
 
   public final class ShooterConstants {
@@ -166,6 +174,7 @@ public final class Constants {
 
     public static final double SHOOTER_GEAR_RATIO = 1 / 1.5;
     public static final double ABSOLUTE_OFFSET = 0d;
+    public static final double SHOOTER_PIVOT_GEAR_RATIO = 1 / (3 * 3 * 4 * 64/22);
 
     // Shooter Pivot PID
     public static final double SHOOTER_PIVOT_KP = 1d;
@@ -192,6 +201,8 @@ public final class Constants {
     public static final double SHOOTER_ARM_KA = 0d;
 
     public static final double SHOOTER_INDEXER_SPEED = .1d;
+
+    public static final double SHOOTER_TARGET_SPEED = .8f;
 
     public static final double SHOOTER_IR_TARGET_VOLTAGE = 3d;
 
