@@ -60,14 +60,14 @@ public class Swerve extends SubsystemBase {
   private Rotation2d rawGyroRotation = new Rotation2d();
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
       new SwerveModulePosition[] {
-          new SwerveModulePosition(),
-          new SwerveModulePosition(),
-          new SwerveModulePosition(),
-          new SwerveModulePosition()
+        new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition()
       };
   private double lastTimeStamp = 0.0;
-  private SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, rawGyroRotation,
-      lastModulePositions, new Pose2d());
+  private SwerveDrivePoseEstimator poseEstimator =
+      new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
 
   public Swerve(
       GyroIO gyroIO,
@@ -93,8 +93,9 @@ public class Swerve extends SubsystemBase {
         this::runVelocity,
         new HolonomicPathFollowerConfig(
             MAX_LINEAR_VELOCITY, DRIVE_BASE_RADIUS, new ReplanningConfig()),
-        () -> DriverStation.getAlliance().isPresent()
-            && DriverStation.getAlliance().get() == Alliance.Red,
+        () ->
+            DriverStation.getAlliance().isPresent()
+                && DriverStation.getAlliance().get() == Alliance.Red,
         this);
     Pathfinding.setPathfinder(new LocalADStarAK());
     PathPlannerLogging.setLogActivePathCallback(
@@ -108,22 +109,24 @@ public class Swerve extends SubsystemBase {
         });
 
     // Configure SysId
-    sysId = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            null,
-            null,
-            null,
-            (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
-        new SysIdRoutine.Mechanism(
-            (voltage) -> {
-              for (int i = 0; i < 4; i++) {
-                modules[i].runCharacterization(voltage.in(Volts));
-              }
-            },
-            null,
-            this));
+    sysId =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                null,
+                null,
+                (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> {
+                  for (int i = 0; i < 4; i++) {
+                    modules[i].runCharacterization(voltage.in(Volts));
+                  }
+                },
+                null,
+                this));
 
-    autoAlignController = new AutoAlignController(new Pose2d(.24, 5.51, Rotation2d.fromRotations(0)), this);
+    autoAlignController =
+        new AutoAlignController(new Pose2d(.24, 5.51, Rotation2d.fromRotations(0)), this);
   }
 
   public void periodic() {
@@ -151,7 +154,8 @@ public class Swerve extends SubsystemBase {
     }
 
     // Update odometry
-    double[] sampleTimestamps = modules[0].getOdometryTimestamps(); // All signals are sampled together
+    double[] sampleTimestamps =
+        modules[0].getOdometryTimestamps(); // All signals are sampled together
     int sampleCount = sampleTimestamps.length;
 
     for (int i = 0; i < sampleCount; i++) {
@@ -165,21 +169,25 @@ public class Swerve extends SubsystemBase {
         for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
           modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
 
-          double velocity = (modulePositions[moduleIndex].distanceMeters
-              - lastModulePositions[moduleIndex].distanceMeters)
-              / dt;
+          double velocity =
+              (modulePositions[moduleIndex].distanceMeters
+                      - lastModulePositions[moduleIndex].distanceMeters)
+                  / dt;
 
-          double omega = modulePositions[moduleIndex].angle
-              .minus(lastModulePositions[moduleIndex].angle)
-              .getRadians()
-              / dt;
+          double omega =
+              modulePositions[moduleIndex]
+                      .angle
+                      .minus(lastModulePositions[moduleIndex].angle)
+                      .getRadians()
+                  / dt;
 
           if (Math.abs(omega) <= limits.maxSteeringVelocity()
               && Math.abs(velocity) <= limits.maxDriveVelocity()) {
-            moduleDeltas[moduleIndex] = new SwerveModulePosition(
-                modulePositions[moduleIndex].distanceMeters
-                    - lastModulePositions[moduleIndex].distanceMeters,
-                modulePositions[moduleIndex].angle);
+            moduleDeltas[moduleIndex] =
+                new SwerveModulePosition(
+                    modulePositions[moduleIndex].distanceMeters
+                        - lastModulePositions[moduleIndex].distanceMeters,
+                    modulePositions[moduleIndex].angle);
 
             lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
           } else {
@@ -232,10 +240,8 @@ public class Swerve extends SubsystemBase {
   }
 
   /**
-   * Stops the drive and turns the modules to an X arrangement to resist movement.
-   * The modules will
-   * return to their normal orientations the next time a nonzero velocity is
-   * requested.
+   * Stops the drive and turns the modules to an X arrangement to resist movement. The modules will
+   * return to their normal orientations the next time a nonzero velocity is requested.
    */
   public void stopWithX() {
     Rotation2d[] headings = new Rotation2d[4];
@@ -256,10 +262,7 @@ public class Swerve extends SubsystemBase {
     return sysId.dynamic(direction);
   }
 
-  /**
-   * Returns the module states (turn angles and drive velocities) for all of the
-   * modules.
-   */
+  /** Returns the module states (turn angles and drive velocities) for all of the modules. */
   @AutoLogOutput(key = "SwerveStates/Measured")
   private SwerveModuleState[] getModuleStates() {
     SwerveModuleState[] states = new SwerveModuleState[4];
@@ -269,10 +272,7 @@ public class Swerve extends SubsystemBase {
     return states;
   }
 
-  /**
-   * Returns the module positions (turn angles and drive positions) for all of the
-   * modules.
-   */
+  /** Returns the module positions (turn angles and drive positions) for all of the modules. */
   private SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] states = new SwerveModulePosition[4];
     for (int i = 0; i < 4; i++) {
@@ -306,7 +306,7 @@ public class Swerve extends SubsystemBase {
    * Adds a vision measurement to the pose estimator.
    *
    * @param visionPose The pose of the robot as measured by the vision camera.
-   * @param timestamp  The timestamp of the vision measurement in seconds.
+   * @param timestamp The timestamp of the vision measurement in seconds.
    */
   public void addVisionMeasurement(Pose2d visionPose, double timestamp) {
     poseEstimator.addVisionMeasurement(visionPose, timestamp);
@@ -336,7 +336,8 @@ public class Swerve extends SubsystemBase {
   }
 
   public void toggleAutoAlign() {
-    currentDriveMode = currentDriveMode == DriveMode.TELEOP ? DriveMode.AUTO_ALIGN : DriveMode.TELEOP;
+    currentDriveMode =
+        currentDriveMode == DriveMode.TELEOP ? DriveMode.AUTO_ALIGN : DriveMode.TELEOP;
   }
 
   public double calculateOmegaAutoAlign() {
