@@ -174,7 +174,7 @@ public final class Constants {
 
     public static final double SHOOTER_GEAR_RATIO = 1 / 1.5;
     public static final double ABSOLUTE_OFFSET = 0d;
-    public static final double SHOOTER_PIVOT_GEAR_RATIO = 1 / (3 * 3 * 4 * 64/22);
+    public static final double SHOOTER_PIVOT_GEAR_RATIO = 1 / (3 * 3 * 4 * 64 / 22);
 
     // Shooter Pivot PID
     public static final double SHOOTER_PIVOT_KP = 1d;

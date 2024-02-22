@@ -279,8 +279,7 @@ public class Swerve extends SubsystemBase {
   }
 
   @AutoLogOutput(key = "Odometry/ChassisSpeeds")
-  public ChassisSpeeds getSpeeds()
-  {
+  public ChassisSpeeds getSpeeds() {
     return kinematics.toChassisSpeeds(getModuleStates());
   }
 

@@ -69,7 +69,7 @@ public class Shooter extends SubsystemBase {
     targetPosition = Rotation2d.fromRadians(rad);
   }
 
-  public void tempSetPositionSpeed(double speed){
+  public void tempSetPositionSpeed(double speed) {
     io.setShooterPositionVoltage(speed * ShooterConstants.MAX_MOTOR_VOLTAGE);
   }
 

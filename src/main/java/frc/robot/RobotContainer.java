@@ -155,8 +155,9 @@ public class RobotContainer {
                     swerve)
                 .ignoringDisable(true));
 
-      intake.setDefaultCommand(
-        IntakeCommands.runIntake(intake, shooter, controller.leftBumper(), controller.rightBumper()));
+    intake.setDefaultCommand(
+        IntakeCommands.runIntake(
+            intake, shooter, controller.leftBumper(), controller.rightBumper()));
 
     // controller
     //     .povDown()
