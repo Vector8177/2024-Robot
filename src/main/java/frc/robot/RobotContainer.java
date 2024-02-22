@@ -22,7 +22,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.IntakeCommands;
 import frc.robot.commands.SwerveCommands;
+import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.HoodIOSparkMax;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIOSparkMax;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIOSparkMax;
 import frc.robot.subsystems.swerve.GyroIO;
 import frc.robot.subsystems.swerve.GyroIOPigeon2;
 import frc.robot.subsystems.swerve.ModuleIO;
@@ -40,6 +47,9 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Swerve swerve;
+  private final Intake intake;
+  private final Hood hood;
+  private final Shooter shooter;
   // private final Shooter shooter;
   // private final Intake intake;
   // private final Hood hood;
@@ -100,6 +110,10 @@ public class RobotContainer {
         break;
     }
 
+    intake = new Intake(new IntakeIOSparkMax());
+    shooter = new Shooter(new ShooterIOSparkMax());
+    hood = new Hood(new HoodIOSparkMax());
+
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     autoChooser.addOption(
@@ -140,6 +154,9 @@ public class RobotContainer {
                             new Pose2d(swerve.getPose().getTranslation(), new Rotation2d())),
                     swerve)
                 .ignoringDisable(true));
+
+      intake.setDefaultCommand(
+        IntakeCommands.runIntake(intake, shooter, controller.leftBumper(), controller.rightBumper()));
 
     // controller
     //     .povDown()

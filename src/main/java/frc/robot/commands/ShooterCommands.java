@@ -30,4 +30,30 @@ public class ShooterCommands {
       }
     }, shooter);
   }
+
+  public static Command testShooter(Shooter shooter, BooleanSupplier pivotUp, BooleanSupplier pivotDown, BooleanSupplier moveWheels, BooleanSupplier moveBelt){
+    return Commands.run(() ->{
+      if(pivotUp.getAsBoolean()){
+        shooter.tempSetPositionSpeed(.1);
+      }
+      else if(pivotDown.getAsBoolean()){
+        shooter.tempSetPositionSpeed(-.1);
+      }
+      else{
+        shooter.tempSetPositionSpeed(0);
+      }
+      if(moveWheels.getAsBoolean()){
+        shooter.setShooterSpeed(.1, .1);
+      }
+      else{
+        shooter.setShooterSpeed(0,0);
+      }
+      if(moveBelt.getAsBoolean()){
+        shooter.setIndexerSpeed(.1);
+      }
+      else{
+        shooter.setIndexerSpeed(0);
+      }
+    }, shooter);
+  }
 }

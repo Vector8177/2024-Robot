@@ -61,16 +61,20 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setShooterSpeed(double topSpeed, double bottomSpeed) {
-    targetTopSpeed = topSpeed;
-    targetBottomSpeed = bottomSpeed;
+    targetTopSpeed = topSpeed * ShooterConstants.MAX_MOTOR_VOLTAGE;
+    targetBottomSpeed = bottomSpeed * ShooterConstants.MAX_MOTOR_VOLTAGE;
   }
 
   public void setPosition(double rad) {
     targetPosition = Rotation2d.fromRadians(rad);
   }
 
+  public void tempSetPositionSpeed(double speed){
+    io.setShooterPositionVoltage(speed * ShooterConstants.MAX_MOTOR_VOLTAGE);
+  }
+
   public void setIndexerSpeed(double speed) {
-    io.setShooterIndexerVoltage(speed);
+    io.setShooterIndexerVoltage(speed * ShooterConstants.MAX_MOTOR_VOLTAGE);
   }
 
   public double getShooterTopFixedVelocity() {
