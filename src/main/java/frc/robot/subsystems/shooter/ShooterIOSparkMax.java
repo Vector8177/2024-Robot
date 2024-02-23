@@ -60,7 +60,8 @@ public class ShooterIOSparkMax implements ShooterIO {
     shooterPivotAbsoluteEncoder.setPositionConversionFactor(2 * Math.PI);
     shooterPivotAbsoluteEncoder.setZeroOffset(ShooterConstants.ABSOLUTE_OFFSET);
     shooterPivotEncoder.setPosition(shooterPivotAbsoluteEncoder.getPosition());
-    shooterPivotEncoder.setPositionConversionFactor(2 * Math.PI * ShooterConstants.SHOOTER_PIVOT_GEAR_RATIO);
+    shooterPivotEncoder.setPositionConversionFactor(
+        2 * Math.PI * ShooterConstants.SHOOTER_PIVOT_GEAR_RATIO);
 
     shooterTopFixedSparkMax.enableVoltageCompensation(12);
     shooterBottomFixedSparkMax.enableVoltageCompensation(12);

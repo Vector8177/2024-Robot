@@ -1,10 +1,11 @@
 package frc.robot.subsystems.hood;
 
-import com.revrobotics.SparkPIDController;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.HoodConstants;
@@ -15,7 +16,9 @@ public class Hood extends SubsystemBase {
 
   private final PIDController pivotController;
 
-  private Rotation2d desiredPivotPosition;
+  private MechanismLigament2d m_hood;
+
+  private Rotation2d desiredPivotPosition = new Rotation2d();
 
   public Hood(HoodIO io) {
     this.io = io;
@@ -26,10 +29,11 @@ public class Hood extends SubsystemBase {
             Constants.HoodConstants.hoodPivotKI,
             Constants.HoodConstants.hoodPivotKD);
     pivotController.enableContinuousInput(0, Math.PI * 2);
+
+    
   }
 
-  public void setHoodPosition(boolean isHoodUp)
-  {
+  public void setHoodPosition(boolean isHoodUp) {
     setHoodPositionRad(isHoodUp ? HoodConstants.TOP_POSE : HoodConstants.BOTTOM_POSE);
   }
 

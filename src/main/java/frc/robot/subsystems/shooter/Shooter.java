@@ -4,6 +4,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 import org.littletonrobotics.junction.Logger;
@@ -16,15 +19,18 @@ public class Shooter extends SubsystemBase {
   private final PIDController shooterTopSpeedPidController;
   private final PIDController shooterBottomSpeedPidController;
 
+  private MechanismRoot2d rootMech;
+  private MechanismLigament2d m_shooter;
+
   private final ArmFeedforward pivotFeedForward;
 
-  private Rotation2d pivotRelativeOffset;
-  private Rotation2d targetPosition;
+  // private Rotation2d pivotRelativeOffset;
+  private Rotation2d targetPosition = new Rotation2d();
 
   private double targetTopSpeed;
   private double targetBottomSpeed;
 
-  public Shooter(ShooterIO io) {
+  public Shooter(ShooterIO io, Mechanism2d mainMech) {
     this.io = io;
 
     pivotPidController =
@@ -56,8 +62,14 @@ public class Shooter extends SubsystemBase {
             ShooterConstants.SHOOTER_BOTTOM_KP);
     shooterBottomSpeedPidController.setTolerance(ShooterConstants.SHOOTER_SPEED_TOLERANCE);
 
-    pivotRelativeOffset =
-        inputs.shooterPivotAbsolutePosition.minus(inputs.shooterPivotRelativePosition);
+    // pivotRelativeOffset =
+    //     inputs.shooterPivotAbsolutePosition.minus(inputs.shooterPivotRelativePosition);
+
+    rootMech = mainMech.getRoot("shooter", 1.5, 1.5);
+    m_shooter =
+        rootMech.append(
+            new MechanismLigament2d(
+                "shooterPivot", 2, inputs.shooterPivotRelativePosition.getDegrees()));
   }
 
   public void setShooterSpeed(double topSpeed, double bottomSpeed) {
@@ -93,13 +105,12 @@ public class Shooter extends SubsystemBase {
     Logger.recordOutput("Shooter/SetPoints/TopSpeed", targetTopSpeed);
     Logger.recordOutput("Shooter/SetPoints/BottomSpeed", targetBottomSpeed);
 
+    m_shooter.setAngle(inputs.shooterPivotRelativePosition);
+
     double pivotMotorSpeed =
         pivotPidController.calculate(
-                inputs.shooterPivotRelativePosition.getRadians() + pivotRelativeOffset.getRadians(),
-                targetPosition.getRadians())
-            + pivotFeedForward.calculate(
-                inputs.shooterPivotRelativePosition.getRadians() + pivotRelativeOffset.getRadians(),
-                0);
+                inputs.shooterPivotRelativePosition.getRadians(), targetPosition.getRadians())
+            + pivotFeedForward.calculate(inputs.shooterPivotRelativePosition.getRadians(), 0);
 
     io.setShooterPositionVoltage(
         MathUtil.clamp(
