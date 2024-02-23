@@ -32,6 +32,9 @@ public final class Constants {
 
   public static final boolean tuningMode = true;
 
+  public static final double SHOOTER_HEIGHT = 0.43;
+  public static final double SPEAKER_HEIGHT = 2.0;
+
   public static final class IntakeConstants {
     public static final int LEFT_FEEDER_MOTOR_ID = 61;
     public static final int RIGHT_FEEDER_MOTOR_ID = 62;
@@ -138,9 +141,9 @@ public final class Constants {
     }
 
     public final class AutoAlignConstants {
-      public static final double thetaP = 6.0;
+      public static final double thetaP = 4.0;
       public static final double thetaI = 0.0;
-      public static final double thetaD = 5.0;
+      public static final double thetaD = 6.0;
       public static final double thetaTolerance = Units.degreesToRadians(2.0);
       public static final double maxAngularVelocity = MAX_ANGULAR_VELOCITY;
       public static final double maxAngularAcceleration = 30.02;

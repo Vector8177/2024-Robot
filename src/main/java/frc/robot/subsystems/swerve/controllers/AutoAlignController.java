@@ -2,6 +2,8 @@ package frc.robot.subsystems.swerve.controllers;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.Constants;
 import frc.robot.subsystems.swerve.Swerve;
@@ -18,7 +20,7 @@ public class AutoAlignController {
   private static LoggedTunableNumber thetaTolerance =
       new LoggedTunableNumber(
           "AutoAlign/thetaTolerance", Constants.SwerveConstants.AutoAlignConstants.thetaTolerance);
-  private static LoggedTunableNumber maxAngulatVelocity =
+  private static LoggedTunableNumber maxAngularVelocity =
       new LoggedTunableNumber(
           "AutoAlign/angularVelocity",
           Constants.SwerveConstants.AutoAlignConstants.maxAngularVelocity);
@@ -35,7 +37,6 @@ public class AutoAlignController {
 
   public AutoAlignController(Pose2d goalPose, Swerve swerve) {
     this.goalPose = goalPose;
-    Logger.recordOutput("AutoAlign/goalPose", goalPose);
 
     this.swerve = swerve;
 
@@ -45,10 +46,43 @@ public class AutoAlignController {
             0,
             thetakD.get(),
             new TrapezoidProfile.Constraints(
-                maxAngulatVelocity.get(), maxAngularAcceleration.get()));
+                maxAngularVelocity.get(), maxAngularAcceleration.get()));
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
     thetaController.setTolerance(thetaTolerance.get());
 
     Pose2d currentPose = swerve.getPose();
+    ChassisSpeeds fieldVel = swerve.getSpeeds();
+
+    Rotation2d rotationToTarget =
+        goalPose.getTranslation().minus(currentPose.getTranslation()).getAngle();
+    thetaController.reset(currentPose.getRotation().getRadians(), fieldVel.omegaRadiansPerSecond);
+
+    thetaController.setGoal(goalPose.getRotation().getRadians());
+    Logger.recordOutput("AutoAlign/goalPose", goalPose);
+  }
+
+  public double updateDrive() {
+    Pose2d currentPose = swerve.getPose();
+    Rotation2d rotationToTarget =
+        goalPose.getTranslation().minus(currentPose.getTranslation()).getAngle();
+
+    Logger.recordOutput(
+        "AutoAlign/RotationTarget", new Pose2d(currentPose.getTranslation(), rotationToTarget));
+
+    double angularVelocity =
+        thetaController.calculate(
+                currentPose.getRotation().getRadians(), rotationToTarget.getRadians())
+            + thetaController.getSetpoint().velocity;
+
+    Logger.recordOutput("AutoAlign/Setpoint", angularVelocity);
+
+    return angularVelocity;
+  }
+
+  public double updateAngle()
+  {
+    Pose2d currentPose = swerve.getPose();
+    double distToTarget = goalPose.getTranslation().getDistance(currentPose.getTranslation());
+    return Math.tanh((Constants.SPEAKER_HEIGHT - Constants.SHOOTER_HEIGHT) / distToTarget);
   }
 }

@@ -48,11 +48,24 @@ public class SwerveCommands {
                   Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), DEADBAND);
           Rotation2d linearDirection =
               new Rotation2d(xSupplier.getAsDouble(), ySupplier.getAsDouble());
-          double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
+          double omegaVelocity;
+
+          switch (swerve.getMode()) {
+            case TELEOP:
+              double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
+              // Square values
+              omega = Math.copySign(omega * omega, omega);
+              omegaVelocity = omega * swerve.getMaxAngularSpeedRadPerSec();
+              break;
+            case AUTO_ALIGN:
+              omegaVelocity = swerve.calculateOmegaAutoAlign();
+              break;
+            default:
+              omegaVelocity = 0.0;
+          }
 
           // Square values
           linearMagnitude = linearMagnitude * linearMagnitude;
-          omega = Math.copySign(omega * omega, omega);
 
           // Calcaulate new linear velocity
           Translation2d linearVelocity =
@@ -65,7 +78,7 @@ public class SwerveCommands {
               ChassisSpeeds.fromFieldRelativeSpeeds(
                   linearVelocity.getX() * swerve.getMaxLinearSpeedMetersPerSec(),
                   linearVelocity.getY() * swerve.getMaxLinearSpeedMetersPerSec(),
-                  omega * swerve.getMaxAngularSpeedRadPerSec(),
+                  omegaVelocity,
                   swerve.getRotation()));
         },
         swerve);
