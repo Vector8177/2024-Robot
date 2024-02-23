@@ -42,6 +42,8 @@ import frc.robot.subsystems.swerve.controllers.AutoAlignController;
 import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -53,7 +55,6 @@ public class Swerve extends SubsystemBase {
   private final SysIdRoutine sysId;
   private final ModuleLimits limits = MODULE_LIMITS;
 
-  private DriveMode currentDriveMode = DriveMode.TELEOP;
   private AutoAlignController autoAlignController = null;
 
   private SwerveDriveKinematics kinematics = SwerveConstants.KINEMATICS;
@@ -68,13 +69,16 @@ public class Swerve extends SubsystemBase {
   private double lastTimeStamp = 0.0;
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
+  
+  private Supplier<DriveMode> currentModeSupp;
 
   public Swerve(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
       ModuleIO frModuleIO,
       ModuleIO blModuleIO,
-      ModuleIO brModuleIO) {
+      ModuleIO brModuleIO,
+      Supplier<DriveMode> supp) {
     this.gyroIO = gyroIO;
     modules[0] = new Module(flModuleIO, 0);
     modules[1] = new Module(frModuleIO, 1);
@@ -84,6 +88,8 @@ public class Swerve extends SubsystemBase {
     // Start threads (no-op for each if no signals have been created)
     PhoenixOdometryThread.getInstance().start();
     SparkMaxOdometryThread.getInstance().start();
+
+    currentModeSupp = supp;
 
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configureHolonomic(
@@ -328,19 +334,10 @@ public class Swerve extends SubsystemBase {
   }
 
   public DriveMode getMode() {
-    return currentDriveMode;
-  }
-
-  public void setMode(DriveMode mode) {
-    currentDriveMode = mode;
-  }
-
-  public void toggleAutoAlign() {
-    currentDriveMode =
-        currentDriveMode == DriveMode.TELEOP ? DriveMode.AUTO_ALIGN : DriveMode.TELEOP;
+    return currentModeSupp.get();
   }
 
   public double calculateOmegaAutoAlign() {
-    return autoAlignController.update();
+    return autoAlignController.updateDrive();
   }
 }

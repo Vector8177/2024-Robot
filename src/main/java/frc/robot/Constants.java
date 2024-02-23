@@ -32,6 +32,9 @@ public final class Constants {
 
   public static final boolean tuningMode = true;
 
+  public static final double SHOOTER_HEIGHT = 0.43;
+  public static final double SPEAKER_HEIGHT = 2.0;
+
   public static final class IntakeConstants {
     public static final int LEFT_FEEDER_MOTOR_ID = 61;
     public static final int RIGHT_FEEDER_MOTOR_ID = 62;

@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.SwerveConstants.DriveMode;
 import frc.robot.commands.SwerveCommands;
 import frc.robot.subsystems.swerve.GyroIO;
 import frc.robot.subsystems.swerve.GyroIOPigeon2;
@@ -41,6 +42,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
   // Subsystems
+  private DriveMode currentMode = DriveMode.TELEOP;
   private final Swerve swerve;
   // private final Shooter shooter;
   // private final Intake intake;
@@ -64,7 +66,8 @@ public class RobotContainer {
                 new ModuleIOSparkMax(0),
                 new ModuleIOSparkMax(1),
                 new ModuleIOSparkMax(2),
-                new ModuleIOSparkMax(3));
+                new ModuleIOSparkMax(3),
+                () -> currentMode);
         // shooter = null;
         // intake = null;
         // hood = null;
@@ -79,7 +82,8 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim(),
-                new ModuleIOSim());
+                new ModuleIOSim(),
+                () -> currentMode);
         // shooter = new Shooter(new ShooterIOSim());
         // intake = new Intake(new IntakeIOSim());
         // hood = new Hood(new HoodIOSim());
@@ -94,7 +98,8 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
-                new ModuleIO() {});
+                new ModuleIO() {},
+                () -> currentMode);
         // shooter = new Shooter(new ShooterIO() {});
         // intake = new Intake(new IntakeIO() {});
         // hood = new Hood(new HoodIO() {});
@@ -143,7 +148,7 @@ public class RobotContainer {
                     swerve)
                 .ignoringDisable(true));
 
-    controller.a().onTrue(Commands.runOnce(() -> swerve.toggleAutoAlign(), swerve));
+    controller.a().onTrue(Commands.runOnce(() -> currentMode = currentMode == DriveMode.TELEOP ? DriveMode.AUTO_ALIGN : DriveMode.TELEOP, swerve));
 
     // controller
     // .povDown()

@@ -20,7 +20,7 @@ public class AutoAlignController {
   private static LoggedTunableNumber thetaTolerance =
       new LoggedTunableNumber(
           "AutoAlign/thetaTolerance", Constants.SwerveConstants.AutoAlignConstants.thetaTolerance);
-  private static LoggedTunableNumber maxAngulatVelocity =
+  private static LoggedTunableNumber maxAngularVelocity =
       new LoggedTunableNumber(
           "AutoAlign/angularVelocity",
           Constants.SwerveConstants.AutoAlignConstants.maxAngularVelocity);
@@ -46,7 +46,7 @@ public class AutoAlignController {
             0,
             thetakD.get(),
             new TrapezoidProfile.Constraints(
-                maxAngulatVelocity.get(), maxAngularAcceleration.get()));
+                maxAngularVelocity.get(), maxAngularAcceleration.get()));
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
     thetaController.setTolerance(thetaTolerance.get());
 
@@ -61,7 +61,7 @@ public class AutoAlignController {
     Logger.recordOutput("AutoAlign/goalPose", goalPose);
   }
 
-  public double update() {
+  public double updateDrive() {
     Pose2d currentPose = swerve.getPose();
     Rotation2d rotationToTarget =
         goalPose.getTranslation().minus(currentPose.getTranslation()).getAngle();
@@ -77,5 +77,12 @@ public class AutoAlignController {
     Logger.recordOutput("AutoAlign/Setpoint", angularVelocity);
 
     return angularVelocity;
+  }
+
+  public double updateAngle()
+  {
+    Pose2d currentPose = swerve.getPose();
+    double distToTarget = goalPose.getTranslation().getDistance(currentPose.getTranslation());
+    return Math.tanh((Constants.SPEAKER_HEIGHT - Constants.SHOOTER_HEIGHT) / distToTarget);
   }
 }
