@@ -18,18 +18,35 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.SwerveConstants.DriveMode;
 import frc.robot.commands.SwerveCommands;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberIOSparkMax;
+import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.HoodIO;
+import frc.robot.subsystems.hood.HoodIOSim;
+import frc.robot.subsystems.hood.HoodIOSparkMax;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeIOSparkMax;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterIOSim;
+import frc.robot.subsystems.shooter.ShooterIOSparkMax;
 import frc.robot.subsystems.swerve.GyroIO;
 import frc.robot.subsystems.swerve.GyroIOPigeon2;
 import frc.robot.subsystems.swerve.ModuleIO;
 import frc.robot.subsystems.swerve.ModuleIOSim;
 import frc.robot.subsystems.swerve.ModuleIOSparkMax;
 import frc.robot.subsystems.swerve.Swerve;
+
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -42,10 +59,12 @@ public class RobotContainer {
   // Subsystems
   private DriveMode currentMode = DriveMode.TELEOP;
   private final Swerve swerve;
-  // private final Shooter shooter;
-  // private final Intake intake;
-  // private final Hood hood;
+  private final Shooter shooter;
+  private final Intake intake;
+  private final Hood hood;
   // private final Climber climber;
+
+  private final Mechanism2d mainMech = new Mechanism2d(3, 3);
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -65,10 +84,10 @@ public class RobotContainer {
                 new ModuleIOSparkMax(1),
                 new ModuleIOSparkMax(2),
                 new ModuleIOSparkMax(3));
-        // shooter = null;
-        // intake = null;
-        // hood = null;
-        // climber = null;
+        shooter = new Shooter(new ShooterIOSparkMax(), mainMech);
+        intake = new Intake(new IntakeIOSparkMax());
+        hood = new Hood(new HoodIOSparkMax());
+        // climber = new Climber(new ClimberIOSparkMax());
         break;
 
       case SIM:
@@ -80,9 +99,9 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-        // shooter = new Shooter(new ShooterIOSim());
-        // intake = new Intake(new IntakeIOSim());
-        // hood = new Hood(new HoodIOSim());
+        shooter = new Shooter(new ShooterIOSim(), mainMech);
+        intake = new Intake(new IntakeIOSim());
+        hood = new Hood(new HoodIOSim());
         // climber = new Climber(new ClimberIOSim());
         break;
 
@@ -95,9 +114,9 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        // shooter = new Shooter(new ShooterIO() {});
-        // intake = new Intake(new IntakeIO() {});
-        // hood = new Hood(new HoodIO() {});
+        shooter = new Shooter(new ShooterIO() {}, mainMech);
+        intake = new Intake(new IntakeIO() {});
+        hood = new Hood(new HoodIO() {});
         // climber = new Climber(new ClimberIO() {});
         break;
     }
@@ -170,5 +189,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return autoChooser.get();
+  }
+
+  public void updateMech()
+  {
+    Logger.recordOutput("Mechanism", mainMech);
   }
 }
