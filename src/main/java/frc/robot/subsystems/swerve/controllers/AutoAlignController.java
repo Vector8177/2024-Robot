@@ -65,13 +65,16 @@ public class AutoAlignController {
     Pose2d currentPose = swerve.getPose();
     Rotation2d rotationToTarget =
         goalPose.getTranslation().minus(currentPose.getTranslation()).getAngle();
-    
-    Logger.recordOutput("AutoAlign/RotationTarget", rotationToTarget);
+
+    Logger.recordOutput(
+        "AutoAlign/RotationTarget", new Pose2d(currentPose.getTranslation(), rotationToTarget));
 
     double angularVelocity =
         thetaController.calculate(
-                currentPose.getRotation().getRadians(), goalPose.getRotation().getRadians())
+                currentPose.getRotation().getRadians(), rotationToTarget.getRadians())
             + thetaController.getSetpoint().velocity;
+
+    Logger.recordOutput("AutoAlign/Setpoint", angularVelocity);
 
     return angularVelocity;
   }
