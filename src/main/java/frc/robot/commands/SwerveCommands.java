@@ -21,8 +21,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants.SwerveConstants.DriveMode;
 import frc.robot.subsystems.swerve.Swerve;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 public class SwerveCommands {
   private static final double DEADBAND = 0.1;
@@ -36,7 +38,8 @@ public class SwerveCommands {
       Swerve swerve,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
-      DoubleSupplier omegaSupplier) {
+      DoubleSupplier omegaSupplier,
+      Supplier<DriveMode> modeSupp) {
     return Commands.run(
         () -> {
           // Apply deadband
@@ -50,7 +53,7 @@ public class SwerveCommands {
               new Rotation2d(xSupplier.getAsDouble(), ySupplier.getAsDouble());
           double omegaVelocity;
 
-          switch (swerve.getMode()) {
+          switch (modeSupp.get()) {
             case TELEOP:
               double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
               // Square values

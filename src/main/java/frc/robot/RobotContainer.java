@@ -16,10 +16,8 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -66,8 +64,7 @@ public class RobotContainer {
                 new ModuleIOSparkMax(0),
                 new ModuleIOSparkMax(1),
                 new ModuleIOSparkMax(2),
-                new ModuleIOSparkMax(3),
-                () -> currentMode);
+                new ModuleIOSparkMax(3));
         // shooter = null;
         // intake = null;
         // hood = null;
@@ -82,8 +79,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim(),
-                new ModuleIOSim(),
-                () -> currentMode);
+                new ModuleIOSim());
         // shooter = new Shooter(new ShooterIOSim());
         // intake = new Intake(new IntakeIOSim());
         // hood = new Hood(new HoodIOSim());
@@ -98,8 +94,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
-                new ModuleIO() {},
-                () -> currentMode);
+                new ModuleIO() {});
         // shooter = new Shooter(new ShooterIO() {});
         // intake = new Intake(new IntakeIO() {});
         // hood = new Hood(new HoodIO() {});
@@ -136,7 +131,8 @@ public class RobotContainer {
             swerve,
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
-            () -> -controller.getRightX()));
+            () -> -controller.getRightX(),
+            () -> currentMode));
     controller.x().onTrue(Commands.runOnce(swerve::stopWithX, swerve));
     controller
         .b()
@@ -148,7 +144,14 @@ public class RobotContainer {
                     swerve)
                 .ignoringDisable(true));
 
-    controller.a().onTrue(Commands.runOnce(() -> currentMode = currentMode == DriveMode.TELEOP ? DriveMode.AUTO_ALIGN : DriveMode.TELEOP, swerve));
+    controller
+        .a()
+        .onTrue(
+            Commands.runOnce(
+                () ->
+                    currentMode =
+                        currentMode == DriveMode.TELEOP ? DriveMode.AUTO_ALIGN : DriveMode.TELEOP,
+                swerve));
 
     // controller
     // .povDown()

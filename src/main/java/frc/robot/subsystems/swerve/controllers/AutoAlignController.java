@@ -79,8 +79,7 @@ public class AutoAlignController {
     return angularVelocity;
   }
 
-  public double updateAngle()
-  {
+  public double updateAngle() {
     Pose2d currentPose = swerve.getPose();
     double distToTarget = goalPose.getTranslation().getDistance(currentPose.getTranslation());
     return Math.tanh((Constants.SPEAKER_HEIGHT - Constants.SHOOTER_HEIGHT) / distToTarget);

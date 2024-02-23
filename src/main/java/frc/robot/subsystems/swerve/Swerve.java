@@ -36,14 +36,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.Constants.SwerveConstants.DriveMode;
 import frc.robot.Constants.SwerveConstants.ModuleLimits;
 import frc.robot.subsystems.swerve.controllers.AutoAlignController;
 import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Supplier;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -69,16 +66,13 @@ public class Swerve extends SubsystemBase {
   private double lastTimeStamp = 0.0;
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
-  
-  private Supplier<DriveMode> currentModeSupp;
 
   public Swerve(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
       ModuleIO frModuleIO,
       ModuleIO blModuleIO,
-      ModuleIO brModuleIO,
-      Supplier<DriveMode> supp) {
+      ModuleIO brModuleIO) {
     this.gyroIO = gyroIO;
     modules[0] = new Module(flModuleIO, 0);
     modules[1] = new Module(frModuleIO, 1);
@@ -88,8 +82,6 @@ public class Swerve extends SubsystemBase {
     // Start threads (no-op for each if no signals have been created)
     PhoenixOdometryThread.getInstance().start();
     SparkMaxOdometryThread.getInstance().start();
-
-    currentModeSupp = supp;
 
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configureHolonomic(
@@ -132,7 +124,7 @@ public class Swerve extends SubsystemBase {
                 this));
 
     autoAlignController =
-        new AutoAlignController(new Pose2d(DriverStation.getAlliance().get() == Alliance.Blue ? .24 : .24 + 16.5, 5.51, Rotation2d.fromRotations(0)), this);
+        new AutoAlignController(new Pose2d(.24, 5.51, Rotation2d.fromRotations(0)), this);
   }
 
   public void periodic() {
@@ -331,10 +323,6 @@ public class Swerve extends SubsystemBase {
   /** Returns an array of module translations. */
   public static Translation2d[] getModuleTranslations() {
     return SwerveConstants.MODULE_TRANSLATIONS;
-  }
-
-  public DriveMode getMode() {
-    return currentModeSupp.get();
   }
 
   public double calculateOmegaAutoAlign() {

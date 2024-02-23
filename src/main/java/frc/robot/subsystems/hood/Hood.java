@@ -3,9 +3,7 @@ package frc.robot.subsystems.hood;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.HoodConstants;
@@ -29,8 +27,6 @@ public class Hood extends SubsystemBase {
             Constants.HoodConstants.hoodPivotKI,
             Constants.HoodConstants.hoodPivotKD);
     pivotController.enableContinuousInput(0, Math.PI * 2);
-
-    
   }
 
   public void setHoodPosition(boolean isHoodUp) {
