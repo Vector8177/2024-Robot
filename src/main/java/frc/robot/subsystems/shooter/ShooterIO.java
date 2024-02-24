@@ -6,8 +6,8 @@ import org.littletonrobotics.junction.AutoLog;
 public interface ShooterIO {
   @AutoLog
   public static class ShooterIOInputs {
-    public double shooterTopFixedVelocityRadPerSec = 0d;
-    public double shooterBottomFixedVelocityRadPerSec = 0d;
+    public double shooterTopFixedRPM = 0d;
+    public double shooterBottomFixedRPM = 0d;
     public double shooterPivotVelocityRadPerSec = 0d;
     public double shooterIndexerVelocityRadPerSec = 0d;
 
@@ -29,7 +29,7 @@ public interface ShooterIO {
 
   public default void updateInputs(ShooterIOInputs inputs) {}
 
-  public default void setShooterSpeedVoltage(double topVolts, double bottomVolts) {}
+  public default void setShooterSpeedVoltage(double volts) {}
 
   public default void setShooterPositionVoltage(double volts) {}
 

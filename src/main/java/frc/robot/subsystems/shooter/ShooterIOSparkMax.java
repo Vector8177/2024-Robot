@@ -9,6 +9,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogInput;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.util.SparkUtils;
+import frc.robot.util.SparkUtils.Data;
+import frc.robot.util.SparkUtils.Sensor;
+import java.util.Set;
 import org.littletonrobotics.junction.Logger;
 
 public class ShooterIOSparkMax implements ShooterIO {
@@ -62,12 +66,9 @@ public class ShooterIOSparkMax implements ShooterIO {
     shooterPivotAbsoluteEncoder = shooterPivotSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
     shooterPivotAbsoluteEncoder.setPositionConversionFactor(2 * Math.PI);
     shooterPivotAbsoluteEncoder.setZeroOffset(ShooterConstants.ABSOLUTE_OFFSET);
+
     shooterPivotEncoder.setPosition(shooterPivotAbsoluteEncoder.getPosition());
-    shooterPivotEncoder.setPositionConversionFactor(
-        2 * Math.PI * ShooterConstants.SHOOTER_PIVOT_GEAR_RATIO);
-    pivotRelativeOffset =
-        Rotation2d.fromRadians(shooterPivotAbsoluteEncoder.getPosition())
-            .minus(Rotation2d.fromRadians(shooterPivotEncoder.getPosition()));
+    shooterPivotEncoder.setPositionConversionFactor(2 * Math.PI);
 
     Logger.recordOutput("Shooter/PivotRelativeOffset", pivotRelativeOffset);
     Logger.recordOutput("Shooter/Absolute", shooterPivotAbsoluteEncoder.getPosition());
@@ -83,6 +84,21 @@ public class ShooterIOSparkMax implements ShooterIO {
     shooterPivotEncoder.setMeasurementPeriod(60);
     shooterIndexerEncoder.setMeasurementPeriod(60);
 
+    SparkUtils.configureFrameStrategy(
+        shooterTopFixedSparkMax,
+        Set.of(Data.VELOCITY, Data.APPLIED_OUTPUT),
+        Set.of(Sensor.INTEGRATED),
+        true);
+    SparkUtils.configureNothingFrameStrategy(shooterBottomFixedSparkMax);
+    SparkUtils.configureFrameStrategy(
+        shooterPivotSparkMax,
+        Set.of(Data.POSITION, Data.VELOCITY, Data.APPLIED_OUTPUT),
+        Set.of(Sensor.ABSOLUTE),
+        false);
+    SparkUtils.configureNothingFrameStrategy(shooterIndexerSparkMax);
+
+    shooterBottomFixedSparkMax.follow(shooterTopFixedSparkMax, true);
+
     shooterTopFixedSparkMax.burnFlash();
     shooterBottomFixedSparkMax.burnFlash();
     shooterPivotSparkMax.burnFlash();
@@ -93,13 +109,13 @@ public class ShooterIOSparkMax implements ShooterIO {
   public void updateInputs(ShooterIOInputs inputs) {
     inputs.shooterTopFixedAppliedVolts =
         shooterTopFixedSparkMax.getAppliedOutput() * shooterTopFixedSparkMax.getBusVoltage();
-    inputs.shooterTopFixedVelocityRadPerSec =
+    inputs.shooterTopFixedRPM =
         Units.rotationsPerMinuteToRadiansPerSecond(shooterTopFixedEncoder.getVelocity());
     inputs.shooterTopFixedCurrentAmps = new double[] {shooterTopFixedSparkMax.getOutputCurrent()};
 
     inputs.shooterBottomFixedAppliedVolts =
         shooterBottomFixedSparkMax.getAppliedOutput() * shooterBottomFixedSparkMax.getBusVoltage();
-    inputs.shooterBottomFixedVelocityRadPerSec =
+    inputs.shooterBottomFixedRPM =
         Units.rotationsPerMinuteToRadiansPerSecond(shooterBottomFixedEncoder.getVelocity());
     inputs.shooterBottomFixedCurrentAmps =
         new double[] {shooterBottomFixedSparkMax.getOutputCurrent()};
@@ -117,7 +133,7 @@ public class ShooterIOSparkMax implements ShooterIO {
     inputs.shooterIndexerCurrentAmps = new double[] {shooterIndexerSparkMax.getOutputCurrent()};
 
     inputs.shooterPivotRelativePosition =
-       ( Rotation2d.fromRadians(shooterPivotEncoder.getPosition()).plus(pivotRelativeOffset));
+        (Rotation2d.fromRadians(shooterPivotAbsoluteEncoder.getPosition()));
     inputs.shooterPivotAbsolutePosition =
         Rotation2d.fromRadians(shooterPivotAbsoluteEncoder.getPosition());
 
@@ -125,9 +141,8 @@ public class ShooterIOSparkMax implements ShooterIO {
   }
 
   @Override
-  public void setShooterSpeedVoltage(double topVolts, double bottomVolts) {
-    shooterTopFixedSparkMax.setVoltage(topVolts);
-    shooterBottomFixedSparkMax.setVoltage(bottomVolts);
+  public void setShooterSpeedVoltage(double volts) {
+    shooterTopFixedSparkMax.setVoltage(volts);
   }
 
   @Override

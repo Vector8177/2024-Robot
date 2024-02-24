@@ -1,13 +1,11 @@
 package frc.robot.util;
 
-import java.util.Set;
-
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
-
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Time;
 import edu.wpi.first.units.Units;
+import java.util.Set;
 
 /** Utility class for configuration of Spark motor controllers */
 public class SparkUtils {

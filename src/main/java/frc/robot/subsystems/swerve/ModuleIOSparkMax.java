@@ -24,7 +24,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.SwerveConstants.CanID;
+import frc.robot.util.SparkUtils;
+import frc.robot.util.SparkUtils.Data;
+import frc.robot.util.SparkUtils.Sensor;
 import java.util.Queue;
+import java.util.Set;
 
 /**
  * Module IO implementation for SparkMax drive motor controller, SparkMax turn motor controller (NEO
@@ -59,19 +63,19 @@ public class ModuleIOSparkMax implements ModuleIO {
         driveSparkMax = new CANSparkMax(CanID.FL_DRIVE, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(CanID.FL_TURN, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
-        absoluteEncoderOffset = new Rotation2d(Math.PI); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(0); // MUST BE CALIBRATED
         break;
       case 1:
         driveSparkMax = new CANSparkMax(CanID.FR_DRIVE, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(CanID.FR_TURN, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
-        absoluteEncoderOffset = new Rotation2d(Math.PI); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(0); // MUST BE CALIBRATED
         break;
       case 2:
         driveSparkMax = new CANSparkMax(CanID.BL_DRIVE, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(CanID.BL_TURN, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
-        absoluteEncoderOffset = new Rotation2d(Math.PI); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(0); // MUST BE CALIBRATED
         break;
       case 3:
         driveSparkMax = new CANSparkMax(CanID.BR_DRIVE, MotorType.kBrushless);
@@ -122,6 +126,17 @@ public class ModuleIOSparkMax implements ModuleIO {
     turnPositionQueue =
         SparkMaxOdometryThread.getInstance().registerSignal(turnRelativeEncoder::getPosition);
 
+    SparkUtils.configureFrameStrategy(
+        driveSparkMax,
+        Set.of(Data.POSITION, Data.VELOCITY, Data.APPLIED_OUTPUT),
+        Set.of(Sensor.INTEGRATED),
+        false);
+    SparkUtils.configureFrameStrategy(
+        turnSparkMax,
+        Set.of(Data.POSITION, Data.VELOCITY, Data.APPLIED_OUTPUT),
+        Set.of(Sensor.ABSOLUTE),
+        false);
+
     driveSparkMax.burnFlash();
     turnSparkMax.burnFlash();
   }
@@ -139,12 +154,9 @@ public class ModuleIOSparkMax implements ModuleIO {
     inputs.turnAbsolutePosition =
         new Rotation2d((1 - turnAbsoluteEncoder.getPosition()) * 2.0 * Math.PI)
             .minus(absoluteEncoderOffset);
-    inputs.turnPosition =
-        Rotation2d.fromRotations(
-            turnRelativeEncoder.getPosition() / SwerveConstants.TURN_GEAR_RATIO);
+    inputs.turnPosition = inputs.turnAbsolutePosition;
     inputs.turnVelocityRadPerSec =
-        Units.rotationsPerMinuteToRadiansPerSecond(turnRelativeEncoder.getVelocity())
-            / SwerveConstants.TURN_GEAR_RATIO;
+        Units.rotationsPerMinuteToRadiansPerSecond(-turnAbsoluteEncoder.getVelocity());
     inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
     inputs.turnCurrentAmps = new double[] {turnSparkMax.getOutputCurrent()};
 

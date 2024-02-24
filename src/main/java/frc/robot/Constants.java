@@ -42,8 +42,8 @@ public final class Constants {
 
     public static final int maxIntakeMotorVoltage = 9;
 
-    public static final double FEEDER_SPEED = .2d;
-    public static final double INDEXER_SPEED = .2d;
+    public static final double FEEDER_SPEED = 0d;
+    public static final double INDEXER_SPEED = 0d;
   }
 
   public static final class ClimberConstants {
@@ -71,7 +71,8 @@ public final class Constants {
     public static final int HOOD_MOTOR_ID = 40;
     public static final int maxHoodMotorVoltage = 12;
 
-    public static final double hoodPivotKP = 1d;
+    // public static final double hoodPivotKP = 1d;
+    public static final double hoodPivotKP = 0d;
     public static final double hoodPivotKI = 0d;
     public static final double hoodPivotKD = 0d;
 
@@ -177,23 +178,28 @@ public final class Constants {
 
     public static final int SHOOTER_IR_SENSOR_PORT = 0;
 
+    public static final double SHOOTER_PIVOT_INTAKE_POSITION = 2.145d;
+
+    public static final double SHOOTER_PIVOT_HOOD_POSITION = 0d;
+
     public static final double SHOOTER_GEAR_RATIO = 1 / 1.5;
-    public static final double ABSOLUTE_OFFSET = 2.311;
+    public static final double ABSOLUTE_OFFSET = 0.802d;
     public static final double SHOOTER_PIVOT_GEAR_RATIO = 1d / (3 * 3 * 4 * 64d / 24);
 
     // Shooter Pivot PID
-    public static final double SHOOTER_PIVOT_KP = 6.4d;
+    public static final double SHOOTER_PIVOT_KP = 10d;
+    // public static final double SHOOTER_PIVOT_KP = 6.4d;
     public static final double SHOOTER_PIVOT_KI = 0d;
-    public static final double SHOOTER_PIVOT_KD = 6d;
+    public static final double SHOOTER_PIVOT_KD = 0d;
     public static final double PIVOT_TOLERANCE = 0.2;
 
     // Shooter Top Wheel PID
-    public static final double SHOOTER_TOP_KP = 1d;
+    public static final double SHOOTER_TOP_KP = 0d;
     public static final double SHOOTER_TOP_KI = 0d;
     public static final double SHOOTER_TOP_KD = 0d;
 
     // Shooter Bottom Wheel PID
-    public static final double SHOOTER_BOTTOM_KP = 1d;
+    public static final double SHOOTER_BOTTOM_KP = 0d;
     public static final double SHOOTER_BOTTOM_KI = 0d;
     public static final double SHOOTER_BOTTOM_KD = 0d;
 

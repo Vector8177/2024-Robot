@@ -157,7 +157,6 @@ public class Swerve extends SubsystemBase {
     int sampleCount = sampleTimestamps.length;
 
     for (int i = 0; i < sampleCount; i++) {
-      boolean includeSample = true;
       SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
       SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
       // Read wheel positions and deltas from each module
@@ -327,5 +326,9 @@ public class Swerve extends SubsystemBase {
 
   public double calculateOmegaAutoAlign() {
     return autoAlignController.updateDrive();
+  }
+
+  public double calculateAngleAutoAlign() {
+    return autoAlignController.updateAngle();
   }
 }

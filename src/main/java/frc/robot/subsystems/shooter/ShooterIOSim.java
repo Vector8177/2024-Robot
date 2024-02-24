@@ -28,11 +28,11 @@ public class ShooterIOSim implements ShooterIO {
     shooterIndexerSim.update(LOOP_PERIOD_SECS);
 
     inputs.shooterTopFixedAppliedVolts = shooterTopAppliedVolts;
-    inputs.shooterTopFixedVelocityRadPerSec = shooterTopSim.getAngularVelocityRadPerSec();
+    inputs.shooterTopFixedRPM = shooterTopSim.getAngularVelocityRadPerSec();
     inputs.shooterTopFixedCurrentAmps = new double[] {Math.abs(shooterTopSim.getCurrentDrawAmps())};
 
     inputs.shooterBottomFixedAppliedVolts = shooterBottomAppliedVolts;
-    inputs.shooterBottomFixedVelocityRadPerSec = shooterBottomSim.getAngularVelocityRadPerSec();
+    inputs.shooterBottomFixedRPM = shooterBottomSim.getAngularVelocityRadPerSec();
     inputs.shooterBottomFixedCurrentAmps =
         new double[] {Math.abs(shooterBottomSim.getCurrentDrawAmps())};
 
@@ -51,9 +51,9 @@ public class ShooterIOSim implements ShooterIO {
   }
 
   @Override
-  public void setShooterSpeedVoltage(double topVolts, double bottomVolts) {
-    shooterTopAppliedVolts = MathUtil.clamp(topVolts, -12.0, 12.0);
-    shooterBottomAppliedVolts = MathUtil.clamp(bottomVolts, -12.0, 12.0);
+  public void setShooterSpeedVoltage(double volts) {
+    shooterTopAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
+    shooterBottomAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
 
     shooterTopSim.setInputVoltage(shooterTopAppliedVolts);
     shooterBottomSim.setInputVoltage(shooterBottomAppliedVolts);

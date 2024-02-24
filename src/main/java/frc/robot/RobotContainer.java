@@ -16,6 +16,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -23,7 +24,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants.DriveMode;
+import frc.robot.commands.IntakeCommands;
 import frc.robot.commands.SwerveCommands;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.HoodIO;
@@ -38,6 +41,7 @@ import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterIOSparkMax;
 import frc.robot.subsystems.swerve.GyroIO;
+import frc.robot.subsystems.swerve.GyroIOPigeon2;
 import frc.robot.subsystems.swerve.ModuleIO;
 import frc.robot.subsystems.swerve.ModuleIOSim;
 import frc.robot.subsystems.swerve.ModuleIOSparkMax;
@@ -75,7 +79,7 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         swerve =
             new Swerve(
-                new GyroIO() {},
+                new GyroIOPigeon2(false),
                 new ModuleIOSparkMax(0),
                 new ModuleIOSparkMax(1),
                 new ModuleIOSparkMax(2),
@@ -144,10 +148,18 @@ public class RobotContainer {
     swerve.setDefaultCommand(
         SwerveCommands.joystickDrive(
             swerve,
+            shooter,
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX(),
             () -> currentMode));
+
+    intake.setDefaultCommand(
+        IntakeCommands.runIntake(
+            intake,
+            shooter,
+            () -> controller.leftBumper().getAsBoolean(),
+            () -> controller.rightBumper().getAsBoolean()));
     controller.x().onTrue(Commands.runOnce(swerve::stopWithX, swerve));
     controller
         .b()
@@ -173,7 +185,7 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  shooter.setPosition(45);
+                  // shooter.setPosition(45);
                   hood.setHoodPosition(true);
                 },
                 shooter,
@@ -184,11 +196,21 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  shooter.setPosition(0);
+                  // shooter.setPosition(0);
                   hood.setHoodPosition(false);
                 },
                 shooter,
                 hood));
+
+    controller
+        .povRight()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  shooter.setPosition(
+                      Units.radiansToDegrees(ShooterConstants.SHOOTER_PIVOT_INTAKE_POSITION));
+                },
+                shooter));
 
     // controller
     // .povDown()

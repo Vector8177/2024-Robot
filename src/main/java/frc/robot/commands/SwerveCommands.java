@@ -22,6 +22,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.SwerveConstants.DriveMode;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.swerve.Swerve;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -36,6 +37,7 @@ public class SwerveCommands {
    */
   public static Command joystickDrive(
       Swerve swerve,
+      Shooter shooter,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
@@ -83,6 +85,8 @@ public class SwerveCommands {
                   linearVelocity.getY() * swerve.getMaxLinearSpeedMetersPerSec(),
                   omegaVelocity,
                   swerve.getRotation()));
+                  
+          shooter.setPosition(swerve.calculateAngleAutoAlign());
         },
         swerve);
   }

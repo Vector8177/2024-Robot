@@ -22,17 +22,17 @@ public class ShooterCommands {
         hood);
   }
 
-  public static Command runShooter(Shooter shooter, BooleanSupplier shoot, BooleanSupplier amp) {
-    return Commands.runOnce(
-        () -> {
-          if (shoot.getAsBoolean()) {
-            shooter.setIndexerSpeed(ShooterConstants.SHOOTER_INDEXER_SPEED);
-            shooter.setShooterSpeed(
-                ShooterConstants.SHOOTER_TARGET_SPEED, -ShooterConstants.SHOOTER_TARGET_SPEED);
-          } else if (amp.getAsBoolean()) {
-            shooter.setIndexerSpeed(-ShooterConstants.SHOOTER_INDEXER_SPEED);
-          }
-        },
-        shooter);
-  }
+  // public static Command runShooter(Shooter shooter, BooleanSupplier shoot, BooleanSupplier amp) {
+  //   return Commands.runOnce(
+  //       () -> {
+  //         if (shoot.getAsBoolean()) {
+  //           shooter.setIndexerSpeed(ShooterConstants.SHOOTER_INDEXER_SPEED);
+  //           shooter.setShooterSpeed(
+  //               ShooterConstants.SHOOTER_TARGET_SPEED, );
+  //         } else if (amp.getAsBoolean()) {
+  //           shooter.setIndexerSpeed(-ShooterConstants.SHOOTER_INDEXER_SPEED);
+  //         }
+  //       },
+  //       shooter);
+  // }
 }

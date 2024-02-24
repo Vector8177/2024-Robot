@@ -16,19 +16,16 @@ public class Shooter extends SubsystemBase {
   private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
   private final PIDController pivotPidController;
-  private final PIDController shooterTopSpeedPidController;
-  private final PIDController shooterBottomSpeedPidController;
+  private final PIDController shooterSpeedPidController;
 
   private MechanismRoot2d rootMech;
   private MechanismLigament2d m_shooter;
 
   private final ArmFeedforward pivotFeedForward;
 
-  private Rotation2d pivotRelativeOffset;
   private Rotation2d targetPosition = new Rotation2d();
 
-  private double targetTopSpeed;
-  private double targetBottomSpeed;
+  private double wheelTargetSpeed = 0d;
 
   public Shooter(ShooterIO io, Mechanism2d mainMech) {
     this.io = io;
@@ -48,19 +45,12 @@ public class Shooter extends SubsystemBase {
             ShooterConstants.SHOOTER_ARM_KV,
             ShooterConstants.SHOOTER_ARM_KA);
 
-    shooterTopSpeedPidController =
+    shooterSpeedPidController =
         new PIDController(
             ShooterConstants.SHOOTER_TOP_KP,
             ShooterConstants.SHOOTER_TOP_KI,
             ShooterConstants.SHOOTER_TOP_KD);
-    shooterTopSpeedPidController.setTolerance(ShooterConstants.SHOOTER_SPEED_TOLERANCE);
-
-    shooterBottomSpeedPidController =
-        new PIDController(
-            ShooterConstants.SHOOTER_BOTTOM_KP,
-            ShooterConstants.SHOOTER_BOTTOM_KP,
-            ShooterConstants.SHOOTER_BOTTOM_KP);
-    shooterBottomSpeedPidController.setTolerance(ShooterConstants.SHOOTER_SPEED_TOLERANCE);
+    shooterSpeedPidController.setTolerance(ShooterConstants.SHOOTER_SPEED_TOLERANCE);
 
     // pivotRelativeOffset =
     //     inputs.shooterPivotAbsolutePosition.minus(inputs.shooterPivotRelativePosition);
@@ -72,9 +62,8 @@ public class Shooter extends SubsystemBase {
                 "shooterPivot", 2, inputs.shooterPivotRelativePosition.getDegrees()));
   }
 
-  public void setShooterSpeed(double topSpeed, double bottomSpeed) {
-    targetTopSpeed = topSpeed;
-    targetBottomSpeed = bottomSpeed;
+  public void setShooterSpeed(double speed) {
+    wheelTargetSpeed = speed;
   }
 
   public void setPosition(double deg) {
@@ -82,15 +71,15 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setIndexerSpeed(double speed) {
-    io.setShooterIndexerVoltage(speed);
+    io.setShooterIndexerVoltage(speed * ShooterConstants.MAX_MOTOR_VOLTAGE);
   }
 
   public double getShooterTopFixedVelocity() {
-    return inputs.shooterTopFixedVelocityRadPerSec;
+    return inputs.shooterTopFixedRPM;
   }
 
   public double getShooterBottomFixedVelocity() {
-    return inputs.shooterBottomFixedVelocityRadPerSec;
+    return inputs.shooterBottomFixedRPM;
   }
 
   public double getIRSensorVoltage() {
@@ -108,8 +97,7 @@ public class Shooter extends SubsystemBase {
 
     Logger.recordOutput("Shooter/SetPoints", targetPosition);
 
-    Logger.recordOutput("Shooter/SetPoints/TopSpeed", targetTopSpeed);
-    Logger.recordOutput("Shooter/SetPoints/BottomSpeed", targetBottomSpeed);
+    Logger.recordOutput("Shooter/SetPoints/WheelTargetSpeed", wheelTargetSpeed);
 
     m_shooter.setAngle(inputs.shooterPivotRelativePosition);
 
@@ -124,23 +112,16 @@ public class Shooter extends SubsystemBase {
             -ShooterConstants.MAX_MOTOR_VOLTAGE,
             ShooterConstants.MAX_MOTOR_VOLTAGE));
 
-    double shooterTopSpeed =
-        shooterTopSpeedPidController.calculate(
-            inputs.shooterTopFixedVelocityRadPerSec, targetTopSpeed);
-    double shooterBottomSpeed =
-        shooterBottomSpeedPidController.calculate(
-            inputs.shooterBottomFixedVelocityRadPerSec, targetBottomSpeed);
+    double shooterSpeed =
+        shooterSpeedPidController.calculate(
+            inputs.shooterTopFixedRPM, wheelTargetSpeed);
 
     // DriverStation.reportWarning(
     //     "TOP: " + shooterTopSpeed + "; BOTTOM: " + shooterBottomSpeed, false);
 
     io.setShooterSpeedVoltage(
         MathUtil.clamp(
-            shooterTopSpeed,
-            -ShooterConstants.MAX_MOTOR_VOLTAGE,
-            ShooterConstants.MAX_MOTOR_VOLTAGE),
-        MathUtil.clamp(
-            shooterBottomSpeed,
+            shooterSpeed,
             -ShooterConstants.MAX_MOTOR_VOLTAGE,
             ShooterConstants.MAX_MOTOR_VOLTAGE));
   }
