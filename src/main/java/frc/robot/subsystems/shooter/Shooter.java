@@ -65,7 +65,7 @@ public class Shooter extends SubsystemBase {
     // pivotRelativeOffset =
     //     inputs.shooterPivotAbsolutePosition.minus(inputs.shooterPivotRelativePosition);
 
-    rootMech = mainMech.getRoot("shooter", 1.5, 1.5);
+    rootMech = mainMech.getRoot("shooter", 5, 1.5);
     m_shooter =
         rootMech.append(
             new MechanismLigament2d(
@@ -77,8 +77,8 @@ public class Shooter extends SubsystemBase {
     targetBottomSpeed = bottomSpeed;
   }
 
-  public void setPosition(double rad) {
-    targetPosition = Rotation2d.fromRadians(rad);
+  public void setPosition(double deg) {
+    targetPosition = Rotation2d.fromDegrees(deg);
   }
 
   public void setIndexerSpeed(double speed) {
@@ -97,10 +97,16 @@ public class Shooter extends SubsystemBase {
     return inputs.shooterSensorTriggerVoltage;
   }
 
+  public MechanismLigament2d getMechanismLigament2d() {
+    return m_shooter;
+  }
+
   @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter", inputs);
+
+    Logger.recordOutput("Shooter/SetPoints", targetPosition);
 
     Logger.recordOutput("Shooter/SetPoints/TopSpeed", targetTopSpeed);
     Logger.recordOutput("Shooter/SetPoints/BottomSpeed", targetBottomSpeed);

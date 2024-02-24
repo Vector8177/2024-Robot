@@ -4,13 +4,15 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.robot.Constants;
 
 public class ShooterIOSim implements ShooterIO {
   private static final double LOOP_PERIOD_SECS = 0.02;
 
   private DCMotorSim shooterTopSim = new DCMotorSim(DCMotor.getNEO(1), 1 / 1.5, 0.025);
   private DCMotorSim shooterBottomSim = new DCMotorSim(DCMotor.getNEO(1), 1 / 1.5, 0.025);
-  private DCMotorSim shooterPivotSim = new DCMotorSim(DCMotor.getNEO(1), 1, 0.004);
+  private DCMotorSim shooterPivotSim =
+      new DCMotorSim(DCMotor.getNEO(1), Constants.ShooterConstants.SHOOTER_PIVOT_GEAR_RATIO, 0.004);
   private DCMotorSim shooterIndexerSim = new DCMotorSim(DCMotor.getNEO(1), 1, 0.004);
 
   private double shooterTopAppliedVolts = 0d;

@@ -39,8 +39,8 @@ public class IntakeIOSparkMax implements IntakeIO {
     intakeIndexerEncoder = intakeLeftFeederSparkMax.getEncoder();
     intakeIndexerSparkMax.enableVoltageCompensation(12d);
 
-    intakeLeftFeederEncoder.setMeasurementPeriod(50);
-    intakeIndexerEncoder.setMeasurementPeriod(50);
+    intakeLeftFeederEncoder.setMeasurementPeriod(60);
+    intakeIndexerEncoder.setMeasurementPeriod(60);
 
     intakeRightFeederSparkMax.follow(intakeLeftFeederSparkMax);
     intakeRightFeederSparkMax.setInverted(true);

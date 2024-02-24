@@ -3,11 +3,13 @@ package frc.robot.subsystems.hood;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.robot.Constants.HoodConstants;
 
 public class HoodIOSim implements HoodIO {
   private static final double LOOP_PERIOD_SECS = 0.02;
 
-  private DCMotorSim hoodPivotSim = new DCMotorSim(DCMotor.getNeo550(1), 1, 0.025);
+  private DCMotorSim hoodPivotSim =
+      new DCMotorSim(DCMotor.getNeo550(1), HoodConstants.HOOD_GEAR_RATIO, 0.025);
 
   private double hoodPivotAppliedVolts = 0d;
 

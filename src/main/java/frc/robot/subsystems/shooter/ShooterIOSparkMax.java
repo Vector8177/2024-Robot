@@ -68,10 +68,10 @@ public class ShooterIOSparkMax implements ShooterIO {
     shooterPivotSparkMax.enableVoltageCompensation(12);
     shooterIndexerSparkMax.enableVoltageCompensation(12);
 
-    shooterTopFixedEncoder.setMeasurementPeriod(50);
-    shooterBottomFixedEncoder.setMeasurementPeriod(50);
-    shooterPivotEncoder.setMeasurementPeriod(50);
-    shooterIndexerEncoder.setMeasurementPeriod(50);
+    shooterTopFixedEncoder.setMeasurementPeriod(60);
+    shooterBottomFixedEncoder.setMeasurementPeriod(60);
+    shooterPivotEncoder.setMeasurementPeriod(60);
+    shooterIndexerEncoder.setMeasurementPeriod(60);
 
     shooterTopFixedSparkMax.burnFlash();
     shooterBottomFixedSparkMax.burnFlash();

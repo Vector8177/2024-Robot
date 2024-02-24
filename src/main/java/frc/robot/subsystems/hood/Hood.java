@@ -4,9 +4,12 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.HoodConstants;
+import org.littletonrobotics.junction.Logger;
 
 public class Hood extends SubsystemBase {
   private final HoodIO io;
@@ -16,10 +19,13 @@ public class Hood extends SubsystemBase {
 
   private MechanismLigament2d m_hood;
 
-  private Rotation2d desiredPivotPosition = new Rotation2d();
+  private Rotation2d desiredPivotPosition = new Rotation2d(Constants.HoodConstants.AMP_POSE);
 
-  public Hood(HoodIO io) {
+  public Hood(HoodIO io, MechanismLigament2d shooterLig) {
     this.io = io;
+    m_hood =
+        shooterLig.append(
+            new MechanismLigament2d("Hood", 0.5, 0, 3, new Color8Bit(Color.kPapayaWhip)));
 
     pivotController =
         new PIDController(
@@ -30,7 +36,7 @@ public class Hood extends SubsystemBase {
   }
 
   public void setHoodPosition(boolean isHoodUp) {
-    setHoodPositionRad(isHoodUp ? HoodConstants.TOP_POSE : HoodConstants.BOTTOM_POSE);
+    setHoodPositionRad(isHoodUp ? HoodConstants.SHOOT_POSE : HoodConstants.AMP_POSE);
   }
 
   private void setHoodPositionRad(double rad) {
@@ -43,6 +49,11 @@ public class Hood extends SubsystemBase {
 
   @Override
   public void periodic() {
+    io.updateInputs(inputs);
+    Logger.processInputs("Hood", inputs);
+
+    m_hood.setAngle(inputs.hoodPivotEncoderPosition);
+
     io.setHoodPivotVoltage(
         MathUtil.clamp(
             pivotController.calculate(

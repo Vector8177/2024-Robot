@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.Constants;
 import frc.robot.Constants.HoodConstants;
 
 public class HoodIOSparkMax implements HoodIO {
@@ -18,9 +19,12 @@ public class HoodIOSparkMax implements HoodIO {
     hoodPivotSparkMax.setCANTimeout(250);
 
     hoodPivotEncoder = hoodPivotSparkMax.getEncoder();
+    hoodPivotEncoder.setPosition(0);
+    hoodPivotEncoder.setPositionConversionFactor(
+        2 * Math.PI * Constants.HoodConstants.HOOD_GEAR_RATIO);
     hoodPivotSparkMax.enableVoltageCompensation(12d);
 
-    hoodPivotEncoder.setMeasurementPeriod(50);
+    hoodPivotEncoder.setMeasurementPeriod(60);
 
     hoodPivotSparkMax.burnFlash();
   }

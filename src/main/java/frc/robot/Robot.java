@@ -98,6 +98,7 @@ public class Robot extends LoggedRobot {
     // This must be called from the robot's periodic block in order for anything in
     // the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    robotContainer.updateMech();
   }
 
   /** This function is called once when the robot is disabled. */

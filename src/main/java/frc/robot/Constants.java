@@ -36,9 +36,9 @@ public final class Constants {
   public static final double SPEAKER_HEIGHT = 2.0;
 
   public static final class IntakeConstants {
-    public static final int LEFT_FEEDER_MOTOR_ID = 61;
-    public static final int RIGHT_FEEDER_MOTOR_ID = 62;
-    public static final int INDEXER_MOTOR_ID = 63;
+    public static final int LEFT_FEEDER_MOTOR_ID = 60;
+    public static final int RIGHT_FEEDER_MOTOR_ID = 61;
+    public static final int INDEXER_MOTOR_ID = 62;
 
     public static final int maxIntakeMotorVoltage = 9;
 
@@ -75,8 +75,10 @@ public final class Constants {
     public static final double hoodPivotKI = 0d;
     public static final double hoodPivotKD = 0d;
 
-    public static final double TOP_POSE = 1.0;
-    public static final double BOTTOM_POSE = 0.0;
+    public static final double SHOOT_POSE = -1.754;
+    public static final double AMP_POSE = -0.1;
+
+    public static final double HOOD_GEAR_RATIO = 1d / (5 * 5 * 5 * 36d / 24);
   }
 
   public final class SwerveConstants {
@@ -176,13 +178,13 @@ public final class Constants {
     public static final int SHOOTER_IR_SENSOR_PORT = 0;
 
     public static final double SHOOTER_GEAR_RATIO = 1 / 1.5;
-    public static final double ABSOLUTE_OFFSET = 0d;
-    public static final double SHOOTER_PIVOT_GEAR_RATIO = 1 / (3 * 3 * 4 * 64 / 22);
+    public static final double ABSOLUTE_OFFSET = 2.353d;
+    public static final double SHOOTER_PIVOT_GEAR_RATIO = 1d / (3 * 3 * 4 * 64d / 22);
 
     // Shooter Pivot PID
-    public static final double SHOOTER_PIVOT_KP = 1.5d;
+    public static final double SHOOTER_PIVOT_KP = 6.4d;
     public static final double SHOOTER_PIVOT_KI = 0d;
-    public static final double SHOOTER_PIVOT_KD = .3d;
+    public static final double SHOOTER_PIVOT_KD = 6d;
     public static final double PIVOT_TOLERANCE = 0.2;
 
     // Shooter Top Wheel PID
