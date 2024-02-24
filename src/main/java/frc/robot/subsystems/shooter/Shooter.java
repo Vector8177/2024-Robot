@@ -24,7 +24,7 @@ public class Shooter extends SubsystemBase {
 
   private final ArmFeedforward pivotFeedForward;
 
-  // private Rotation2d pivotRelativeOffset;
+  private Rotation2d pivotRelativeOffset;
   private Rotation2d targetPosition = new Rotation2d();
 
   private double targetTopSpeed;

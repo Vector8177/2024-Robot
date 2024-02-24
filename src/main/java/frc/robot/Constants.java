@@ -26,7 +26,7 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static final Mode currentMode = Mode.SIM;
+  public static final Mode currentMode = Mode.REAL;
 
   public static final int placeHolderMotorID = Integer.MAX_VALUE;
 
@@ -178,8 +178,8 @@ public final class Constants {
     public static final int SHOOTER_IR_SENSOR_PORT = 0;
 
     public static final double SHOOTER_GEAR_RATIO = 1 / 1.5;
-    public static final double ABSOLUTE_OFFSET = 2.353d;
-    public static final double SHOOTER_PIVOT_GEAR_RATIO = 1d / (3 * 3 * 4 * 64d / 22);
+    public static final double ABSOLUTE_OFFSET = 2.311;
+    public static final double SHOOTER_PIVOT_GEAR_RATIO = 1d / (3 * 3 * 4 * 64d / 24);
 
     // Shooter Pivot PID
     public static final double SHOOTER_PIVOT_KP = 6.4d;

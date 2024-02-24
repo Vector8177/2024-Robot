@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogInput;
 import frc.robot.Constants.ShooterConstants;
+import org.littletonrobotics.junction.Logger;
 
 public class ShooterIOSparkMax implements ShooterIO {
   private final CANSparkMax shooterTopFixedSparkMax;
@@ -22,6 +23,8 @@ public class ShooterIOSparkMax implements ShooterIO {
   private final RelativeEncoder shooterIndexerEncoder;
 
   private final AbsoluteEncoder shooterPivotAbsoluteEncoder;
+
+  private Rotation2d pivotRelativeOffset = new Rotation2d();
 
   private final AnalogInput shooterIRSensor;
 
@@ -62,6 +65,13 @@ public class ShooterIOSparkMax implements ShooterIO {
     shooterPivotEncoder.setPosition(shooterPivotAbsoluteEncoder.getPosition());
     shooterPivotEncoder.setPositionConversionFactor(
         2 * Math.PI * ShooterConstants.SHOOTER_PIVOT_GEAR_RATIO);
+    pivotRelativeOffset =
+        Rotation2d.fromRadians(shooterPivotAbsoluteEncoder.getPosition())
+            .minus(Rotation2d.fromRadians(shooterPivotEncoder.getPosition()));
+
+    Logger.recordOutput("Shooter/PivotRelativeOffset", pivotRelativeOffset);
+    Logger.recordOutput("Shooter/Absolute", shooterPivotAbsoluteEncoder.getPosition());
+    Logger.recordOutput("Shooter/Relative", shooterPivotEncoder.getPosition());
 
     shooterTopFixedSparkMax.enableVoltageCompensation(12);
     shooterBottomFixedSparkMax.enableVoltageCompensation(12);
@@ -106,7 +116,8 @@ public class ShooterIOSparkMax implements ShooterIO {
         Units.rotationsPerMinuteToRadiansPerSecond(shooterIndexerEncoder.getVelocity());
     inputs.shooterIndexerCurrentAmps = new double[] {shooterIndexerSparkMax.getOutputCurrent()};
 
-    inputs.shooterPivotRelativePosition = Rotation2d.fromRadians(shooterPivotEncoder.getPosition());
+    inputs.shooterPivotRelativePosition =
+       ( Rotation2d.fromRadians(shooterPivotEncoder.getPosition()).plus(pivotRelativeOffset));
     inputs.shooterPivotAbsolutePosition =
         Rotation2d.fromRadians(shooterPivotAbsoluteEncoder.getPosition());
 
