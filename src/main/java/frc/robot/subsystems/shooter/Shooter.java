@@ -38,7 +38,7 @@ public class Shooter extends SubsystemBase {
             ShooterConstants.SHOOTER_PIVOT_KP,
             ShooterConstants.SHOOTER_PIVOT_KI,
             ShooterConstants.SHOOTER_PIVOT_KD);
-    pivotPidController.enableContinuousInput(-Math.PI, Math.PI);
+    pivotPidController.enableContinuousInput(0, 2 * Math.PI);
     pivotPidController.setTolerance(ShooterConstants.PIVOT_TOLERANCE);
 
     pivotFeedForward =

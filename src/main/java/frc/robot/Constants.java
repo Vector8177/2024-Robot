@@ -180,7 +180,7 @@ public final class Constants {
 
     public static final double SHOOTER_PIVOT_INTAKE_POSITION = 2.189d;
 
-    public static final double SHOOTER_PIVOT_HOOD_POSITION = 0d;
+    public static final double SHOOTER_PIVOT_AMP_POSITION = 5.931d;
 
     public static final double SHOOTER_GEAR_RATIO = 1 / 1.5;
     public static final double ABSOLUTE_OFFSET = 0.802d;
@@ -211,7 +211,7 @@ public final class Constants {
     public static final double SHOOTER_ARM_KV = 0d;
     public static final double SHOOTER_ARM_KA = 0d;
 
-    public static final double SHOOTER_INDEXER_SPEED = .5d;
+    public static final double SHOOTER_INDEXER_SPEED = .75d;
 
     public static final double SHOOTER_TARGET_SPEED = .8f;
 

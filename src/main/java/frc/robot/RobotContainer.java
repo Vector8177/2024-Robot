@@ -209,8 +209,18 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  shooter.setPosition(0);
+                  shooter.setPosition(
+                      Units.radiansToDegrees(ShooterConstants.SHOOTER_PIVOT_AMP_POSITION));
                   hood.setHoodPosition(true);
+                },
+                shooter));
+    controller
+        .povLeft()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  shooter.setPosition(0);
+                  hood.setHoodPosition(false);
                 },
                 shooter));
 
@@ -221,7 +231,7 @@ public class RobotContainer {
                 () -> {
                   shooter.setPosition(
                       Units.radiansToDegrees(ShooterConstants.SHOOTER_PIVOT_INTAKE_POSITION));
-                      hood.setHoodPosition(false);
+                  hood.setHoodPosition(false);
                 },
                 shooter));
 

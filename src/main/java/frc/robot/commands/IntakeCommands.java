@@ -15,8 +15,9 @@ public class IntakeCommands {
       Intake intake, Shooter shooter, BooleanSupplier intakeIn, BooleanSupplier intakeOut) {
     return Commands.run(
         () -> {
-          if (intakeIn.getAsBoolean()
-              && shooter.getIRSensorVoltage() < ShooterConstants.SHOOTER_IR_TARGET_VOLTAGE) {
+          // if (intakeIn.getAsBoolean()
+          //     && shooter.getIRSensorVoltage() < ShooterConstants.SHOOTER_IR_TARGET_VOLTAGE) {
+          if (intakeIn.getAsBoolean()) {
             intake.setFeederSpeed(IntakeConstants.FEEDER_SPEED);
             intake.setIndexerSpeed(IntakeConstants.INDEXER_SPEED);
             shooter.setIndexerSpeed(ShooterConstants.SHOOTER_INDEXER_SPEED);
