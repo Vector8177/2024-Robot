@@ -85,8 +85,8 @@ public class SwerveCommands {
                   linearVelocity.getY() * swerve.getMaxLinearSpeedMetersPerSec(),
                   omegaVelocity,
                   swerve.getRotation()));
-                  
-          shooter.setPosition(swerve.calculateAngleAutoAlign());
+
+          // shooter.setPosition(swerve.calculateAngleAutoAlign());
         },
         swerve);
   }

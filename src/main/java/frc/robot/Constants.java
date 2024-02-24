@@ -72,12 +72,12 @@ public final class Constants {
     public static final int maxHoodMotorVoltage = 12;
 
     // public static final double hoodPivotKP = 1d;
-    public static final double hoodPivotKP = 0d;
+    public static final double hoodPivotKP = 10d;
     public static final double hoodPivotKI = 0d;
     public static final double hoodPivotKD = 0d;
 
-    public static final double SHOOT_POSE = -1.754;
-    public static final double AMP_POSE = -0.1;
+    public static final double SHOOT_POSE = 0.05;
+    public static final double AMP_POSE = 2.1;
 
     public static final double HOOD_GEAR_RATIO = 1d / (5 * 5 * 5 * 36d / 24);
   }
@@ -178,7 +178,7 @@ public final class Constants {
 
     public static final int SHOOTER_IR_SENSOR_PORT = 0;
 
-    public static final double SHOOTER_PIVOT_INTAKE_POSITION = 2.145d;
+    public static final double SHOOTER_PIVOT_INTAKE_POSITION = 2.189d;
 
     public static final double SHOOTER_PIVOT_HOOD_POSITION = 0d;
 
@@ -211,7 +211,7 @@ public final class Constants {
     public static final double SHOOTER_ARM_KV = 0d;
     public static final double SHOOTER_ARM_KA = 0d;
 
-    public static final double SHOOTER_INDEXER_SPEED = .1d;
+    public static final double SHOOTER_INDEXER_SPEED = .5d;
 
     public static final double SHOOTER_TARGET_SPEED = .8f;
 

@@ -19,7 +19,7 @@ public class Hood extends SubsystemBase {
 
   private MechanismLigament2d m_hood;
 
-  private Rotation2d desiredPivotPosition = new Rotation2d(Constants.HoodConstants.AMP_POSE);
+  private Rotation2d desiredPivotPosition = new Rotation2d(Constants.HoodConstants.SHOOT_POSE);
 
   public Hood(HoodIO io, MechanismLigament2d shooterLig) {
     this.io = io;
@@ -35,8 +35,8 @@ public class Hood extends SubsystemBase {
     pivotController.enableContinuousInput(0, Math.PI * 2);
   }
 
-  public void setHoodPosition(boolean isHoodUp) {
-    setHoodPositionRad(isHoodUp ? HoodConstants.SHOOT_POSE : HoodConstants.AMP_POSE);
+  public void setHoodPosition(boolean amp) {
+    setHoodPositionRad(amp ? HoodConstants.AMP_POSE : HoodConstants.SHOOT_POSE);
   }
 
   private void setHoodPositionRad(double rad) {
@@ -51,6 +51,8 @@ public class Hood extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Hood", inputs);
+
+    Logger.recordOutput("Hood/Setpoints/Rotation", desiredPivotPosition);
 
     m_hood.setAngle(inputs.hoodPivotEncoderPosition);
 

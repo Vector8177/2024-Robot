@@ -109,14 +109,12 @@ public class ShooterIOSparkMax implements ShooterIO {
   public void updateInputs(ShooterIOInputs inputs) {
     inputs.shooterTopFixedAppliedVolts =
         shooterTopFixedSparkMax.getAppliedOutput() * shooterTopFixedSparkMax.getBusVoltage();
-    inputs.shooterTopFixedRPM =
-        Units.rotationsPerMinuteToRadiansPerSecond(shooterTopFixedEncoder.getVelocity());
+    inputs.shooterTopFixedRPM = shooterTopFixedEncoder.getVelocity();
     inputs.shooterTopFixedCurrentAmps = new double[] {shooterTopFixedSparkMax.getOutputCurrent()};
 
     inputs.shooterBottomFixedAppliedVolts =
         shooterBottomFixedSparkMax.getAppliedOutput() * shooterBottomFixedSparkMax.getBusVoltage();
-    inputs.shooterBottomFixedRPM =
-        Units.rotationsPerMinuteToRadiansPerSecond(shooterBottomFixedEncoder.getVelocity());
+    inputs.shooterBottomFixedRPM = shooterBottomFixedEncoder.getVelocity();
     inputs.shooterBottomFixedCurrentAmps =
         new double[] {shooterBottomFixedSparkMax.getOutputCurrent()};
 

@@ -123,6 +123,19 @@ public class RobotContainer {
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
+    // autoChooser.addOption(
+    //     "Shooter SysId (Quasistatic Forward)",
+    //     shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    //     "Shooter SysId (Quasistatic Reverse)",
+    //     shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // autoChooser.addOption(
+    //     "Shooter SysId (Dynamic Forward)",
+    //     shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    //     "Shooter SysId (Dynamic Reverse)",
+    // shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
     autoChooser.addOption(
         "Drive SysId (Quasistatic Forward)",
         swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
@@ -171,36 +184,35 @@ public class RobotContainer {
                     swerve)
                 .ignoringDisable(true));
 
-    controller
-        .a()
-        .onTrue(
-            Commands.runOnce(
-                () ->
-                    currentMode =
-                        currentMode == DriveMode.TELEOP ? DriveMode.AUTO_ALIGN : DriveMode.TELEOP,
-                swerve));
+    // controller
+    //     .a()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //             () ->
+    //                 currentMode =
+    //                     currentMode == DriveMode.TELEOP ? DriveMode.AUTO_ALIGN :
+    // DriveMode.TELEOP,
+    //             swerve));
 
     controller
         .povUp()
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  // shooter.setPosition(45);
-                  hood.setHoodPosition(true);
+                  shooter.setPosition(45);
+                  hood.setHoodPosition(false);
                 },
-                shooter,
-                hood));
+                shooter));
 
     controller
         .povDown()
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  // shooter.setPosition(0);
-                  hood.setHoodPosition(false);
+                  shooter.setPosition(0);
+                  hood.setHoodPosition(true);
                 },
-                shooter,
-                hood));
+                shooter));
 
     controller
         .povRight()
@@ -209,6 +221,7 @@ public class RobotContainer {
                 () -> {
                   shooter.setPosition(
                       Units.radiansToDegrees(ShooterConstants.SHOOTER_PIVOT_INTAKE_POSITION));
+                      hood.setHoodPosition(false);
                 },
                 shooter));
 
