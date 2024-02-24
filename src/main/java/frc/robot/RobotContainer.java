@@ -62,6 +62,7 @@ public class RobotContainer {
   private final Shooter shooter;
   private final Intake intake;
   private final Hood hood;
+  private int n = 0;
   // private final Climber climber;
 
   private final Mechanism2d mainMech = new Mechanism2d(10, 10);
@@ -193,13 +194,12 @@ public class RobotContainer {
     //                     currentMode == DriveMode.TELEOP ? DriveMode.AUTO_ALIGN :
     // DriveMode.TELEOP,
     //             swerve));
-
     controller
         .povUp()
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  shooter.setPosition(45);
+                  shooter.setPosition(Units.radiansToDegrees(ShooterConstants.SHOOTER_LONG_SHOT));
                   hood.setHoodPosition(false);
                 },
                 shooter));
@@ -232,6 +232,24 @@ public class RobotContainer {
                   shooter.setPosition(
                       Units.radiansToDegrees(ShooterConstants.SHOOTER_PIVOT_INTAKE_POSITION));
                   hood.setHoodPosition(false);
+                },
+                shooter));
+
+    controller
+        .a()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  shooter.setShooterSpeed(5000);
+                },
+                shooter));
+
+    controller
+        .y()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  shooter.setShooterSpeed(0);
                 },
                 shooter));
 

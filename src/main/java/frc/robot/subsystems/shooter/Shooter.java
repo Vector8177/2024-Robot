@@ -19,7 +19,7 @@ public class Shooter extends SubsystemBase {
   private final PIDController shooterSpeedPidController;
 
   // private final SysIdRoutine sysId;
-  // private final PIDController shooterSpeedFeedForward;
+  // private final SimpleMotorFeedforward shooterSpeedFeedForward;
 
   private MechanismRoot2d rootMech;
   private MechanismLigament2d m_shooter;
@@ -53,11 +53,9 @@ public class Shooter extends SubsystemBase {
             ShooterConstants.SHOOTER_TOP_KP,
             ShooterConstants.SHOOTER_TOP_KI,
             ShooterConstants.SHOOTER_TOP_KD);
-
-    // shooterSpeedFeedForward = new SimpleMotorFeedforward(wheelTargetSpeed,
     // wheelTargetSpeed);
 
-    // shooterSpeedFeedForward
+    // shooterSpeedFeedForward = (1 / ShooterConstants.SHOOTER_FF_V) * wheelTargetSpeed
     shooterSpeedPidController.setTolerance(ShooterConstants.SHOOTER_SPEED_TOLERANCE);
 
     // pivotRelativeOffset =
@@ -69,24 +67,28 @@ public class Shooter extends SubsystemBase {
             new MechanismLigament2d(
                 "shooterPivot", 2, inputs.shooterPivotRelativePosition.getDegrees()));
     // sysId =
-    //     new SysIdRoutine(
-    //         new Config(
-    //             null,
-    //             null,
-    //             null,
-    //             (state) -> Logger.recordOutput("Shooter/SysIdState", state.toString())),
-    //         new SysIdRoutine.Mechanism(
-    //             (voltage) -> runCharacterization(voltage.in(Volts)),
-    //             (log) ->
-    //                 log.motor("shooter-wheel")
-    //                     .voltage(Volts.of(inputs.shooterTopFixedAppliedVolts))
-    //                     .angularVelocity(
-    //                         Units.RotationsPerSecond.of(inputs.shooterTopFixedRPM * 60)),
-    //             this));
+    // new SysIdRoutine(
+    // new Config(
+    // null,
+    // null,
+    // null,
+    // (state) -> Logger.recordOutput("Shooter/SysIdState", state.toString())),
+    // new SysIdRoutine.Mechanism(
+    // (voltage) -> runCharacterization(voltage.in(Volts)),
+    // (log) ->
+    // log.motor("shooter-wheel")
+    // .voltage(Volts.of(inputs.shooterTopFixedAppliedVolts))
+    // .angularVelocity(
+    // Units.RotationsPerSecond.of(inputs.shooterTopFixedRPM * 60)),
+    // this));
   }
 
   public void setShooterSpeed(double speed) {
     wheelTargetSpeed = speed;
+  }
+
+  public void setShooterRawVolts(double volts) {
+    io.setShooterSpeedVoltage(volts);
   }
 
   public void setPosition(double deg) {
@@ -121,11 +123,11 @@ public class Shooter extends SubsystemBase {
   }
 
   // public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-  //   return sysId.quasistatic(direction);
+  // return sysId.quasistatic(direction);
   // }
 
   // public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-  //   return sysId.dynamic(direction);
+  // return sysId.dynamic(direction);
   // }
 
   @Override
@@ -149,15 +151,24 @@ public class Shooter extends SubsystemBase {
             -ShooterConstants.MAX_MOTOR_VOLTAGE,
             ShooterConstants.MAX_MOTOR_VOLTAGE));
 
-    double shooterSpeed =
-        shooterSpeedPidController.calculate(inputs.shooterTopFixedRPM, wheelTargetSpeed);
+    if (wheelTargetSpeed != null) {
+      double shooterSpeed =
+          shooterSpeedPidController.calculate(inputs.shooterTopFixedRPM, wheelTargetSpeed);
+      double shooterFF = (1 / ShooterConstants.SHOOTER_FF_V) * wheelTargetSpeed;
+      // DriverStation.reportWarning(
+      // "TOP: " + shooterTopSpeed + "; BOTTOM: " + shooterBottomSpeed, false);
+      // double shooterFF =
+      //     (wheelTargetSpeed - inputs.shooterTopFixedRPM) / ShooterConstants.SHOOTER_FF_V;
 
-    // DriverStation.reportWarning(
-    // "TOP: " + shooterTopSpeed + "; BOTTOM: " + shooterBottomSpeed, false);
+      // Logger.recordOutput("Shooter/FF_Val", shooterFF);
+      // Logger.recordOutput("Shooter/PID_Val", shooterSpeed);
 
-    io.setShooterSpeedVoltage(
-        MathUtil.clamp(
-            shooterSpeed, -ShooterConstants.MAX_MOTOR_VOLTAGE, ShooterConstants.MAX_MOTOR_VOLTAGE));
+      io.setShooterSpeedVoltage(
+          MathUtil.clamp(
+              shooterSpeed + shooterFF,
+              -ShooterConstants.MAX_MOTOR_VOLTAGE,
+              ShooterConstants.MAX_MOTOR_VOLTAGE));
+    }
   }
 
   public void stop() {

@@ -40,10 +40,10 @@ public final class Constants {
     public static final int RIGHT_FEEDER_MOTOR_ID = 61;
     public static final int INDEXER_MOTOR_ID = 62;
 
-    public static final int maxIntakeMotorVoltage = 9;
+    public static final int maxIntakeMotorVoltage = 12;
 
-    public static final double FEEDER_SPEED = 0d;
-    public static final double INDEXER_SPEED = 0d;
+    public static final double FEEDER_SPEED = 0d; // 0.4d;
+    public static final double INDEXER_SPEED = 0d; // 0.5d;
   }
 
   public static final class ClimberConstants {
@@ -178,9 +178,15 @@ public final class Constants {
 
     public static final int SHOOTER_IR_SENSOR_PORT = 0;
 
-    public static final double SHOOTER_PIVOT_INTAKE_POSITION = 2.189d;
+    public static final double SHOOTER_FF_V = 484d;
+
+    public static final double SHOOTER_PIVOT_INTAKE_POSITION = 2.179d;
 
     public static final double SHOOTER_PIVOT_AMP_POSITION = 5.931d;
+
+    public static final double SHOOTER_FENDER_AIM = 2.508d;
+
+    public static final double SHOOTER_LONG_SHOT = 1.85d;
 
     public static final double SHOOTER_GEAR_RATIO = 1 / 1.5;
     public static final double ABSOLUTE_OFFSET = 0.802d;
@@ -194,12 +200,13 @@ public final class Constants {
     public static final double PIVOT_TOLERANCE = 0.2;
 
     // Shooter Top Wheel PID
-    public static final double SHOOTER_TOP_KP = 0d;
-    public static final double SHOOTER_TOP_KI = 0d;
+    public static final double SHOOTER_TOP_KP = .0001d;
+    // public static final double SHOOTER_TOP_KI = .000085d;
+    public static final double SHOOTER_TOP_KI = .00;
     public static final double SHOOTER_TOP_KD = 0d;
 
     // Shooter Bottom Wheel PID
-    public static final double SHOOTER_BOTTOM_KP = 0d;
+    public static final double SHOOTER_BOTTOM_KP = 1d;
     public static final double SHOOTER_BOTTOM_KI = 0d;
     public static final double SHOOTER_BOTTOM_KD = 0d;
 

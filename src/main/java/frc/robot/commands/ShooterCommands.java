@@ -20,6 +20,14 @@ public class ShooterCommands {
         hood);
   }
 
+  // public static Command setShooterVoltage(Shooter shooter, DoubleSupplier volts) {
+  //   return Commands.run(
+  //       () -> {
+  //         shooter.setShooterRawVolts(volts.getAsDouble());
+  //       },
+  //       shooter);
+  // }
+
   // public static Command runShooter(Shooter shooter, BooleanSupplier shoot, BooleanSupplier amp) {
   //   return Commands.runOnce(
   //       () -> {
