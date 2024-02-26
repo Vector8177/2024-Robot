@@ -189,6 +189,9 @@ public final class Constants {
 
     public static final double SHOOTER_LONG_SHOT = 1.85d;
 
+    public static final int SHOOTER_SHOOT_WHEEL_RMP = 5000;
+    public static final int SHOOTER_SHOOT_WHEEL_RMP_START = 4500;
+
     public static final double SHOOTER_GEAR_RATIO = 1 / 1.5;
     public static final double ABSOLUTE_OFFSET = 0.802d;
     public static final double SHOOTER_PIVOT_GEAR_RATIO = 1d / (3 * 3 * 4 * 64d / 24);

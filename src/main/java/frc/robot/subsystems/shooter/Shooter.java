@@ -1,7 +1,6 @@
 package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -18,15 +17,11 @@ public class Shooter extends SubsystemBase {
   private final PIDController pivotPidController;
   private final PIDController shooterSpeedPidController;
 
-  boolean preparingToShoot = false;
-
   // private final SysIdRoutine sysId;
   // private final SimpleMotorFeedforward shooterSpeedFeedForward;
 
   private MechanismRoot2d rootMech;
   private MechanismLigament2d m_shooter;
-
-  private final ArmFeedforward pivotFeedForward;
 
   private Rotation2d targetPosition = new Rotation2d();
 
@@ -42,13 +37,6 @@ public class Shooter extends SubsystemBase {
             ShooterConstants.SHOOTER_PIVOT_KD);
     pivotPidController.enableContinuousInput(0, 2 * Math.PI);
     pivotPidController.setTolerance(ShooterConstants.PIVOT_TOLERANCE);
-
-    pivotFeedForward =
-        new ArmFeedforward(
-            ShooterConstants.SHOOTER_ARM_KS,
-            ShooterConstants.SHOOTER_ARM_KG,
-            ShooterConstants.SHOOTER_ARM_KV,
-            ShooterConstants.SHOOTER_ARM_KA);
 
     shooterSpeedPidController =
         new PIDController(
@@ -94,7 +82,6 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setPosition(double rad) {
-    Rotation2d temp = Rotation2d.fromRadians(rad);
     targetPosition = Rotation2d.fromRadians(rad);
   }
 
@@ -180,13 +167,5 @@ public class Shooter extends SubsystemBase {
 
   public void stop() {
     io.stop();
-  }
-
-  public void setPreparingToShoot(boolean prep) {
-    this.preparingToShoot = prep;
-  }
-
-  public boolean getPreparingToShoot() {
-    return this.preparingToShoot;
   }
 }

@@ -27,6 +27,7 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants.DriveMode;
 import frc.robot.commands.IntakeCommands;
 import frc.robot.commands.SwerveCommands;
+import frc.robot.commands.TeleopCommands;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.HoodIO;
 import frc.robot.subsystems.hood.HoodIOSim;
@@ -71,7 +72,8 @@ public class RobotContainer {
   private final Mechanism2d mainMech = new Mechanism2d(10, 10);
 
   // Controller
-  private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandXboxController driverController = new CommandXboxController(0);
+  private final CommandXboxController operatorController = new CommandXboxController(1);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -172,19 +174,12 @@ public class RobotContainer {
         SwerveCommands.joystickDrive(
             swerve,
             shooter,
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
-            () -> -controller.getRightX(),
+            () -> -driverController.getLeftY(),
+            () -> -driverController.getLeftX(),
+            () -> -driverController.getRightX(),
             () -> currentMode));
-
-    intake.setDefaultCommand(
-        IntakeCommands.runIntake(
-            intake,
-            shooter,
-            () -> controller.rightBumper().getAsBoolean(),
-            () -> controller.leftBumper().getAsBoolean()));
-    controller.x().onTrue(Commands.runOnce(swerve::stopWithX, swerve));
-    controller
+    driverController.x().onTrue(Commands.runOnce(swerve::stopWithX, swerve));
+    driverController
         .b()
         .onTrue(
             Commands.runOnce(
@@ -194,6 +189,25 @@ public class RobotContainer {
                     swerve)
                 .ignoringDisable(true));
 
+    operatorController.rightBumper().whileTrue(
+      TeleopCommands.runIntake(intake, shooter)
+    );
+
+    operatorController.leftBumper().whileTrue(
+      TeleopCommands.runOuttake(intake, shooter)
+    );
+
+    operatorController.povLeft().onTrue(
+      TeleopCommands.setShooterAmpPosition(shooter, hood)
+    );
+
+    operatorController.povRight().onTrue(
+      TeleopCommands.setShooterIntakePosition(shooter, hood)
+    );
+
+    operatorController.povUp().onTrue(
+      TeleopCommands.setShooterShootPosition(shooter, hood)
+    );
     // controller
     // .a()
     // .onTrue(
@@ -203,113 +217,6 @@ public class RobotContainer {
     // currentMode == DriveMode.TELEOP ? DriveMode.AUTO_ALIGN :
     // DriveMode.TELEOP,
     // swerve));
-    controller
-        .povUp()
-        .onTrue(
-            Commands.runOnce(
-                () -> {
-                  shooter.setPosition(ShooterConstants.SHOOTER_LONG_SHOT);
-                  hood.setHoodPosition(false);
-                },
-                shooter));
-
-    controller
-        .povDown()
-        .onTrue(
-            Commands.runOnce(
-                () -> {
-                  shooter.setPosition(ShooterConstants.SHOOTER_PIVOT_AMP_POSITION);
-                  hood.setHoodPosition(true);
-                },
-                shooter));
-    controller
-        .povLeft()
-        .onTrue(
-            Commands.runOnce(
-                () -> {
-                  shooter.setPosition(0);
-                  hood.setHoodPosition(false);
-                },
-                shooter));
-
-    controller
-        .povRight()
-        .onTrue(
-            Commands.runOnce(
-                () -> {
-                  shooter.setPosition(ShooterConstants.SHOOTER_PIVOT_INTAKE_POSITION);
-                  hood.setHoodPosition(false);
-                },
-                shooter));
-
-    // controller
-    // .a()
-    // .onTrue(
-    // Commands.runOnce(
-    // () -> {
-    // while (shooter.getShooterTopFixedVelocity() < 4500) {
-    // shooter.setShooterSpeed(5000);
-    // }
-    // shooter.setIndexerSpeed(-ShooterConstants.SHOOTER_INDEXER_SPEED);
-    // },
-    // shooter));
-
-    controller
-        .a()
-        .onTrue(
-            Commands.sequence(
-                Commands.runOnce(
-                    () -> {
-                      shooter.setShooterSpeed(6000);
-                      shooter.setPreparingToShoot(true);
-                    },
-                    shooter),
-                Commands.waitUntil(() -> shooter.getShooterTopFixedVelocity() > 5000),
-                Commands.runOnce(
-                    () -> {
-                      shooter.setIndexerSpeed(-ShooterConstants.SHOOTER_INDEXER_SPEED);
-                    },
-                    shooter),
-                Commands.waitSeconds(1),
-                Commands.runOnce(
-                    () -> {
-                      shooter.setPreparingToShoot(false);
-                    },
-                    shooter)));
-
-    controller
-        .y()
-        .onTrue(
-            Commands.sequence(
-                Commands.runOnce(
-                    () -> {
-                      shooter.setShooterSpeed(1500);
-                      shooter.setIndexerSpeed(0);
-                    },
-                    shooter),
-                Commands.waitUntil(() -> shooter.getShooterTopFixedVelocity() < 1600),
-                Commands.runOnce(
-                    () -> {
-                      shooter.setIndexerSpeed(0);
-                      shooter.setShooterSpeed(400);
-                    },
-                    shooter),
-                Commands.waitUntil(() -> shooter.getShooterTopFixedVelocity() < 500),
-                Commands.runOnce(
-                    () -> {
-                      shooter.setIndexerSpeed(0);
-                      shooter.setShooterSpeed(0);
-                    },
-                    shooter)));
-
-    // controller
-    // .povDown()
-    // .onTrue(Commands.runOnce(() -> ShooterCommands.SetSpeed(shooter, 3),
-    // shooter));
-    // controller
-    // .povUp()
-    // .onTrue(Commands.runOnce(() -> ShooterCommands.SetSpeed(shooter, 0),
-    // shooter));
   }
 
   /**
