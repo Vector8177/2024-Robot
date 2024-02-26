@@ -46,6 +46,10 @@ import frc.robot.subsystems.swerve.ModuleIO;
 import frc.robot.subsystems.swerve.ModuleIOSim;
 import frc.robot.subsystems.swerve.ModuleIOSparkMax;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.vision.CameraIO;
+import frc.robot.subsystems.vision.CameraIOPhoton;
+import frc.robot.subsystems.vision.Vision;
+
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -62,6 +66,7 @@ public class RobotContainer {
   private final Shooter shooter;
   private final Intake intake;
   private final Hood hood;
+  private final Vision vision;
   private int n = 0;
   // private final Climber climber;
 
@@ -78,13 +83,15 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
+        vision = new Vision(new CameraIOPhoton("left"));
         swerve =
             new Swerve(
                 new GyroIOPigeon2(false),
                 new ModuleIOSparkMax(0),
                 new ModuleIOSparkMax(1),
                 new ModuleIOSparkMax(2),
-                new ModuleIOSparkMax(3));
+                new ModuleIOSparkMax(3),
+                vision);
         shooter = new Shooter(new ShooterIOSparkMax(), mainMech);
         intake = new Intake(new IntakeIOSparkMax());
         hood = new Hood(new HoodIOSparkMax(), shooter.getMechanismLigament2d());
@@ -93,13 +100,15 @@ public class RobotContainer {
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
+        vision = new Vision(new CameraIO() {});
         swerve =
             new Swerve(
                 new GyroIO() {},
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim(),
-                new ModuleIOSim());
+                new ModuleIOSim(),
+                vision);
         shooter = new Shooter(new ShooterIOSim(), mainMech);
         intake = new Intake(new IntakeIOSim());
         hood = new Hood(new HoodIOSim(), shooter.getMechanismLigament2d());
@@ -108,13 +117,15 @@ public class RobotContainer {
 
       default:
         // Replayed robot, disable IO implementations
+        vision = new Vision(new CameraIO() {});
         swerve =
             new Swerve(
                 new GyroIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
-                new ModuleIO() {});
+                new ModuleIO() {},
+                vision);
         shooter = new Shooter(new ShooterIO() {}, mainMech);
         intake = new Intake(new IntakeIO() {});
         hood = new Hood(new HoodIO() {}, shooter.getMechanismLigament2d());

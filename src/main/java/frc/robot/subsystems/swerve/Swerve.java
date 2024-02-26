@@ -38,11 +38,16 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.SwerveConstants.ModuleLimits;
 import frc.robot.subsystems.swerve.controllers.AutoAlignController;
+import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.LocalADStarAK;
+
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.EstimatedRobotPose;
 
 public class Swerve extends SubsystemBase {
   static final Lock odometryLock = new ReentrantLock();
@@ -51,6 +56,7 @@ public class Swerve extends SubsystemBase {
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
   private final SysIdRoutine sysId;
   private final ModuleLimits limits = MODULE_LIMITS;
+  private final Vision s_Vision;
 
   private AutoAlignController autoAlignController = null;
 
@@ -72,12 +78,15 @@ public class Swerve extends SubsystemBase {
       ModuleIO flModuleIO,
       ModuleIO frModuleIO,
       ModuleIO blModuleIO,
-      ModuleIO brModuleIO) {
+      ModuleIO brModuleIO,
+      Vision s_Vision) {
     this.gyroIO = gyroIO;
     modules[0] = new Module(flModuleIO, 0);
     modules[1] = new Module(frModuleIO, 1);
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
+
+    this.s_Vision = s_Vision;
 
     // Start threads (no-op for each if no signals have been created)
     PhoenixOdometryThread.getInstance().start();
@@ -205,6 +214,12 @@ public class Swerve extends SubsystemBase {
 
       // Apply update
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
+
+      List<Optional<EstimatedRobotPose>> vPoses = s_Vision.getEstimatedGlobalPose(getPose());
+
+      for (int j = 0; j < vPoses.size(); j++) {
+        vPoses.get(i).ifPresent(this::addVisionMeasurement);
+      }
     }
   }
 
@@ -305,8 +320,8 @@ public class Swerve extends SubsystemBase {
    * @param visionPose The pose of the robot as measured by the vision camera.
    * @param timestamp The timestamp of the vision measurement in seconds.
    */
-  public void addVisionMeasurement(Pose2d visionPose, double timestamp) {
-    poseEstimator.addVisionMeasurement(visionPose, timestamp);
+  public void addVisionMeasurement(EstimatedRobotPose visionPose) {
+    poseEstimator.addVisionMeasurement(visionPose.estimatedPose.toPose2d(), visionPose.timestampSeconds);
   }
 
   /** Returns the maximum linear speed in meters per sec. */

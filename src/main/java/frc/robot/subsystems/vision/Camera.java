@@ -8,6 +8,7 @@ import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 public class Camera {
   private final CameraIO cameraIO;
@@ -46,6 +47,10 @@ public class Camera {
 
   public PhotonPoseEstimator getPoseEstimator() {
     return poseEstimator;
+  }
+
+  public PhotonPipelineResult getPipelineResult() {
+    return cameraInputs.result;
   }
 
   public Optional<EstimatedRobotPose> bob(Pose2d prevEstimatedRobotPose) {
