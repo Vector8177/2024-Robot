@@ -16,7 +16,6 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -49,7 +48,6 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.vision.CameraIO;
 import frc.robot.subsystems.vision.CameraIOPhoton;
 import frc.robot.subsystems.vision.Vision;
-
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -210,7 +208,7 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  shooter.setPosition(Units.radiansToDegrees(ShooterConstants.SHOOTER_LONG_SHOT));
+                  shooter.setPosition(ShooterConstants.SHOOTER_LONG_SHOT);
                   hood.setHoodPosition(false);
                 },
                 shooter));
@@ -220,8 +218,7 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  shooter.setPosition(
-                      Units.radiansToDegrees(ShooterConstants.SHOOTER_PIVOT_AMP_POSITION));
+                  shooter.setPosition(ShooterConstants.SHOOTER_PIVOT_AMP_POSITION);
                   hood.setHoodPosition(true);
                 },
                 shooter));
@@ -240,8 +237,7 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  shooter.setPosition(
-                      Units.radiansToDegrees(ShooterConstants.SHOOTER_PIVOT_INTAKE_POSITION));
+                  shooter.setPosition(ShooterConstants.SHOOTER_PIVOT_INTAKE_POSITION);
                   hood.setHoodPosition(false);
                 },
                 shooter));

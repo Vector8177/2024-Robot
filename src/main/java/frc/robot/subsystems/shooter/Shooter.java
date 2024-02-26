@@ -93,9 +93,9 @@ public class Shooter extends SubsystemBase {
     io.setShooterSpeedVoltage(volts);
   }
 
-  public void setPosition(double deg) {
-    Logger.recordOutput("Shooter/TEST", deg);
-    targetPosition = Rotation2d.fromDegrees(deg);
+  public void setPosition(double rad) {
+    Rotation2d temp = Rotation2d.fromRadians(rad);
+    targetPosition = Rotation2d.fromRadians(rad);
   }
 
   public void runCharacterization(double volts) {

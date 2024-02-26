@@ -13,6 +13,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -237,6 +238,8 @@ public final class Constants {
       public static final double FIELD_LENGTH = 0d;
       public static final double FIELD_WIDTH = 0d;
     }
+
+    public static final Transform3d frontLeftCameraPosition = new Transform3d();
   }
 
   public static enum Mode {

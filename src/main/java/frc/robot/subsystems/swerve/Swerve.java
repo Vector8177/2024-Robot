@@ -40,7 +40,6 @@ import frc.robot.Constants.SwerveConstants.ModuleLimits;
 import frc.robot.subsystems.swerve.controllers.AutoAlignController;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.LocalADStarAK;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
@@ -321,7 +320,8 @@ public class Swerve extends SubsystemBase {
    * @param timestamp The timestamp of the vision measurement in seconds.
    */
   public void addVisionMeasurement(EstimatedRobotPose visionPose) {
-    poseEstimator.addVisionMeasurement(visionPose.estimatedPose.toPose2d(), visionPose.timestampSeconds);
+    poseEstimator.addVisionMeasurement(
+        visionPose.estimatedPose.toPose2d(), visionPose.timestampSeconds);
   }
 
   /** Returns the maximum linear speed in meters per sec. */

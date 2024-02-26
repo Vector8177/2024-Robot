@@ -53,7 +53,7 @@ public class Camera {
     return cameraInputs.result;
   }
 
-  public Optional<EstimatedRobotPose> bob(Pose2d prevEstimatedRobotPose) {
+  public Optional<EstimatedRobotPose> getEstimatedPose(Pose2d prevEstimatedRobotPose) {
     poseEstimator.setReferencePose(prevEstimatedRobotPose);
 
     Optional<EstimatedRobotPose> tPose = poseEstimator.update();
