@@ -64,6 +64,7 @@ public class SwerveCommands {
               break;
             case AUTO_ALIGN:
               omegaVelocity = swerve.calculateOmegaAutoAlign();
+              shooter.setPosition(swerve.calculateAngleAutoAlign());
               break;
             default:
               omegaVelocity = 0.0;
@@ -85,8 +86,6 @@ public class SwerveCommands {
                   linearVelocity.getY() * swerve.getMaxLinearSpeedMetersPerSec(),
                   omegaVelocity,
                   swerve.getRotation()));
-
-          // shooter.setPosition(swerve.calculateAngleAutoAlign());
         },
         swerve);
   }

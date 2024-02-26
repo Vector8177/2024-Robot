@@ -343,7 +343,7 @@ public class Swerve extends SubsystemBase {
     return autoAlignController.updateDrive();
   }
 
-  // public double calculateAngleAutoAlign() {
-  //   return autoAlignController.updateAngle();
-  // }
+  public double calculateAngleAutoAlign() {
+    return autoAlignController.updateAngle();
+  }
 }
