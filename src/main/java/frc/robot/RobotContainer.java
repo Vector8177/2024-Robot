@@ -81,7 +81,7 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
-        vision = new Vision(new CameraIOPhoton("left"));
+        vision = new Vision(new CameraIOPhoton("frontLeftCamera"));
         swerve =
             new Swerve(
                 new GyroIOPigeon2(false),

@@ -79,14 +79,13 @@ public class AutoAlignController {
     return angularVelocity;
   }
 
-    public double updateAngle() {
-      Pose2d currentPose = swerve.getPose();
-      double distToTarget = goalPose.getTranslation().getDistance(currentPose.getTranslation());
-      double returnVal =
-              90 - Math.atan((Constants.SPEAKER_HEIGHT - Constants.SHOOTER_HEIGHT) /
-  distToTarget);
-      Logger.recordOutput("ShooterTargetPose", returnVal);
+  public double updateAngle() {
+    Pose2d currentPose = swerve.getPose();
+    double distToTarget = goalPose.getTranslation().getDistance(currentPose.getTranslation());
+    double returnVal =
+        90 - Math.atan((Constants.SPEAKER_HEIGHT - Constants.SHOOTER_HEIGHT) / distToTarget);
+    Logger.recordOutput("ShooterTargetPose", returnVal);
 
-      return returnVal;
-    }
+    return returnVal;
+  }
 }
