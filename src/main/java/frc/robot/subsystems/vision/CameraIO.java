@@ -3,6 +3,7 @@ package frc.robot.subsystems.vision;
 import java.util.ArrayList;
 import java.util.List;
 import org.littletonrobotics.junction.AutoLog;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public interface CameraIO {
@@ -12,7 +13,7 @@ public interface CameraIO {
     public boolean connected = false;
     public boolean driverMode = false;
     public PhotonTrackedTarget targetData = null;
-    public List<PhotonTrackedTarget> allTargetData = new ArrayList<PhotonTrackedTarget>();
+    public PhotonPipelineResult result = new PhotonPipelineResult();
     public double targetTimestamp = 0.0;
     public double[] cameraMatrixData = {};
     public double[] distCoeffsData = {};
