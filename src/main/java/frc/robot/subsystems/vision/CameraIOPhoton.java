@@ -4,22 +4,21 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 public class CameraIOPhoton implements CameraIO {
-    private PhotonCamera camera;
+  private PhotonCamera camera;
 
-    public CameraIOPhoton(String cameraName) { 
-        camera = new PhotonCamera(cameraName);
+  public CameraIOPhoton(String cameraName) {
+    camera = new PhotonCamera(cameraName);
 
-        camera.setDriverMode(false);
-    }
+    camera.setDriverMode(false);
+  }
 
-    @Override
-    public void updateInputs(CameraIOInputs inputs) {
-        inputs.cameraName = camera.getName();
-        inputs.connected = camera.isConnected();
-        inputs.driverMode = camera.getDriverMode();
-        PhotonPipelineResult latestResult = camera.getLatestResult();
-        inputs.targetData = latestResult.getBestTarget();
-        inputs.allTargetData = latestResult.getTargets();
-        
-    }
+  @Override
+  public void updateInputs(CameraIOInputs inputs) {
+    inputs.cameraName = camera.getName();
+    inputs.connected = camera.isConnected();
+    inputs.driverMode = camera.getDriverMode();
+    PhotonPipelineResult latestResult = camera.getLatestResult();
+    inputs.targetData = latestResult.getBestTarget();
+    inputs.allTargetData = latestResult.getTargets();
+  }
 }
