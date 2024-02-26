@@ -18,6 +18,8 @@ public class Shooter extends SubsystemBase {
   private final PIDController pivotPidController;
   private final PIDController shooterSpeedPidController;
 
+  boolean preparingToShoot = false;
+
   // private final SysIdRoutine sysId;
   // private final SimpleMotorFeedforward shooterSpeedFeedForward;
 
@@ -106,6 +108,11 @@ public class Shooter extends SubsystemBase {
     io.setShooterIndexerVoltage(speed * ShooterConstants.MAX_MOTOR_VOLTAGE);
   }
 
+  public void disableClosedLoop() {
+
+    wheelTargetSpeed = null;
+  }
+
   public double getShooterTopFixedVelocity() {
     return inputs.shooterTopFixedRPM;
   }
@@ -173,5 +180,13 @@ public class Shooter extends SubsystemBase {
 
   public void stop() {
     io.stop();
+  }
+
+  public void setPreparingToShoot(boolean prep) {
+    this.preparingToShoot = prep;
+  }
+
+  public boolean getPreparingToShoot() {
+    return this.preparingToShoot;
   }
 }

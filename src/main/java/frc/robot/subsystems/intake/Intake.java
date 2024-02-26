@@ -8,6 +8,8 @@ public class Intake extends SubsystemBase {
   private final IntakeIO io;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
+  private boolean preparingToShoot = false;
+
   public Intake(IntakeIO io) {
     this.io = io;
   }

@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.util.SparkUtils;
 
 public class IntakeIOSparkMax implements IntakeIO {
   private final CANSparkMax intakeLeftFeederSparkMax;
@@ -38,6 +39,10 @@ public class IntakeIOSparkMax implements IntakeIO {
     intakeRightFeederSparkMax.enableVoltageCompensation(12d);
     intakeIndexerEncoder = intakeLeftFeederSparkMax.getEncoder();
     intakeIndexerSparkMax.enableVoltageCompensation(12d);
+
+    SparkUtils.configureNothingFrameStrategy(intakeIndexerSparkMax);
+    SparkUtils.configureNothingFrameStrategy(intakeLeftFeederSparkMax);
+    SparkUtils.configureNothingFrameStrategy(intakeRightFeederSparkMax);
 
     intakeLeftFeederEncoder.setMeasurementPeriod(60);
     intakeIndexerEncoder.setMeasurementPeriod(60);

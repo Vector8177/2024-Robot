@@ -125,16 +125,16 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // autoChooser.addOption(
-    //     "Shooter SysId (Quasistatic Forward)",
-    //     shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // "Shooter SysId (Quasistatic Forward)",
+    // shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
     // autoChooser.addOption(
-    //     "Shooter SysId (Quasistatic Reverse)",
-    //     shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // "Shooter SysId (Quasistatic Reverse)",
+    // shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     // autoChooser.addOption(
-    //     "Shooter SysId (Dynamic Forward)",
-    //     shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // "Shooter SysId (Dynamic Forward)",
+    // shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
     // autoChooser.addOption(
-    //     "Shooter SysId (Dynamic Reverse)",
+    // "Shooter SysId (Dynamic Reverse)",
     // shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     autoChooser.addOption(
@@ -172,8 +172,8 @@ public class RobotContainer {
         IntakeCommands.runIntake(
             intake,
             shooter,
-            () -> controller.leftBumper().getAsBoolean(),
-            () -> controller.rightBumper().getAsBoolean()));
+            () -> controller.rightBumper().getAsBoolean(),
+            () -> controller.leftBumper().getAsBoolean()));
     controller.x().onTrue(Commands.runOnce(swerve::stopWithX, swerve));
     controller
         .b()
@@ -186,14 +186,14 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     // controller
-    //     .a()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //             () ->
-    //                 currentMode =
-    //                     currentMode == DriveMode.TELEOP ? DriveMode.AUTO_ALIGN :
+    // .a()
+    // .onTrue(
+    // Commands.runOnce(
+    // () ->
+    // currentMode =
+    // currentMode == DriveMode.TELEOP ? DriveMode.AUTO_ALIGN :
     // DriveMode.TELEOP,
-    //             swerve));
+    // swerve));
     controller
         .povUp()
         .onTrue(
@@ -235,23 +235,65 @@ public class RobotContainer {
                 },
                 shooter));
 
+    // controller
+    // .a()
+    // .onTrue(
+    // Commands.runOnce(
+    // () -> {
+    // while (shooter.getShooterTopFixedVelocity() < 4500) {
+    // shooter.setShooterSpeed(5000);
+    // }
+    // shooter.setIndexerSpeed(-ShooterConstants.SHOOTER_INDEXER_SPEED);
+    // },
+    // shooter));
+
     controller
         .a()
         .onTrue(
-            Commands.runOnce(
-                () -> {
-                  shooter.setShooterSpeed(5000);
-                },
-                shooter));
+            Commands.sequence(
+                Commands.runOnce(
+                    () -> {
+                      shooter.setShooterSpeed(6000);
+                      shooter.setPreparingToShoot(true);
+                    },
+                    shooter),
+                Commands.waitUntil(() -> shooter.getShooterTopFixedVelocity() > 5000),
+                Commands.runOnce(
+                    () -> {
+                      shooter.setIndexerSpeed(-ShooterConstants.SHOOTER_INDEXER_SPEED);
+                    },
+                    shooter),
+                Commands.waitSeconds(1),
+                Commands.runOnce(
+                    () -> {
+                      shooter.setPreparingToShoot(false);
+                    },
+                    shooter)));
 
     controller
         .y()
         .onTrue(
-            Commands.runOnce(
-                () -> {
-                  shooter.setShooterSpeed(0);
-                },
-                shooter));
+            Commands.sequence(
+                Commands.runOnce(
+                    () -> {
+                      shooter.setShooterSpeed(1500);
+                      shooter.setIndexerSpeed(0);
+                    },
+                    shooter),
+                Commands.waitUntil(() -> shooter.getShooterTopFixedVelocity() < 1600),
+                Commands.runOnce(
+                    () -> {
+                      shooter.setIndexerSpeed(0);
+                      shooter.setShooterSpeed(400);
+                    },
+                    shooter),
+                Commands.waitUntil(() -> shooter.getShooterTopFixedVelocity() < 500),
+                Commands.runOnce(
+                    () -> {
+                      shooter.setIndexerSpeed(0);
+                      shooter.setShooterSpeed(0);
+                    },
+                    shooter)));
 
     // controller
     // .povDown()

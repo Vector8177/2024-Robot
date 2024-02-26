@@ -42,8 +42,8 @@ public final class Constants {
 
     public static final int maxIntakeMotorVoltage = 12;
 
-    public static final double FEEDER_SPEED = 0d; // 0.4d;
-    public static final double INDEXER_SPEED = 0d; // 0.5d;
+    public static final double FEEDER_SPEED = 0.4d; // 0.4d;
+    public static final double INDEXER_SPEED = 0.5d; // 0.5d;
   }
 
   public static final class ClimberConstants {
@@ -180,7 +180,7 @@ public final class Constants {
 
     public static final double SHOOTER_FF_V = 484d;
 
-    public static final double SHOOTER_PIVOT_INTAKE_POSITION = 2.179d;
+    public static final double SHOOTER_PIVOT_INTAKE_POSITION = 2.140d;
 
     public static final double SHOOTER_PIVOT_AMP_POSITION = 5.931d;
 
@@ -218,13 +218,25 @@ public final class Constants {
     public static final double SHOOTER_ARM_KV = 0d;
     public static final double SHOOTER_ARM_KA = 0d;
 
-    public static final double SHOOTER_INDEXER_SPEED = .75d;
+    public static final double SHOOTER_INDEXER_SPEED = 1d;
 
     public static final double SHOOTER_TARGET_SPEED = .8f;
 
-    public static final double SHOOTER_IR_TARGET_VOLTAGE = 3d;
+    public static final double SHOOTER_IR_TARGET_VOLTAGE = 1.5d;
 
     public static final double MAX_MOTOR_VOLTAGE = 12d;
+  }
+
+  public final class VisionConstants {
+    public final class PoseEstimation {
+      public static final double POSE_DISTANCE_CUTOFF = 10d;
+      public static final double POSE_AMBIGUITY_CUTOFF = 1d;
+    }
+
+    public final class FieldConstants {
+      public static final double FIELD_LENGTH = 0d;
+      public static final double FIELD_WIDTH = 0d;
+    }
   }
 
   public static enum Mode {
