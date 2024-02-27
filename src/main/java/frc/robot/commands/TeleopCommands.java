@@ -7,6 +7,7 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
+import org.littletonrobotics.junction.Logger;
 
 public class TeleopCommands {
   public static boolean stopIntake = false;
@@ -16,27 +17,41 @@ public class TeleopCommands {
   private TeleopCommands() {}
 
   public static Command runShooter(Shooter shooter) {
+    // if (shooter.readyToShoot) {
+    // return runShootSequence(shooter);
+    // } else {
+    //   return Commands.none();
+    // }
+    // return runShootSequence(shooter);
+    Logger.recordOutput("TeleopCommands/Ready", readyToShoot);
+    Logger.recordOutput("TeleopCommands/Amp", ampMode);
+    Logger.recordOutput("TeleopCommands/readyT", readyToShoot);
+    Logger.recordOutput("TeleopCommands/ampT", ampMode);
     if (readyToShoot && ampMode) {
+      Logger.recordOutput("TeleopCommands/readyT", readyToShoot);
+      Logger.recordOutput("TeleopCommands/ampT", ampMode);
       return runAmpSequence(shooter);
     } else if (readyToShoot) {
+      Logger.recordOutput("TeleopCommands/readyT", readyToShoot);
+      Logger.recordOutput("TeleopCommands/ampT", ampMode);
       return runShootSequence(shooter);
     } else {
+      Logger.recordOutput("TeleopCommands/readyT", readyToShoot);
+      Logger.recordOutput("TeleopCommands/ampT", ampMode);
       return Commands.none();
     }
   }
 
-  private static Command runShootSequence(Shooter shooter) {
+  public static Command runShootSequence(Shooter shooter) {
     return Commands.sequence(
         Commands.runOnce(
             () -> {
               stopIntake = true;
-              shooter.setShooterSpeed(ShooterConstants.SHOOTER_SHOOT_WHEEL_RMP);
+              shooter.setShooterSpeed(ShooterConstants.SHOOT_WHEEL_RPM);
             },
             shooter),
         Commands.waitUntil(
-            () ->
-                shooter.getShooterTopFixedVelocity()
-                    > ShooterConstants.SHOOTER_SHOOT_WHEEL_RMP_START),
+            () -> shooter.getShooterTopFixedVelocity() > ShooterConstants.SHOOT_RPM_CUTOFF),
         Commands.runOnce(
             () -> {
               shooter.setIndexerSpeed(-ShooterConstants.SHOOTER_INDEXER_SPEED);
@@ -53,20 +68,23 @@ public class TeleopCommands {
         Commands.waitUntil(() -> shooter.getShooterTopFixedVelocity() < 1600),
         Commands.runOnce(
             () -> {
-              shooter.setIndexerSpeed(0);
               shooter.setShooterSpeed(400);
             },
             shooter),
         Commands.waitUntil(() -> shooter.getShooterTopFixedVelocity() < 500),
         Commands.runOnce(
             () -> {
-              shooter.setIndexerSpeed(0);
               shooter.setShooterSpeed(0);
             },
             shooter));
+    // return Commands.runOnce(
+    //     () -> {
+    //       shooter.setShooterSpeed(3000);
+    //     },
+    //     shooter);
   }
 
-  private static Command runAmpSequence(Shooter shooter) {
+  public static Command runAmpSequence(Shooter shooter) {
     return Commands.sequence(
         Commands.runOnce(
             () -> {
@@ -122,9 +140,13 @@ public class TeleopCommands {
   }
 
   public static Command setShooterIntakePosition(Shooter shooter, Hood hood) {
+    readyToShoot = false;
+    Logger.recordOutput("TeleopCommands/readyT", readyToShoot);
+    Logger.recordOutput("TeleopCommands/ampT", ampMode);
     return Commands.runOnce(
         () -> {
-          readyToShoot = false;
+          Logger.recordOutput("TeleopCommands/readyT", readyToShoot);
+          Logger.recordOutput("TeleopCommands/ampT", ampMode);
           shooter.setPosition(ShooterConstants.SHOOTER_PIVOT_INTAKE_POSITION);
           hood.setHoodPosition(false);
         },
@@ -133,11 +155,14 @@ public class TeleopCommands {
   }
 
   public static Command setShooterAmpPosition(Shooter shooter, Hood hood) {
-
+    ampMode = true;
+    readyToShoot = true;
+    Logger.recordOutput("TeleopCommands/readyT", readyToShoot);
+    Logger.recordOutput("TeleopCommands/ampT", ampMode);
     return Commands.runOnce(
         () -> {
-          ampMode = true;
-          readyToShoot = true;
+          Logger.recordOutput("TeleopCommands/readyT", readyToShoot);
+          Logger.recordOutput("TeleopCommands/ampT", ampMode);
           shooter.setPosition(ShooterConstants.SHOOTER_PIVOT_AMP_POSITION);
           hood.setHoodPosition(true);
         },
@@ -146,10 +171,14 @@ public class TeleopCommands {
   }
 
   public static Command setShooterShootPosition(Shooter shooter, Hood hood) {
+    ampMode = false;
+    readyToShoot = true;
+    Logger.recordOutput("TeleopCommands/readyT", readyToShoot);
+    Logger.recordOutput("TeleopCommands/ampT", ampMode);
     return Commands.runOnce(
         () -> {
-          ampMode = false;
-          readyToShoot = true;
+          Logger.recordOutput("TeleopCommands/readyT", readyToShoot);
+          Logger.recordOutput("TeleopCommands/ampT", ampMode);
           shooter.setPosition(ShooterConstants.SHOOTER_LONG_SHOT);
           hood.setHoodPosition(false);
         },

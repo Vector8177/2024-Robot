@@ -26,6 +26,19 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.SwerveConstants.DriveMode;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.SwerveCommands;
+import frc.robot.commands.TeleopCommands;
+import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.HoodIO;
+import frc.robot.subsystems.hood.HoodIOSim;
+import frc.robot.subsystems.hood.HoodIOSparkMax;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeIOSparkMax;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterIOSim;
+import frc.robot.subsystems.shooter.ShooterIOSparkMax;
 import frc.robot.subsystems.swerve.GyroIO;
 import frc.robot.subsystems.swerve.GyroIOPigeon2;
 import frc.robot.subsystems.swerve.ModuleIO;
@@ -48,9 +61,9 @@ public class RobotContainer {
   // Subsystems
   private DriveMode currentMode = DriveMode.TELEOP;
   private final Swerve swerve;
-  // private final Shooter shooter;
-  // private final Intake intake;
-  // private final Hood hood;
+  private final Shooter shooter;
+  private final Intake intake;
+  private final Hood hood;
   private final Vision vision;
   private int n = 0;
   // private final Climber climber;
@@ -78,9 +91,9 @@ public class RobotContainer {
                 new ModuleIOSparkMax(2),
                 new ModuleIOSparkMax(3),
                 vision);
-        // shooter = new Shooter(new ShooterIOSparkMax(), mainMech);
-        // intake = new Intake(new IntakeIOSparkMax());
-        // hood = new Hood(new HoodIOSparkMax(), shooter.getMechanismLigament2d());
+        shooter = new Shooter(new ShooterIOSparkMax(), mainMech);
+        intake = new Intake(new IntakeIOSparkMax());
+        hood = new Hood(new HoodIOSparkMax(), shooter.getMechanismLigament2d());
         // climber = new Climber(new ClimberIOSparkMax());
         break;
 
@@ -95,9 +108,9 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 vision);
-        // shooter = new Shooter(new ShooterIOSim(), mainMech);
-        // intake = new Intake(new IntakeIOSim());
-        // hood = new Hood(new HoodIOSim(), shooter.getMechanismLigament2d());
+        shooter = new Shooter(new ShooterIOSim(), mainMech);
+        intake = new Intake(new IntakeIOSim());
+        hood = new Hood(new HoodIOSim(), shooter.getMechanismLigament2d());
         // climber = new Climber(new ClimberIOSim());
         break;
 
@@ -112,9 +125,9 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 vision);
-        // shooter = new Shooter(new ShooterIO() {}, mainMech);
-        // intake = new Intake(new IntakeIO() {});
-        // hood = new Hood(new HoodIO() {}, shooter.getMechanismLigament2d());
+        shooter = new Shooter(new ShooterIO() {}, mainMech);
+        intake = new Intake(new IntakeIO() {});
+        hood = new Hood(new HoodIO() {}, shooter.getMechanismLigament2d());
         // climber = new Climber(new ClimberIO() {});
         break;
     }
@@ -174,24 +187,41 @@ public class RobotContainer {
                     swerve)
                 .ignoringDisable(true));
 
-    // operatorController.rightBumper().whileTrue(TeleopCommands.runIntake(intake, shooter));
+    driverController
+        .a()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  currentMode =
+                      currentMode == DriveMode.TELEOP ? DriveMode.AUTO_ALIGN : DriveMode.TELEOP;
+                },
+                shooter,
+                swerve));
 
-    // operatorController.leftBumper().whileTrue(TeleopCommands.runOuttake(intake, shooter));
+    operatorController.rightBumper().whileTrue(TeleopCommands.runIntake(intake, shooter));
 
-    // operatorController.povLeft().onTrue(TeleopCommands.setShooterAmpPosition(shooter, hood));
+    operatorController.leftBumper().whileTrue(TeleopCommands.runOuttake(intake, shooter));
 
-    // operatorController.povRight().onTrue(TeleopCommands.setShooterIntakePosition(shooter, hood));
+    operatorController.povLeft().onTrue(TeleopCommands.setShooterAmpPosition(shooter, hood));
 
-    // operatorController.povUp().onTrue(TeleopCommands.setShooterShootPosition(shooter, hood));
-    // controller
-    // .a()
-    // .onTrue(
-    // Commands.runOnce(
-    // () ->
-    // currentMode =
-    // currentMode == DriveMode.TELEOP ? DriveMode.AUTO_ALIGN :
-    // DriveMode.TELEOP,
-    // swerve));
+    operatorController.povRight().onTrue(TeleopCommands.setShooterIntakePosition(shooter, hood));
+
+    operatorController
+        .a()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  if (TeleopCommands.readyToShoot && TeleopCommands.ampMode) {
+                    TeleopCommands.runAmpSequence(shooter);
+                  } else if (TeleopCommands.readyToShoot) {
+                    TeleopCommands.runShootSequence(shooter);
+                  } else {
+                    Commands.none();
+                  }
+                },
+                shooter));
+
+    operatorController.povUp().onTrue(TeleopCommands.setShooterShootPosition(shooter, hood));
   }
 
   /**
@@ -205,5 +235,7 @@ public class RobotContainer {
 
   public void updateMech() {
     Logger.recordOutput("Mechanism", mainMech);
+    Logger.recordOutput("TeleopCommands/Ready", TeleopCommands.readyToShoot);
+    Logger.recordOutput("TeleopCommands/Amp", TeleopCommands.ampMode);
   }
 }

@@ -13,6 +13,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -189,8 +190,8 @@ public final class Constants {
 
     public static final double SHOOTER_LONG_SHOT = 1.85d;
 
-    public static final int SHOOTER_SHOOT_WHEEL_RMP = 5000;
-    public static final int SHOOTER_SHOOT_WHEEL_RMP_START = 4500;
+    public static final int SHOOT_WHEEL_RPM = 5000;
+    public static final int SHOOT_RPM_CUTOFF = 4500;
 
     public static final double SHOOTER_GEAR_RATIO = 1 / 1.5;
     public static final double ABSOLUTE_OFFSET = 0.802d;
@@ -242,7 +243,9 @@ public final class Constants {
       public static final double FIELD_WIDTH = 0d;
     }
 
-    public static final Transform3d frontLeftCameraPosition = new Transform3d();
+    public static final Transform3d frontLeftCameraPosition =
+        new Transform3d(
+            0, Units.inchesToMeters(13.099), Units.inchesToMeters(-11.24), new Rotation3d());
 
     public static final String frontLeftCameraName = "mainCamera";
   }

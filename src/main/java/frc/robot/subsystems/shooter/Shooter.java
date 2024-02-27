@@ -17,6 +17,10 @@ public class Shooter extends SubsystemBase {
   private final PIDController pivotPidController;
   private final PIDController shooterSpeedPidController;
 
+  // public boolean readyToShoot = false;
+  // public boolean ampMode = false;
+  // public boolean stopIntake = false;
+
   // private final SysIdRoutine sysId;
   // private final SimpleMotorFeedforward shooterSpeedFeedForward;
 
