@@ -243,6 +243,8 @@ public final class Constants {
     }
 
     public static final Transform3d frontLeftCameraPosition = new Transform3d();
+
+    public static final String frontLeftCameraName = "mainCamera";
   }
 
   public static enum Mode {

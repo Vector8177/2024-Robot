@@ -18,7 +18,9 @@ public class CameraIOPhoton implements CameraIO {
     inputs.connected = camera.isConnected();
     inputs.driverMode = camera.getDriverMode();
     PhotonPipelineResult latestResult = camera.getLatestResult();
-    inputs.targetData = latestResult.getBestTarget();
+    // if (latestResult.hasTargets()) {
+    //   inputs.targetData = latestResult.getBestTarget();
+    // }
     inputs.result = latestResult;
   }
 }

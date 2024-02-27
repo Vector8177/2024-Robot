@@ -217,7 +217,7 @@ public class Swerve extends SubsystemBase {
       List<Optional<EstimatedRobotPose>> vPoses = s_Vision.getEstimatedGlobalPose(getPose());
 
       for (int j = 0; j < vPoses.size(); j++) {
-        vPoses.get(i).ifPresent(this::addVisionMeasurement);
+        vPoses.get(j).ifPresent(this::addVisionMeasurement);
       }
     }
   }
@@ -320,6 +320,7 @@ public class Swerve extends SubsystemBase {
    * @param timestamp The timestamp of the vision measurement in seconds.
    */
   public void addVisionMeasurement(EstimatedRobotPose visionPose) {
+    DriverStation.reportError("Recorded the bob", false);
     poseEstimator.addVisionMeasurement(
         visionPose.estimatedPose.toPose2d(), visionPose.timestampSeconds);
   }
