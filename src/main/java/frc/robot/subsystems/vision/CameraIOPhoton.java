@@ -13,6 +13,11 @@ public class CameraIOPhoton implements CameraIO {
   }
 
   @Override
+  public PhotonCamera getCamera() {
+    return camera;
+  }
+
+  @Override
   public void updateInputs(CameraIOInputs inputs) {
     inputs.cameraName = camera.getName();
     inputs.connected = camera.isConnected();

@@ -1,6 +1,7 @@
 package frc.robot.subsystems.vision;
 
 import org.littletonrobotics.junction.AutoLog;
+import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 public interface CameraIO {
@@ -16,4 +17,8 @@ public interface CameraIO {
   }
 
   public default void updateInputs(CameraIOInputs inputs) {}
+
+  public default PhotonCamera getCamera() {
+    return new PhotonCamera("");
+  }
 }
