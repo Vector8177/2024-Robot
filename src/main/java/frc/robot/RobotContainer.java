@@ -53,12 +53,9 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in
- * the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of
- * the robot (including
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
@@ -81,21 +78,20 @@ public class RobotContainer {
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
         vision = new Vision(new CameraIOPhoton(VisionConstants.frontLeftCameraName));
-        swerve = new Swerve(
-            new GyroIOPigeon2(false),
-            new ModuleIOSparkMax(0),
-            new ModuleIOSparkMax(1),
-            new ModuleIOSparkMax(2),
-            new ModuleIOSparkMax(3),
-            vision);
+        swerve =
+            new Swerve(
+                new GyroIOPigeon2(false),
+                new ModuleIOSparkMax(0),
+                new ModuleIOSparkMax(1),
+                new ModuleIOSparkMax(2),
+                new ModuleIOSparkMax(3),
+                vision);
         shooter = new Shooter(new ShooterIOSparkMax(), mainMech);
         intake = new Intake(new IntakeIOSparkMax());
         hood = new Hood(new HoodIOSparkMax(), shooter.getMechanismLigament2d());
@@ -104,16 +100,15 @@ public class RobotContainer {
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
-        vision = new Vision(new CameraIO() {
-        });
-        swerve = new Swerve(
-            new GyroIO() {
-            },
-            new ModuleIOSim(),
-            new ModuleIOSim(),
-            new ModuleIOSim(),
-            new ModuleIOSim(),
-            vision);
+        vision = new Vision(new CameraIO() {});
+        swerve =
+            new Swerve(
+                new GyroIO() {},
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                vision);
         shooter = new Shooter(new ShooterIOSim(), mainMech);
         intake = new Intake(new IntakeIOSim());
         hood = new Hood(new HoodIOSim(), shooter.getMechanismLigament2d());
@@ -122,26 +117,18 @@ public class RobotContainer {
 
       default:
         // Replayed robot, disable IO implementations
-        vision = new Vision(new CameraIO() {
-        });
-        swerve = new Swerve(
-            new GyroIO() {
-            },
-            new ModuleIO() {
-            },
-            new ModuleIO() {
-            },
-            new ModuleIO() {
-            },
-            new ModuleIO() {
-            },
-            vision);
-        shooter = new Shooter(new ShooterIO() {
-        }, mainMech);
-        intake = new Intake(new IntakeIO() {
-        });
-        hood = new Hood(new HoodIO() {
-        }, shooter.getMechanismLigament2d());
+        vision = new Vision(new CameraIO() {});
+        swerve =
+            new Swerve(
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                vision);
+        shooter = new Shooter(new ShooterIO() {}, mainMech);
+        intake = new Intake(new IntakeIO() {});
+        hood = new Hood(new HoodIO() {}, shooter.getMechanismLigament2d());
         // climber = new Climber(new ClimberIO() {});
         break;
     }
@@ -177,11 +164,9 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by
+   * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
-   * it to a {@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
@@ -198,9 +183,10 @@ public class RobotContainer {
         .b()
         .onTrue(
             Commands.runOnce(
-                () -> swerve.setPose(
-                    new Pose2d(swerve.getPose().getTranslation(), new Rotation2d())),
-                swerve)
+                    () ->
+                        swerve.setPose(
+                            new Pose2d(swerve.getPose().getTranslation(), new Rotation2d())),
+                    swerve)
                 .ignoringDisable(true));
 
     driverController
@@ -208,7 +194,8 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  currentMode = currentMode == DriveMode.TELEOP ? DriveMode.AUTO_ALIGN : DriveMode.TELEOP;
+                  currentMode =
+                      currentMode == DriveMode.TELEOP ? DriveMode.AUTO_ALIGN : DriveMode.TELEOP;
                 },
                 shooter,
                 swerve));

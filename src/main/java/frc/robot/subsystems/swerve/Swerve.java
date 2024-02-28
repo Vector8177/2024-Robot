@@ -320,7 +320,6 @@ public class Swerve extends SubsystemBase {
    * @param timestamp The timestamp of the vision measurement in seconds.
    */
   public void addVisionMeasurement(EstimatedRobotPose visionPose) {
-    DriverStation.reportError("Recorded the bob", false);
     poseEstimator.addVisionMeasurement(
         visionPose.estimatedPose.toPose2d(), visionPose.timestampSeconds);
   }

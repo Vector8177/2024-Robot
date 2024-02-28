@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.LoggedTunableNumber;
@@ -81,11 +82,14 @@ public class AutoAlignController {
 
   public double updateAngle() {
     Pose2d currentPose = swerve.getPose();
-    double distToTarget = goalPose.getTranslation().getDistance(currentPose.getTranslation());
+    double distToTarget =
+        Units.inchesToMeters(goalPose.getTranslation().getDistance(currentPose.getTranslation()));
+    Logger.recordOutput("AutoAlign/ShooterPose/Distance", distToTarget);
     double returnVal =
         Math.PI / 2
-            - Math.atan((Constants.SPEAKER_HEIGHT - Constants.SHOOTER_HEIGHT) / distToTarget);
-    Logger.recordOutput("ShooterTargetPose", returnVal);
+            + Math.atan((Constants.SPEAKER_HEIGHT - Constants.SHOOTER_HEIGHT) / distToTarget);
+    Logger.recordOutput(
+        "AutoAlign/ShooterPose/ShooterTargetPose", Units.radiansToDegrees(returnVal));
 
     return returnVal;
   }

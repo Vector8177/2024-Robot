@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.SwerveConstants.DriveMode;
@@ -55,16 +56,22 @@ public class SwerveCommands {
               new Rotation2d(xSupplier.getAsDouble(), ySupplier.getAsDouble());
           double omegaVelocity;
 
+          double omega;
+
           switch (modeSupp.get()) {
             case TELEOP:
-              double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
+              omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
               // Square values
               omega = Math.copySign(omega * omega, omega);
               omegaVelocity = omega * swerve.getMaxAngularSpeedRadPerSec();
               break;
             case AUTO_ALIGN:
-              shooter.setPosition(swerve.calculateAngleAutoAlign());
-              omegaVelocity = swerve.calculateOmegaAutoAlign();
+              shooter.setPosition(Units.degreesToRadians(163));
+              // omegaVelocity = swerve.calculateOmegaAutoAlign();
+              omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
+              // Square values
+              omega = Math.copySign(omega * omega, omega);
+              omegaVelocity = omega * swerve.getMaxAngularSpeedRadPerSec();
 
               break;
             default:
