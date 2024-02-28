@@ -35,7 +35,6 @@ public class Camera {
             cameraIO.getCamera(),
             cameraPosition);
 
-    poseEstimation.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     return poseEstimation;
   }
 
