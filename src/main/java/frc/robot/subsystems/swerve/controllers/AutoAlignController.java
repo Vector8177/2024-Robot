@@ -83,7 +83,8 @@ public class AutoAlignController {
     Pose2d currentPose = swerve.getPose();
     double distToTarget = goalPose.getTranslation().getDistance(currentPose.getTranslation());
     double returnVal =
-        90 - Math.atan((Constants.SPEAKER_HEIGHT - Constants.SHOOTER_HEIGHT) / distToTarget);
+        Math.PI / 2
+            - Math.atan((Constants.SPEAKER_HEIGHT - Constants.SHOOTER_HEIGHT) / distToTarget);
     Logger.recordOutput("ShooterTargetPose", returnVal);
 
     return returnVal;
