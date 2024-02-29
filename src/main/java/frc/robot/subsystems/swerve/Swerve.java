@@ -132,7 +132,11 @@ public class Swerve extends SubsystemBase {
                 this));
 
     autoAlignController =
-        new AutoAlignController(new Pose2d(.24, 5.51, Rotation2d.fromRotations(0)), this);
+        new AutoAlignController(
+            () ->
+                DriverStation.getAlliance().isPresent()
+                    && DriverStation.getAlliance().get() == Alliance.Red,
+            this);
   }
 
   public void periodic() {

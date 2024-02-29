@@ -14,6 +14,12 @@ public class TeleopCommands {
   public static boolean readyToShoot = false;
   public static boolean ampMode = false;
 
+  public static enum ShooterState {
+    AMP,
+    SHOOT,
+    EMPTY
+  }
+
   private TeleopCommands() {}
 
   public static Command runShooter(Shooter shooter) {
@@ -104,7 +110,8 @@ public class TeleopCommands {
   public static Command runIntake(Intake intake, Shooter shooter) {
     return Commands.runEnd(
         () -> {
-          if (!stopIntake) {
+          if (shooter.getIRSensorVoltage() < ShooterConstants.SHOOTER_IR_TARGET_VOLTAGE
+              && !stopIntake) {
             intake.setFeederSpeed(-IntakeConstants.FEEDER_SPEED);
             intake.setIndexerSpeed(-IntakeConstants.INDEXER_SPEED);
             shooter.setIndexerSpeed(-ShooterConstants.SHOOTER_INDEXER_SPEED);

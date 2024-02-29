@@ -34,14 +34,15 @@ public final class Constants {
 
   public static final boolean tuningMode = true;
 
-  public static final double SHOOTER_HEIGHT = 0.43;
-  public static final double SPEAKER_HEIGHT = 2.0;
+  public static final double SHOOTER_HEIGHT = 0.4318;
+  public static final double SPEAKER_HEIGHT = 1.9812;
 
   public static final class IntakeConstants {
     public static final int LEFT_FEEDER_MOTOR_ID = 60;
     public static final int RIGHT_FEEDER_MOTOR_ID = 61;
     public static final int INDEXER_MOTOR_ID = 62;
-
+    // 1.85
+    // 1.55 o
     public static final int maxIntakeMotorVoltage = 12;
 
     public static final double FEEDER_SPEED = 0.4d; // 0.4d;
@@ -146,10 +147,10 @@ public final class Constants {
     }
 
     public final class AutoAlignConstants {
-      public static final double thetaP = 4.0;
-      public static final double thetaI = 0.0;
-      public static final double thetaD = 6.0;
-      public static final double thetaTolerance = Units.degreesToRadians(2.0);
+      public static final double thetaP = .7;
+      public static final double thetaI = 0;
+      public static final double thetaD = 0;
+      public static final double thetaTolerance = Units.degreesToRadians(.15);
       public static final double maxAngularVelocity = MAX_ANGULAR_VELOCITY;
       public static final double maxAngularAcceleration = 30.02;
     }
@@ -190,8 +191,8 @@ public final class Constants {
 
     public static final double SHOOTER_LONG_SHOT = 1.85d;
 
-    public static final int SHOOT_WHEEL_RPM = 5000;
-    public static final int SHOOT_RPM_CUTOFF = 4500;
+    public static final int SHOOT_WHEEL_RPM = 4250;
+    public static final int SHOOT_RPM_CUTOFF = 4000;
 
     public static final double SHOOTER_GEAR_RATIO = 1 / 1.5;
     public static final double ABSOLUTE_OFFSET = 0.802d;
@@ -227,7 +228,7 @@ public final class Constants {
 
     public static final double SHOOTER_TARGET_SPEED = .8f;
 
-    public static final double SHOOTER_IR_TARGET_VOLTAGE = 1.5d;
+    public static final double SHOOTER_IR_TARGET_VOLTAGE = 1.25d;
 
     public static final double MAX_MOTOR_VOLTAGE = 12d;
   }
@@ -245,7 +246,10 @@ public final class Constants {
 
     public static final Transform3d frontLeftCameraPosition =
         new Transform3d(
-            0, Units.inchesToMeters(13.099), Units.inchesToMeters(-11.24), new Rotation3d());
+            0,
+            Units.inchesToMeters(13.099),
+            Units.inchesToMeters(-11.24),
+            new Rotation3d(0, 40, 0));
 
     public static final String frontLeftCameraName = "mainCamera";
   }

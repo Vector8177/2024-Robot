@@ -3,12 +3,14 @@ package frc.robot.subsystems.swerve.controllers;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.LoggedTunableNumber;
+import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class AutoAlignController {
@@ -30,15 +32,20 @@ public class AutoAlignController {
           "AutoAlign/maxAngularAcceleration",
           Constants.SwerveConstants.AutoAlignConstants.maxAngularAcceleration);
 
-  private Pose2d goalPose = null;
+  private static final double RED_X = 16.61;
+  private static final double BLUE_X = -.0381;
+  private static final double POSE_Y = 5.55;
+
+  private Pose2d goalPose = new Pose2d(.24, 5.55, Rotation2d.fromRotations(0));
 
   private ProfiledPIDController thetaController;
 
   private final Swerve swerve;
 
-  public AutoAlignController(Pose2d goalPose, Swerve swerve) {
-    this.goalPose = goalPose;
+  private BooleanSupplier isRedSupp;
 
+  public AutoAlignController(BooleanSupplier isRedAlliance, Swerve swerve) {
+    this.isRedSupp = isRedAlliance;
     this.swerve = swerve;
 
     thetaController =
@@ -63,6 +70,9 @@ public class AutoAlignController {
   }
 
   public double updateDrive() {
+    this.goalPose =
+        new Pose2d(
+            (isRedSupp.getAsBoolean() ? RED_X : BLUE_X), POSE_Y, Rotation2d.fromRotations(0));
     Pose2d currentPose = swerve.getPose();
     Rotation2d rotationToTarget =
         goalPose.getTranslation().minus(currentPose.getTranslation()).getAngle();
@@ -82,12 +92,25 @@ public class AutoAlignController {
 
   public double updateAngle() {
     Pose2d currentPose = swerve.getPose();
-    double distToTarget =
-        Units.inchesToMeters(goalPose.getTranslation().getDistance(currentPose.getTranslation()));
+    this.goalPose =
+        new Pose2d(
+            (isRedSupp.getAsBoolean() ? RED_X : BLUE_X), POSE_Y, Rotation2d.fromRotations(0));
+
+    Translation2d targ = goalPose.getTranslation();
+    Logger.recordOutput("AutoAlign/Trans", targ);
+
+    Logger.recordOutput("AutoAlign/Shooter/Current", currentPose);
+    Logger.recordOutput("AutoAlign/Shooter/Target", goalPose);
+    double distToTarget = goalPose.getTranslation().getDistance(currentPose.getTranslation());
     Logger.recordOutput("AutoAlign/ShooterPose/Distance", distToTarget);
     double returnVal =
-        Math.PI / 2
+        Rotation2d.fromDegrees(90).getRadians()
             + Math.atan((Constants.SPEAKER_HEIGHT - Constants.SHOOTER_HEIGHT) / distToTarget);
+    Logger.recordOutput(
+        "AutoAlign/ShooterPose/ShooterTargetPoseRaw",
+        Units.radiansToDegrees(
+            Math.atan((Constants.SPEAKER_HEIGHT - Constants.SHOOTER_HEIGHT) / distToTarget)));
+
     Logger.recordOutput(
         "AutoAlign/ShooterPose/ShooterTargetPose", Units.radiansToDegrees(returnVal));
 

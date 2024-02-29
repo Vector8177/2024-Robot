@@ -16,7 +16,6 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -208,21 +207,11 @@ public class RobotContainer {
 
     operatorController.povRight().onTrue(TeleopCommands.setShooterIntakePosition(shooter, hood));
 
-    operatorController.a().onTrue(TeleopCommands.runShooter(shooter));
+    operatorController.povDown().onTrue(Commands.runOnce(() -> shooter.setPosition(0), shooter));
+
+    operatorController.a().onTrue(TeleopCommands.runShootSequence(shooter));
 
     operatorController.povUp().onTrue(TeleopCommands.setShooterShootPosition(shooter, hood));
-  }
-
-  public Command runTheThing() {
-    if (TeleopCommands.readyToShoot && TeleopCommands.ampMode) {
-      DriverStation.reportError("Cock and Balls", false);
-      return TeleopCommands.runAmpSequence(shooter);
-    } else if (TeleopCommands.readyToShoot) {
-      DriverStation.reportError("Balls and Cock", false);
-      return TeleopCommands.runShootSequence(shooter);
-    } else {
-      return Commands.none();
-    }
   }
 
   /**
