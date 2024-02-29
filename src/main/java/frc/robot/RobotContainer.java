@@ -234,7 +234,6 @@ public class RobotContainer {
 
   public void updateMech() {
     Logger.recordOutput("Mechanism", mainMech);
-    Logger.recordOutput("TeleopCommands/Ready", TeleopCommands.readyToShoot);
-    Logger.recordOutput("TeleopCommands/Amp", TeleopCommands.ampMode);
+    Logger.recordOutput("TeleopCommands/ShooterState", TeleopCommands.getCurrentState());
   }
 }
