@@ -32,7 +32,7 @@ public class AutoAlignController {
           "AutoAlign/maxAngularAcceleration",
           Constants.SwerveConstants.AutoAlignConstants.maxAngularAcceleration);
 
-  private static final double RED_X = 16.61;
+  private static final double RED_X = 16.58;
   private static final double BLUE_X = -.0381;
   private static final double POSE_Y = 5.55;
 

@@ -30,10 +30,7 @@ public class Camera {
   private PhotonPoseEstimator generatePoseEstimator() {
     PhotonPoseEstimator poseEstimation =
         new PhotonPoseEstimator(
-            aprilTagLayout,
-            PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-            cameraIO.getCamera(),
-            cameraPosition);
+            aprilTagLayout, PoseStrategy.LOWEST_AMBIGUITY, cameraIO.getCamera(), cameraPosition);
 
     return poseEstimation;
   }

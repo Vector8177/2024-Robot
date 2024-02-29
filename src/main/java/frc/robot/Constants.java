@@ -82,13 +82,13 @@ public final class Constants {
     public static final double SHOOT_POSE = 0.05;
     public static final double AMP_POSE = 2.1;
 
-    public static final double HOOD_GEAR_RATIO = 1d / (5 * 5 * 5 * 36d / 24);
+    public static final double HOOD_GEAR_RATIO = 1d / (5.23 * 5.23 * 5.23 * 36d / 24);
   }
 
   public final class SwerveConstants {
     public static final double MAX_LINEAR_VELOCITY = Units.feetToMeters(16.5);
-    public static final double TRACK_WIDTH_X = Units.inchesToMeters(25.0);
-    public static final double TRACK_WIDTH_Y = Units.inchesToMeters(25.0);
+    public static final double TRACK_WIDTH_X = Units.inchesToMeters(30.0);
+    public static final double TRACK_WIDTH_Y = Units.inchesToMeters(30.0);
     public static final double DRIVE_BASE_RADIUS =
         Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
     public static final double MAX_ANGULAR_VELOCITY = MAX_LINEAR_VELOCITY / DRIVE_BASE_RADIUS;
@@ -147,10 +147,10 @@ public final class Constants {
     }
 
     public final class AutoAlignConstants {
-      public static final double thetaP = .7;
+      public static final double thetaP = .55;
       public static final double thetaI = 0;
       public static final double thetaD = 0;
-      public static final double thetaTolerance = Units.degreesToRadians(.15);
+      public static final double thetaTolerance = Units.degreesToRadians(1);
       public static final double maxAngularVelocity = MAX_ANGULAR_VELOCITY;
       public static final double maxAngularAcceleration = 30.02;
     }
@@ -191,8 +191,8 @@ public final class Constants {
 
     public static final double SHOOTER_LONG_SHOT = 1.85d;
 
-    public static final int SHOOT_WHEEL_RPM = 4250;
-    public static final int SHOOT_RPM_CUTOFF = 4000;
+    public static final int SHOOT_WHEEL_RPM = 5000;
+    public static final int SHOOT_RPM_CUTOFF = 4500;
 
     public static final double SHOOTER_GEAR_RATIO = 1 / 1.5;
     public static final double ABSOLUTE_OFFSET = 0.802d;
@@ -236,7 +236,7 @@ public final class Constants {
   public final class VisionConstants {
     public final class PoseEstimation {
       public static final double POSE_DISTANCE_CUTOFF = 10d;
-      public static final double POSE_AMBIGUITY_CUTOFF = 1d;
+      public static final double POSE_AMBIGUITY_CUTOFF = .2d;
     }
 
     public final class FieldConstants {
@@ -246,10 +246,10 @@ public final class Constants {
 
     public static final Transform3d frontLeftCameraPosition =
         new Transform3d(
-            0,
-            Units.inchesToMeters(13.099),
-            Units.inchesToMeters(-11.24),
-            new Rotation3d(0, 40, 0));
+            Units.inchesToMeters(30),
+            Units.inchesToMeters(0),
+            Units.inchesToMeters(11.24),
+            new Rotation3d(0, Units.degreesToRadians(40), 0));
 
     public static final String frontLeftCameraName = "mainCamera";
   }

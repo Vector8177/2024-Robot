@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants.DriveMode;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.SwerveCommands;
@@ -207,7 +208,15 @@ public class RobotContainer {
 
     operatorController.povRight().onTrue(TeleopCommands.setShooterIntakePosition(shooter, hood));
 
-    operatorController.povDown().onTrue(Commands.runOnce(() -> shooter.setPosition(0), shooter));
+    operatorController
+        .povDown()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  shooter.setPosition(ShooterConstants.SHOOTER_PIVOT_AMP_POSITION);
+                  hood.setHoodPosition(false);
+                },
+                shooter));
 
     operatorController.a().onTrue(TeleopCommands.runShootSequence(shooter));
 
