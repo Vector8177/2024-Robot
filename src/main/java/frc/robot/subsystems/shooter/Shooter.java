@@ -7,7 +7,11 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.Mode;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.SwerveConstants.DriveMode;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
@@ -16,6 +20,9 @@ public class Shooter extends SubsystemBase {
 
   private final PIDController pivotPidController;
   private final PIDController shooterSpeedPidController;
+
+  private Supplier<DriveMode> currentDriveModeSupplier;
+  private Supplier<Rotation2d> shooterAlignSupplier;
 
   // public boolean readyToShoot = false;
   // public boolean ampMode = false;
@@ -31,8 +38,24 @@ public class Shooter extends SubsystemBase {
 
   private Double wheelTargetSpeed = 0d;
 
-  public Shooter(ShooterIO io, Mechanism2d mainMech) {
+  private double SHOOTER_TOP_KP, FF_V;
+
+  public Shooter(
+      ShooterIO io,
+      Supplier<DriveMode> modeSupplier,
+      Supplier<Rotation2d> shooterAngleSupp,
+      Mechanism2d mainMech) {
     this.io = io;
+    this.currentDriveModeSupplier = modeSupplier;
+    this.shooterAlignSupplier = shooterAngleSupp;
+    this.SHOOTER_TOP_KP =
+        Constants.currentMode == Mode.REAL
+            ? ShooterConstants.SHOOTER_TOP_KP
+            : ShooterConstants.SHOOTER_TOP_SIM_KP;
+    this.FF_V =
+        Constants.currentMode == Mode.REAL
+            ? ShooterConstants.SHOOTER_FF_V
+            : ShooterConstants.SHOOTER_SIM_FF_V;
 
     pivotPidController =
         new PIDController(
@@ -44,9 +67,7 @@ public class Shooter extends SubsystemBase {
 
     shooterSpeedPidController =
         new PIDController(
-            ShooterConstants.SHOOTER_TOP_KP,
-            ShooterConstants.SHOOTER_TOP_KI,
-            ShooterConstants.SHOOTER_TOP_KD);
+            SHOOTER_TOP_KP, ShooterConstants.SHOOTER_TOP_KI, ShooterConstants.SHOOTER_TOP_KD);
     // wheelTargetSpeed);
 
     // shooterSpeedFeedForward = (1 / ShooterConstants.SHOOTER_FF_V) * wheelTargetSpeed
@@ -133,6 +154,9 @@ public class Shooter extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter", inputs);
 
+    if (currentDriveModeSupplier.get() == DriveMode.AUTO_ALIGN) {
+      targetPosition = shooterAlignSupplier.get();
+    }
     Logger.recordOutput("Shooter/SetPoints", targetPosition);
 
     // Logger.recordOutput("Shooter/SetPoints/WheelTargetSpeed", wheelTargetSpeed);
@@ -152,7 +176,7 @@ public class Shooter extends SubsystemBase {
     if (wheelTargetSpeed != null) {
       double shooterSpeed =
           shooterSpeedPidController.calculate(inputs.shooterTopFixedRPM, wheelTargetSpeed);
-      double shooterFF = (1 / ShooterConstants.SHOOTER_FF_V) * wheelTargetSpeed;
+      double shooterFF = (1 / FF_V) * wheelTargetSpeed;
       // DriverStation.reportWarning(
       // "TOP: " + shooterTopSpeed + "; BOTTOM: " + shooterBottomSpeed, false);
       // double shooterFF =

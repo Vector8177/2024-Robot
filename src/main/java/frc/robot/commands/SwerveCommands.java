@@ -21,11 +21,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Constants.SwerveConstants.DriveMode;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.swerve.Swerve;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 public class SwerveCommands {
   private static final double DEADBAND = 0.1;
@@ -41,7 +40,7 @@ public class SwerveCommands {
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
-      Supplier<DriveMode> modeSupp) {
+      BooleanSupplier slowMode) {
     return Commands.run(
         () -> {
           // Apply deadband
@@ -51,31 +50,15 @@ public class SwerveCommands {
           double linearMagnitude =
               MathUtil.applyDeadband(
                   Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), DEADBAND);
+          if (slowMode.getAsBoolean()) {
+            linearMagnitude /= 2d;
+          }
           Rotation2d linearDirection =
               new Rotation2d(xSupplier.getAsDouble(), ySupplier.getAsDouble());
-          double omegaVelocity;
-
-          double omega;
-
-          switch (modeSupp.get()) {
-            case TELEOP:
-              omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
-              // Square values
-              omega = Math.copySign(omega * omega, omega);
-              omegaVelocity = omega * swerve.getMaxAngularSpeedRadPerSec();
-              break;
-            case AUTO_ALIGN:
-              shooter.setPosition(swerve.calculateAngleAutoAlign());
-              omegaVelocity = swerve.calculateOmegaAutoAlign();
-              // omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
-              // Square values
-              // omega = Math.copySign(omega * omega, omega);
-              // omegaVelocity = omega * swerve.getMaxAngularSpeedRadPerSec();
-
-              break;
-            default:
-              omegaVelocity = 0.0;
-          }
+          double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
+          // Square values
+          omega = Math.copySign(omega * omega, omega);
+          double omegaVelocity = omega * swerve.getMaxAngularSpeedRadPerSec();
 
           // Square values
           linearMagnitude = linearMagnitude * linearMagnitude;

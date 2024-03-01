@@ -80,6 +80,7 @@ public class IntakeIOSparkMax implements IntakeIO {
   @Override
   public void setFeederVoltage(double volts) {
     intakeLeftFeederSparkMax.setVoltage(volts);
+    intakeRightFeederSparkMax.setVoltage(-volts);
   }
 
   @Override

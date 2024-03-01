@@ -5,6 +5,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
+import org.littletonrobotics.junction.Logger;
 
 public class Climber extends SubsystemBase {
   private final ClimberIO io;
@@ -13,9 +14,9 @@ public class Climber extends SubsystemBase {
   private final PIDController climberController;
 
   private double leftClimberRelativeOffset;
-  private double desiredLeftClimberPosition;
+  private double desiredLeftClimberPosition = 0.25;
   private double rightClimberRelativeOffset;
-  private double desiredRightClimberPosition;
+  private double desiredRightClimberPosition = 0.25;
 
   public Climber(ClimberIO io) {
     this.io = io;
@@ -26,10 +27,10 @@ public class Climber extends SubsystemBase {
             Constants.ClimberConstants.climberKI,
             Constants.ClimberConstants.climberKD);
 
-    leftClimberRelativeOffset =
-        inputs.leftClimberAbsoluteEncoderPosition - inputs.leftClimberEncoderPosition;
-    rightClimberRelativeOffset =
-        inputs.rightClimberAbsoluteEncoderPosition - inputs.rightClimberEncoderPosition;
+    // leftClimberRelativeOffset =
+    //     inputs.leftClimberAbsoluteEncoderPosition - inputs.leftClimberEncoderPosition;
+    // rightClimberRelativeOffset =
+    //     inputs.rightClimberAbsoluteEncoderPosition - inputs.rightClimberEncoderPosition;
   }
 
   public void setLeftClimberPosition(double meters) {
@@ -70,19 +71,19 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void periodic() {
+    io.updateInputs(inputs);
+    Logger.processInputs("Climber", inputs);
     io.setLeftClimberVoltage(
         MathUtil.clamp(
             climberController.calculate(
-                inputs.leftClimberEncoderPosition + leftClimberRelativeOffset,
-                desiredLeftClimberPosition),
+                inputs.leftClimberEncoderPosition, desiredLeftClimberPosition),
             -Constants.ClimberConstants.maxClimberMotorVoltage,
             Constants.ClimberConstants.maxClimberMotorVoltage));
 
     io.setRightClimberVoltage(
         MathUtil.clamp(
             climberController.calculate(
-                inputs.rightClimberEncoderPosition + rightClimberRelativeOffset,
-                desiredRightClimberPosition),
+                inputs.rightClimberEncoderPosition, desiredRightClimberPosition),
             -Constants.ClimberConstants.maxClimberMotorVoltage,
             Constants.ClimberConstants.maxClimberMotorVoltage));
   }

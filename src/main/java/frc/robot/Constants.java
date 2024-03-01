@@ -45,15 +45,15 @@ public final class Constants {
     // 1.55 o
     public static final int maxIntakeMotorVoltage = 12;
 
-    public static final double FEEDER_SPEED = 0.4d; // 0.4d;
+    public static final double FEEDER_SPEED = .8d; // 0.4d;
     public static final double INDEXER_SPEED = 0.5d; // 0.5d;
   }
 
   public static final class ClimberConstants {
-    public static final int RIGHT_MOTOR_ID = 50;
-    public static final int LEFT_MOTOR_ID = 51;
+    public static final int RIGHT_MOTOR_ID = 51;
+    public static final int LEFT_MOTOR_ID = 50;
 
-    public static final double CLIMBER_GEAR_RATIO = 1 / 25d;
+    public static final double CLIMBER_GEAR_RATIO = 1 / 125d;
 
     public static final double rightClimberAbsoluteEncoderOffset = 0d;
     public static final double leftClimberAbsoluteEncoderOffset = 0d;
@@ -64,10 +64,10 @@ public final class Constants {
     public static final double climberKI = 0d;
     public static final double climberKD = 0d;
 
-    public static final double climberSpeed = 1d;
+    public static final double climberSpeed = 15d;
 
-    public static final double climberTopLimit = 10d;
-    public static final double climberBottomLimit = 0d;
+    public static final double climberTopLimit = 210.8d;
+    public static final double climberBottomLimit = 0.2d;
   }
 
   public static final class HoodConstants {
@@ -80,7 +80,7 @@ public final class Constants {
     public static final double hoodPivotKD = 0d;
 
     public static final double SHOOT_POSE = 0.05;
-    public static final double AMP_POSE = 2.1;
+    public static final double AMP_POSE = 1.859;
 
     public static final double HOOD_GEAR_RATIO = 1d / (5.23 * 5.23 * 5.23 * 36d / 24);
   }
@@ -211,6 +211,9 @@ public final class Constants {
     public static final double SHOOTER_TOP_KI = .00;
     public static final double SHOOTER_TOP_KD = 0d;
 
+    public static final double SHOOTER_TOP_SIM_KP = 5d;
+    public static final double SHOOTER_SIM_FF_V = 2000;
+
     // Shooter Bottom Wheel PID
     public static final double SHOOTER_BOTTOM_KP = 1d;
     public static final double SHOOTER_BOTTOM_KI = 0d;
@@ -225,6 +228,7 @@ public final class Constants {
     public static final double SHOOTER_ARM_KA = 0d;
 
     public static final double SHOOTER_INDEXER_SPEED = 1d;
+    public static final double SHOOTER_INDEXER_IN_SPEED = .5d;
 
     public static final double SHOOTER_TARGET_SPEED = .8f;
 
@@ -246,10 +250,10 @@ public final class Constants {
 
     public static final Transform3d frontLeftCameraPosition =
         new Transform3d(
-            Units.inchesToMeters(30),
             Units.inchesToMeters(0),
-            Units.inchesToMeters(11.24),
-            new Rotation3d(0, Units.degreesToRadians(40), 0));
+            Units.inchesToMeters(11.240),
+            Units.inchesToMeters(-13.099),
+            new Rotation3d(0, Units.degreesToRadians(40), Units.degreesToRadians(180)));
 
     public static final String frontLeftCameraName = "mainCamera";
   }

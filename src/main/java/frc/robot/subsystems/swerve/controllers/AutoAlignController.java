@@ -75,7 +75,11 @@ public class AutoAlignController {
             (isRedSupp.getAsBoolean() ? RED_X : BLUE_X), POSE_Y, Rotation2d.fromRotations(0));
     Pose2d currentPose = swerve.getPose();
     Rotation2d rotationToTarget =
-        goalPose.getTranslation().minus(currentPose.getTranslation()).getAngle();
+        goalPose
+            .getTranslation()
+            .minus(currentPose.getTranslation())
+            .getAngle()
+            .plus(Rotation2d.fromDegrees(180));
 
     Logger.recordOutput(
         "AutoAlign/RotationTarget", new Pose2d(currentPose.getTranslation(), rotationToTarget));

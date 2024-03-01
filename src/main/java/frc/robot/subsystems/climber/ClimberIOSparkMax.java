@@ -1,20 +1,19 @@
 package frc.robot.subsystems.climber;
 
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkAbsoluteEncoder;
-import com.revrobotics.SparkAbsoluteEncoder.Type;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.ClimberConstants;
 
 public class ClimberIOSparkMax implements ClimberIO {
   private final CANSparkMax leftClimberSparkMax;
   private final RelativeEncoder leftClimberEncoder;
-  private final SparkAbsoluteEncoder leftClimberAbsoluteEncoder;
+  // private final SparkAbsoluteEncoder leftClimberAbsoluteEncoder;
   private final CANSparkMax rightClimberSparkMax;
   private final RelativeEncoder rightClimberEncoder;
-  private final SparkAbsoluteEncoder rightClimberAbsoluteEncoder;
+  // private final SparkAbsoluteEncoder rightClimberAbsoluteEncoder;
 
   public ClimberIOSparkMax() {
     leftClimberSparkMax = new CANSparkMax(ClimberConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
@@ -25,17 +24,27 @@ public class ClimberIOSparkMax implements ClimberIO {
     rightClimberSparkMax.restoreFactoryDefaults();
     rightClimberSparkMax.setCANTimeout(250);
 
-    leftClimberAbsoluteEncoder = leftClimberSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
-    rightClimberAbsoluteEncoder = rightClimberSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
+    // leftClimberAbsoluteEncoder = leftClimberSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
+    // rightClimberAbsoluteEncoder = rightClimberSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
 
     leftClimberEncoder = leftClimberSparkMax.getEncoder();
     leftClimberSparkMax.enableVoltageCompensation(12d);
     rightClimberEncoder = rightClimberSparkMax.getEncoder();
     rightClimberSparkMax.enableVoltageCompensation(12d);
 
-    leftClimberEncoder.setMeasurementPeriod(50);
+    leftClimberSparkMax.setSmartCurrentLimit(40);
+    rightClimberSparkMax.setSmartCurrentLimit(40);
 
-    rightClimberSparkMax.setInverted(true);
+    leftClimberEncoder.setMeasurementPeriod(50);
+    rightClimberEncoder.setMeasurementPeriod(50);
+
+    leftClimberEncoder.setPosition(0);
+    rightClimberEncoder.setPosition(0);
+
+    leftClimberSparkMax.setInverted(true);
+    leftClimberSparkMax.setIdleMode(IdleMode.kBrake);
+    rightClimberSparkMax.setIdleMode(IdleMode.kBrake);
+    // rightClimberSparkMax.setInverted(true);
 
     leftClimberSparkMax.burnFlash();
     rightClimberSparkMax.burnFlash();
@@ -48,22 +57,16 @@ public class ClimberIOSparkMax implements ClimberIO {
     inputs.leftClimberVelocityRadPerSec =
         Units.rotationsPerMinuteToRadiansPerSecond(leftClimberEncoder.getVelocity());
     inputs.leftClimberCurrentAmps = new double[] {leftClimberSparkMax.getOutputCurrent()};
-    inputs.leftClimberAbsoluteEncoderPosition =
-        ((leftClimberAbsoluteEncoder.getPosition() * 2 * Math.PI)
-                - ClimberConstants.leftClimberAbsoluteEncoderOffset)
-            * ClimberConstants.CLIMBER_GEAR_RATIO;
     inputs.leftClimberEncoderPosition = leftClimberEncoder.getPosition();
+    inputs.leftClimberAbsoluteEncoderPosition = inputs.leftClimberEncoderPosition;
 
     inputs.rightClimberAppliedVolts =
         rightClimberSparkMax.getAppliedOutput() * rightClimberSparkMax.getBusVoltage();
     inputs.rightClimberVelocityRadPerSec =
         Units.rotationsPerMinuteToRadiansPerSecond(rightClimberEncoder.getVelocity());
     inputs.rightClimberCurrentAmps = new double[] {rightClimberSparkMax.getOutputCurrent()};
-    inputs.rightClimberAbsoluteEncoderPosition =
-        ((rightClimberAbsoluteEncoder.getPosition() * 2 * Math.PI)
-                - ClimberConstants.rightClimberAbsoluteEncoderOffset)
-            * ClimberConstants.CLIMBER_GEAR_RATIO;
     inputs.rightClimberEncoderPosition = rightClimberEncoder.getPosition();
+    inputs.rightClimberAbsoluteEncoderPosition = inputs.rightClimberEncoderPosition;
   }
 
   @Override

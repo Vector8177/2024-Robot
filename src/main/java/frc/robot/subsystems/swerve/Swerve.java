@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
@@ -57,6 +58,8 @@ public class Swerve extends SubsystemBase {
   private final ModuleLimits limits = MODULE_LIMITS;
   private final Vision s_Vision;
 
+  private Supplier<DriveMode> currentModeSupplier;
+
   private AutoAlignController autoAlignController = null;
 
   private SwerveDriveKinematics kinematics = SwerveConstants.KINEMATICS;
@@ -68,6 +71,7 @@ public class Swerve extends SubsystemBase {
         new SwerveModulePosition(),
         new SwerveModulePosition()
       };
+
   private double lastTimeStamp = 0.0;
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
@@ -78,8 +82,10 @@ public class Swerve extends SubsystemBase {
       ModuleIO frModuleIO,
       ModuleIO blModuleIO,
       ModuleIO brModuleIO,
+      Supplier<DriveMode> currentMode,
       Vision s_Vision) {
     this.gyroIO = gyroIO;
+    currentModeSupplier = currentMode;
     modules[0] = new Module(flModuleIO, 0);
     modules[1] = new Module(frModuleIO, 1);
     modules[2] = new Module(blModuleIO, 2);
@@ -218,10 +224,12 @@ public class Swerve extends SubsystemBase {
       // Apply update
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
 
-      List<Optional<EstimatedRobotPose>> vPoses = s_Vision.getEstimatedGlobalPose(getPose());
+      if (s_Vision != null) {
+        List<Optional<EstimatedRobotPose>> vPoses = s_Vision.getEstimatedGlobalPose(getPose());
 
-      for (int j = 0; j < vPoses.size(); j++) {
-        vPoses.get(j).ifPresent(this::addVisionMeasurement);
+        for (int j = 0; j < vPoses.size(); j++) {
+          vPoses.get(j).ifPresent(this::addVisionMeasurement);
+        }
       }
     }
   }
@@ -232,7 +240,11 @@ public class Swerve extends SubsystemBase {
    * @param speeds Speeds in meters/sec
    */
   public void runVelocity(ChassisSpeeds speeds) {
-    // Calculate module setpoints
+    // Calculate module setpoints\
+    if (currentModeSupplier.get() == DriveMode.AUTO_ALIGN) {
+      double omegaVel = autoAlignController.updateDrive();
+      speeds = new ChassisSpeeds(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, omegaVel);
+    }
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, MAX_LINEAR_VELOCITY);
