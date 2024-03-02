@@ -39,6 +39,10 @@ public class Hood extends SubsystemBase {
     setHoodPositionRad(amp ? HoodConstants.AMP_POSE : HoodConstants.SHOOT_POSE);
   }
 
+  public void setHoodPosition(double pose) {
+    setHoodPositionRad((pose));
+  }
+
   private void setHoodPositionRad(double rad) {
     desiredPivotPosition = Rotation2d.fromRadians(rad);
   }

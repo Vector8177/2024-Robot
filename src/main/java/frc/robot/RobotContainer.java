@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants.DriveMode;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.SwerveCommands;
@@ -76,6 +77,8 @@ public class RobotContainer {
 
   private DriveMode currentDriveMode = DriveMode.TELEOP;
 
+  private boolean isIntaking = false;
+
   private final Mechanism2d mainMech = new Mechanism2d(10, 10);
 
   // Controller
@@ -105,8 +108,9 @@ public class RobotContainer {
                 new ShooterIOSparkMax(),
                 () -> currentDriveMode,
                 () -> Rotation2d.fromRadians(swerve.calculateAngleAutoAlign()),
+                () -> isIntaking,
                 mainMech);
-        intake = new Intake(new IntakeIOSparkMax());
+        intake = new Intake(new IntakeIOSparkMax(), () -> !shooter.getShooterOccupied());
         hood = new Hood(new HoodIOSparkMax(), shooter.getMechanismLigament2d());
         climber = new Climber(new ClimberIOSparkMax());
         break;
@@ -128,8 +132,9 @@ public class RobotContainer {
                 new ShooterIOSim(),
                 () -> currentDriveMode,
                 () -> Rotation2d.fromRadians(swerve.calculateAngleAutoAlign()),
+                () -> isIntaking,
                 mainMech);
-        intake = new Intake(new IntakeIOSim());
+        intake = new Intake(new IntakeIOSim(), () -> !shooter.getShooterOccupied());
         hood = new Hood(new HoodIOSim(), shooter.getMechanismLigament2d());
         climber = new Climber(new ClimberIOSim());
         break;
@@ -151,8 +156,9 @@ public class RobotContainer {
                 new ShooterIO() {},
                 () -> currentDriveMode,
                 () -> Rotation2d.fromRadians(swerve.calculateAngleAutoAlign()),
+                () -> isIntaking,
                 mainMech);
-        intake = new Intake(new IntakeIO() {});
+        intake = new Intake(new IntakeIO() {}, () -> !shooter.getShooterOccupied());
         hood = new Hood(new HoodIO() {}, shooter.getMechanismLigament2d());
         climber = new Climber(new ClimberIO() {});
         break;
@@ -230,15 +236,20 @@ public class RobotContainer {
 
     driverController.b().onTrue(toggleAutoAlign());
 
-    driverController.rightTrigger().whileTrue(TeleopCommands.runOuttake(intake, shooter));
-
-    driverController.a().onTrue(TeleopCommands.runShooter(shooter));
-
     operatorController.a().onTrue(TeleopCommands.runShooter(shooter));
 
     operatorController.rightTrigger().whileTrue(TeleopCommands.runIntake(intake, shooter));
 
     operatorController.leftTrigger().whileTrue(TeleopCommands.runOuttake(intake, shooter));
+
+    operatorController
+        .b()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  shooter.setShooterSpeed(0);
+                },
+                shooter));
 
     operatorController.povRight().onTrue(TeleopCommands.setShooterAmpPosition(shooter, hood));
 
@@ -262,6 +273,7 @@ public class RobotContainer {
     Logger.recordOutput("Mechanism", mainMech);
     Logger.recordOutput("TeleopCommands/ShooterState", TeleopCommands.getCurrentState());
     Logger.recordOutput("AutoAlign/AutoAlignMode", currentDriveMode);
+    // Logger.recordOutput("Shooter/ShooterOccupied", shooter.getShooterOccupied());
   }
 
   public Command toggleAutoAlign() {
@@ -269,6 +281,9 @@ public class RobotContainer {
         () -> {
           currentDriveMode =
               currentDriveMode == DriveMode.TELEOP ? DriveMode.AUTO_ALIGN : DriveMode.TELEOP;
+          if (currentDriveMode == DriveMode.AUTO_ALIGN) {
+            TeleopCommands.setShooterState(ShooterState.SHOOT);
+          }
         });
   }
 
@@ -278,10 +293,26 @@ public class RobotContainer {
           DriverStation.reportError("Changing Auto Align to " + autoAlign, false);
           currentDriveMode = autoAlign ? DriveMode.AUTO_ALIGN : DriveMode.TELEOP;
 
-          if(currentDriveMode == DriveMode.AUTO_ALIGN){
+          if (currentDriveMode == DriveMode.AUTO_ALIGN) {
             TeleopCommands.setShooterState(ShooterState.SHOOT);
           }
           DriverStation.reportError("Changed Auto Align to " + autoAlign, false);
         });
+  }
+
+  public void setIntakingState(boolean iState) {
+    this.isIntaking = iState;
+  }
+
+  public Command basicAuto() {
+    return Commands.sequence(
+        Commands.runOnce(
+            () -> {
+              shooter.setPosition(ShooterConstants.SHOOTER_FENDER_AIM);
+              hood.setHoodPosition(false);
+            },
+            shooter,
+            hood),
+        TeleopCommands.runShootSequence(shooter));
   }
 }

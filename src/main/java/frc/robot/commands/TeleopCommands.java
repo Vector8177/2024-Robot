@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
+import frc.robot.Constants.HoodConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.Mode;
 import frc.robot.Constants.ShooterConstants;
@@ -192,8 +193,8 @@ public class TeleopCommands {
     return Commands.runOnce(
         () -> {
           currentState = ShooterState.EMPTY;
-          shooter.setPosition(ShooterConstants.SHOOTER_PIVOT_AMP_POSITION);
-          hood.setHoodPosition(false);
+          shooter.setPosition(ShooterConstants.SHOOTER_HUMAN_POSITION);
+          hood.setHoodPosition(HoodConstants.HP_POSE);
         });
   }
 
@@ -225,10 +226,11 @@ public class TeleopCommands {
         climber);
   }
 
-  public static ShooterState getShooterState(){
+  public static ShooterState getShooterState() {
     return currentState;
   }
-  public static void setShooterState(ShooterState state){
+
+  public static void setShooterState(ShooterState state) {
     currentState = state;
   }
 }

@@ -64,7 +64,7 @@ public final class Constants {
     public static final double climberKI = 0d;
     public static final double climberKD = 0d;
 
-    public static final double climberSpeed = 15d;
+    public static final double climberSpeed = 30d;
 
     public static final double climberTopLimit = 210.8d;
     public static final double climberBottomLimit = 0.2d;
@@ -81,6 +81,7 @@ public final class Constants {
 
     public static final double SHOOT_POSE = 0.05;
     public static final double AMP_POSE = 1.859;
+    public static final double HP_POSE = .383;
 
     public static final double HOOD_GEAR_RATIO = 1d / (5.23 * 5.23 * 5.23 * 36d / 24);
   }
@@ -190,6 +191,8 @@ public final class Constants {
     public static final double SHOOTER_FENDER_AIM = 2.508d;
 
     public static final double SHOOTER_LONG_SHOT = 1.85d;
+
+    public static final double SHOOTER_HUMAN_POSITION = 5.634d;
 
     public static final int SHOOT_WHEEL_RPM = 5000;
     public static final int SHOOT_RPM_CUTOFF = 4500;

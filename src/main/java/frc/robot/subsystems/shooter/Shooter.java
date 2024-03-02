@@ -23,6 +23,9 @@ public class Shooter extends SubsystemBase {
 
   private Supplier<DriveMode> currentDriveModeSupplier;
   private Supplier<Rotation2d> shooterAlignSupplier;
+  private Supplier<Boolean> intakingSupplier;
+
+  private boolean shooterOccupied = false;
 
   // public boolean readyToShoot = false;
   // public boolean ampMode = false;
@@ -44,8 +47,10 @@ public class Shooter extends SubsystemBase {
       ShooterIO io,
       Supplier<DriveMode> modeSupplier,
       Supplier<Rotation2d> shooterAngleSupp,
+      Supplier<Boolean> iSupplier,
       Mechanism2d mainMech) {
     this.io = io;
+    this.intakingSupplier = iSupplier;
     this.currentDriveModeSupplier = modeSupplier;
     this.shooterAlignSupplier = shooterAngleSupp;
     this.SHOOTER_TOP_KP =
@@ -137,6 +142,10 @@ public class Shooter extends SubsystemBase {
     return inputs.shooterSensorTriggerVoltage;
   }
 
+  public boolean getShooterOccupied() {
+    return shooterOccupied;
+  }
+
   public MechanismLigament2d getMechanismLigament2d() {
     return m_shooter;
   }
@@ -157,7 +166,18 @@ public class Shooter extends SubsystemBase {
     if (currentDriveModeSupplier.get() == DriveMode.AUTO_ALIGN) {
       targetPosition = shooterAlignSupplier.get();
     }
+
     Logger.recordOutput("Shooter/SetPoints", targetPosition);
+
+    if (getIRSensorVoltage() > ShooterConstants.SHOOTER_IR_TARGET_VOLTAGE) {
+      shooterOccupied = true;
+      Logger.recordOutput("Shooter/ShooterOccupied", shooterOccupied);
+    } else {
+      shooterOccupied = false;
+      Logger.recordOutput("Shooter/ShooterOccupied", shooterOccupied);
+    }
+
+    // if (!intakingSupplier.get())
 
     // Logger.recordOutput("Shooter/SetPoints/WheelTargetSpeed", wheelTargetSpeed);
 

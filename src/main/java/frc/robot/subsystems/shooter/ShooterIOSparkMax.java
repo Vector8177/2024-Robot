@@ -110,13 +110,14 @@ public class ShooterIOSparkMax implements ShooterIO {
     inputs.shooterTopFixedAppliedVolts =
         shooterTopFixedSparkMax.getAppliedOutput() * shooterTopFixedSparkMax.getBusVoltage();
     inputs.shooterTopFixedRPM = shooterTopFixedEncoder.getVelocity();
-    inputs.shooterTopFixedCurrentAmps = new double[] {shooterTopFixedSparkMax.getOutputCurrent()};
+    // inputs.shooterTopFixedCurrentAmps = new double[]
+    // {shooterTopFixedSparkMax.getOutputCurrent()};
 
     inputs.shooterBottomFixedAppliedVolts =
         shooterBottomFixedSparkMax.getAppliedOutput() * shooterBottomFixedSparkMax.getBusVoltage();
     inputs.shooterBottomFixedRPM = shooterBottomFixedEncoder.getVelocity();
-    inputs.shooterBottomFixedCurrentAmps =
-        new double[] {shooterBottomFixedSparkMax.getOutputCurrent()};
+    // inputs.shooterBottomFixedCurrentAmps =
+    //     new double[] {shooterBottomFixedSparkMax.getOutputCurrent()};
 
     inputs.shooterPivotAppliedVolts =
         shooterPivotSparkMax.getAppliedOutput() * shooterPivotSparkMax.getBusVoltage();
@@ -126,9 +127,9 @@ public class ShooterIOSparkMax implements ShooterIO {
 
     inputs.shooterIndexerAppliedVolts =
         shooterIndexerSparkMax.getAppliedOutput() * shooterIndexerSparkMax.getBusVoltage();
-    inputs.shooterIndexerVelocityRadPerSec =
-        Units.rotationsPerMinuteToRadiansPerSecond(shooterIndexerEncoder.getVelocity());
-    inputs.shooterIndexerCurrentAmps = new double[] {shooterIndexerSparkMax.getOutputCurrent()};
+    // inputs.shooterIndexerVelocityRadPerSec =
+    //     Units.rotationsPerMinuteToRadiansPerSecond(shooterIndexerEncoder.getVelocity());
+    // inputs.shooterIndexerCurrentAmps = new double[] {shooterIndexerSparkMax.getOutputCurrent()};
 
     inputs.shooterPivotRelativePosition =
         (Rotation2d.fromRadians(shooterPivotAbsoluteEncoder.getPosition()));

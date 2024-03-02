@@ -1,9 +1,9 @@
 package frc.robot.subsystems.intake;
 
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.util.SparkUtils;
 
@@ -47,6 +47,9 @@ public class IntakeIOSparkMax implements IntakeIO {
     intakeLeftFeederEncoder.setMeasurementPeriod(60);
     intakeIndexerEncoder.setMeasurementPeriod(60);
 
+    intakeLeftFeederSparkMax.setIdleMode(IdleMode.kCoast);
+    intakeRightFeederSparkMax.setIdleMode(IdleMode.kCoast);
+
     intakeRightFeederSparkMax.follow(intakeLeftFeederSparkMax);
     intakeRightFeederSparkMax.setInverted(true);
 
@@ -59,22 +62,23 @@ public class IntakeIOSparkMax implements IntakeIO {
   public void updateInputs(IntakeIOInputs inputs) {
     inputs.intakeLeftFeederAppliedVolts =
         intakeLeftFeederSparkMax.getAppliedOutput() * intakeLeftFeederSparkMax.getBusVoltage();
-    inputs.intakeLeftFeederVelocityRadPerSec =
-        Units.rotationsPerMinuteToRadiansPerSecond(intakeLeftFeederEncoder.getVelocity());
-    inputs.intakeLeftFeederCurrentAmps = new double[] {intakeLeftFeederSparkMax.getOutputCurrent()};
+    // inputs.intakeLeftFeederVelocityRadPerSec =
+    //     Units.rotationsPerMinuteToRadiansPerSecond(intakeLeftFeederEncoder.getVelocity());
+    // inputs.intakeLeftFeederCurrentAmps = new double[]
+    // {intakeLeftFeederSparkMax.getOutputCurrent()};
 
     inputs.intakeRightFeederAppliedVolts =
         intakeRightFeederSparkMax.getAppliedOutput() * intakeRightFeederSparkMax.getBusVoltage();
-    inputs.intakeRightFeederVelocityRadPerSec =
-        Units.rotationsPerMinuteToRadiansPerSecond(intakeRightFeederEncoder.getVelocity());
-    inputs.intakeRightFeederCurrentAmps =
-        new double[] {intakeRightFeederSparkMax.getOutputCurrent()};
+    // inputs.intakeRightFeederVelocityRadPerSec =
+    //     Units.rotationsPerMinuteToRadiansPerSecond(intakeRightFeederEncoder.getVelocity());
+    // inputs.intakeRightFeederCurrentAmps =
+    //     new double[] {intakeRightFeederSparkMax.getOutputCurrent()};
 
     inputs.intakeIndexerAppliedVolts =
         intakeIndexerSparkMax.getAppliedOutput() * intakeIndexerSparkMax.getBusVoltage();
-    inputs.intakeIndexerVelocityRadPerSec =
-        Units.rotationsPerMinuteToRadiansPerSecond(intakeIndexerEncoder.getVelocity());
-    inputs.intakeIndexerCurrentAmps = new double[] {intakeIndexerSparkMax.getOutputCurrent()};
+    // inputs.intakeIndexerVelocityRadPerSec =
+    //     Units.rotationsPerMinuteToRadiansPerSecond(intakeIndexerEncoder.getVelocity());
+    // inputs.intakeIndexerCurrentAmps = new double[] {intakeIndexerSparkMax.getOutputCurrent()};
   }
 
   @Override

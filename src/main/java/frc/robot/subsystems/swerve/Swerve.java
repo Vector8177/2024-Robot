@@ -225,11 +225,13 @@ public class Swerve extends SubsystemBase {
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
 
       if (s_Vision != null) {
+        Pose2d currentPose = getPose();
         List<Optional<EstimatedRobotPose>> vPoses = s_Vision.getEstimatedGlobalPose(getPose());
 
         for (int j = 0; j < vPoses.size(); j++) {
           vPoses.get(j).ifPresent(this::addVisionMeasurement);
         }
+        setPose(new Pose2d(getPose().getTranslation(), currentPose.getRotation()));
       }
     }
   }
