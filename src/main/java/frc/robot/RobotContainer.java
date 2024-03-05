@@ -27,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants.DriveMode;
-import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.SwerveCommands;
 import frc.robot.commands.TeleopCommands;
 import frc.robot.commands.TeleopCommands.ShooterState;
@@ -53,9 +52,9 @@ import frc.robot.subsystems.swerve.ModuleIO;
 import frc.robot.subsystems.swerve.ModuleIOSim;
 import frc.robot.subsystems.swerve.ModuleIOSparkMax;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.subsystems.vision.CameraIO;
-import frc.robot.subsystems.vision.CameraIOPhoton;
-import frc.robot.subsystems.vision.Vision;
+// import frc.robot.subsystems.vision.CameraIO;
+// import frc.robot.subsystems.vision.CameraIOPhoton;
+// import frc.robot.subsystems.vision.Vision;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -71,7 +70,7 @@ public class RobotContainer {
   private final Shooter shooter;
   private final Intake intake;
   private final Hood hood;
-  private final Vision vision;
+  // private final Vision vision;
   private int n = 0;
   private final Climber climber;
 
@@ -93,7 +92,7 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
-        vision = new Vision(new CameraIOPhoton(VisionConstants.frontLeftCameraName));
+        // vision = new Vision(new CameraIOPhoton(VisionConstants.frontLeftCameraName));
         swerve =
             new Swerve(
                 new GyroIOPigeon2(false),
@@ -101,8 +100,7 @@ public class RobotContainer {
                 new ModuleIOSparkMax(1),
                 new ModuleIOSparkMax(2),
                 new ModuleIOSparkMax(3),
-                () -> currentDriveMode,
-                vision);
+                () -> currentDriveMode);
         shooter =
             new Shooter(
                 new ShooterIOSparkMax(),
@@ -117,7 +115,7 @@ public class RobotContainer {
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
-        vision = null;
+        // vision = null;
         swerve =
             new Swerve(
                 new GyroIO() {},
@@ -125,8 +123,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim(),
-                () -> currentDriveMode,
-                vision);
+                () -> currentDriveMode);
         shooter =
             new Shooter(
                 new ShooterIOSim(),
@@ -141,7 +138,7 @@ public class RobotContainer {
 
       default:
         // Replayed robot, disable IO implementations
-        vision = new Vision(new CameraIO() {});
+        // vision = new Vision(new CameraIO() {});
         swerve =
             new Swerve(
                 new GyroIO() {},
@@ -149,8 +146,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
-                () -> currentDriveMode,
-                vision);
+                () -> currentDriveMode);
         shooter =
             new Shooter(
                 new ShooterIO() {},

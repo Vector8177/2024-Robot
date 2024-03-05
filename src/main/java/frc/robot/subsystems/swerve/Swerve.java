@@ -36,12 +36,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants.SwerveConstants.DriveMode;
 import frc.robot.Constants.SwerveConstants.ModuleLimits;
 import frc.robot.subsystems.swerve.controllers.AutoAlignController;
-import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.AprilTagVisionIO;
+import frc.robot.subsystems.vision.AprilTagVisionIOInputsAutoLogged;
 import frc.robot.util.LocalADStarAK;
-import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
@@ -56,7 +56,11 @@ public class Swerve extends SubsystemBase {
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
   private final SysIdRoutine sysId;
   private final ModuleLimits limits = MODULE_LIMITS;
-  private final Vision s_Vision;
+  private final AprilTagVisionIO aprilTagVisionIO;
+  private final AprilTagVisionIOInputsAutoLogged aprilTagInputs = new AprilTagVisionIOInputsAutoLogged();
+
+  @AutoLogOutput
+  public boolean useVision = true;
 
   private Supplier<DriveMode> currentModeSupplier;
 
@@ -66,15 +70,15 @@ public class Swerve extends SubsystemBase {
   private Rotation2d rawGyroRotation = new Rotation2d();
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
       new SwerveModulePosition[] {
-        new SwerveModulePosition(),
-        new SwerveModulePosition(),
-        new SwerveModulePosition(),
-        new SwerveModulePosition()
+          new SwerveModulePosition(),
+          new SwerveModulePosition(),
+          new SwerveModulePosition(),
+          new SwerveModulePosition()
       };
 
   private double lastTimeStamp = 0.0;
-  private SwerveDrivePoseEstimator poseEstimator =
-      new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
+  private SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, rawGyroRotation,
+      lastModulePositions, new Pose2d());
 
   public Swerve(
       GyroIO gyroIO,
@@ -82,16 +86,17 @@ public class Swerve extends SubsystemBase {
       ModuleIO frModuleIO,
       ModuleIO blModuleIO,
       ModuleIO brModuleIO,
-      Supplier<DriveMode> currentMode,
-      Vision s_Vision) {
+      AprilTagVisionIO aprilTagVisionIO,
+      Supplier<DriveMode> currentMode) {
     this.gyroIO = gyroIO;
+    this.aprilTagVisionIO = aprilTagVisionIO;
     currentModeSupplier = currentMode;
     modules[0] = new Module(flModuleIO, 0);
     modules[1] = new Module(frModuleIO, 1);
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
 
-    this.s_Vision = s_Vision;
+    // this.s_Vision = s_Vision;
 
     // Start threads (no-op for each if no signals have been created)
     PhoenixOdometryThread.getInstance().start();
@@ -105,9 +110,8 @@ public class Swerve extends SubsystemBase {
         this::runVelocity,
         new HolonomicPathFollowerConfig(
             MAX_LINEAR_VELOCITY, DRIVE_BASE_RADIUS, new ReplanningConfig()),
-        () ->
-            DriverStation.getAlliance().isPresent()
-                && DriverStation.getAlliance().get() == Alliance.Red,
+        () -> DriverStation.getAlliance().isPresent()
+            && DriverStation.getAlliance().get() == Alliance.Red,
         this);
     Pathfinding.setPathfinder(new LocalADStarAK());
     PathPlannerLogging.setLogActivePathCallback(
@@ -121,28 +125,25 @@ public class Swerve extends SubsystemBase {
         });
 
     // Configure SysId
-    sysId =
-        new SysIdRoutine(
-            new SysIdRoutine.Config(
-                null,
-                null,
-                null,
-                (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
-            new SysIdRoutine.Mechanism(
-                (voltage) -> {
-                  for (int i = 0; i < 4; i++) {
-                    modules[i].runCharacterization(voltage.in(Volts));
-                  }
-                },
-                null,
-                this));
+    sysId = new SysIdRoutine(
+        new SysIdRoutine.Config(
+            null,
+            null,
+            null,
+            (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
+        new SysIdRoutine.Mechanism(
+            (voltage) -> {
+              for (int i = 0; i < 4; i++) {
+                modules[i].runCharacterization(voltage.in(Volts));
+              }
+            },
+            null,
+            this));
 
-    autoAlignController =
-        new AutoAlignController(
-            () ->
-                DriverStation.getAlliance().isPresent()
-                    && DriverStation.getAlliance().get() == Alliance.Red,
-            this);
+    autoAlignController = new AutoAlignController(
+        () -> DriverStation.getAlliance().isPresent()
+            && DriverStation.getAlliance().get() == Alliance.Red,
+        this);
   }
 
   public void periodic() {
@@ -170,8 +171,7 @@ public class Swerve extends SubsystemBase {
     }
 
     // Update odometry
-    double[] sampleTimestamps =
-        modules[0].getOdometryTimestamps(); // All signals are sampled together
+    double[] sampleTimestamps = modules[0].getOdometryTimestamps(); // All signals are sampled together
     int sampleCount = sampleTimestamps.length;
 
     for (int i = 0; i < sampleCount; i++) {
@@ -184,25 +184,21 @@ public class Swerve extends SubsystemBase {
         for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
           modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
 
-          double velocity =
-              (modulePositions[moduleIndex].distanceMeters
-                      - lastModulePositions[moduleIndex].distanceMeters)
-                  / dt;
+          double velocity = (modulePositions[moduleIndex].distanceMeters
+              - lastModulePositions[moduleIndex].distanceMeters)
+              / dt;
 
-          double omega =
-              modulePositions[moduleIndex]
-                      .angle
-                      .minus(lastModulePositions[moduleIndex].angle)
-                      .getRadians()
-                  / dt;
+          double omega = modulePositions[moduleIndex].angle
+              .minus(lastModulePositions[moduleIndex].angle)
+              .getRadians()
+              / dt;
 
           if (Math.abs(omega) <= limits.maxSteeringVelocity()
               && Math.abs(velocity) <= limits.maxDriveVelocity()) {
-            moduleDeltas[moduleIndex] =
-                new SwerveModulePosition(
-                    modulePositions[moduleIndex].distanceMeters
-                        - lastModulePositions[moduleIndex].distanceMeters,
-                    modulePositions[moduleIndex].angle);
+            moduleDeltas[moduleIndex] = new SwerveModulePosition(
+                modulePositions[moduleIndex].distanceMeters
+                    - lastModulePositions[moduleIndex].distanceMeters,
+                modulePositions[moduleIndex].angle);
 
             lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
           } else {
@@ -224,15 +220,23 @@ public class Swerve extends SubsystemBase {
       // Apply update
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
 
-      if (s_Vision != null) {
-        Pose2d currentPose = getPose();
-        List<Optional<EstimatedRobotPose>> vPoses = s_Vision.getEstimatedGlobalPose(getPose());
+      aprilTagVisionIO.updatePose(getPose());
+      aprilTagVisionIO.updateInputs(aprilTagInputs);
 
-        for (int j = 0; j < vPoses.size(); j++) {
-          vPoses.get(j).ifPresent(this::addVisionMeasurement);
-        }
-        setPose(new Pose2d(getPose().getTranslation(), currentPose.getRotation()));
-      }
+      // if (s_Vision != null) {
+      // Pose2d currentPose = getPose();
+      // List<Optional<EstimatedRobotPose>> vPoses =
+      // s_Vision.getEstimatedGlobalPose(getPose());
+
+      // for (int j = 0; j < vPoses.size(); j++) {
+      // vPoses.get(j).ifPresent(this::addVisionMeasurement);
+      // }
+      // setPose(new Pose2d(getPose().getTranslation(), currentPose.getRotation()));
+      // }
+    }
+
+    for (int i = 0; i < aprilTagInputs.timestamps.length; i++) {
+      
     }
   }
 
@@ -269,8 +273,10 @@ public class Swerve extends SubsystemBase {
   }
 
   /**
-   * Stops the drive and turns the modules to an X arrangement to resist movement. The modules will
-   * return to their normal orientations the next time a nonzero velocity is requested.
+   * Stops the drive and turns the modules to an X arrangement to resist movement.
+   * The modules will
+   * return to their normal orientations the next time a nonzero velocity is
+   * requested.
    */
   public void stopWithX() {
     Rotation2d[] headings = new Rotation2d[4];
@@ -291,7 +297,10 @@ public class Swerve extends SubsystemBase {
     return sysId.dynamic(direction);
   }
 
-  /** Returns the module states (turn angles and drive velocities) for all of the modules. */
+  /**
+   * Returns the module states (turn angles and drive velocities) for all of the
+   * modules.
+   */
   @AutoLogOutput(key = "SwerveStates/Measured")
   private SwerveModuleState[] getModuleStates() {
     SwerveModuleState[] states = new SwerveModuleState[4];
@@ -301,7 +310,10 @@ public class Swerve extends SubsystemBase {
     return states;
   }
 
-  /** Returns the module positions (turn angles and drive positions) for all of the modules. */
+  /**
+   * Returns the module positions (turn angles and drive positions) for all of the
+   * modules.
+   */
   private SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] states = new SwerveModulePosition[4];
     for (int i = 0; i < 4; i++) {
@@ -335,7 +347,7 @@ public class Swerve extends SubsystemBase {
    * Adds a vision measurement to the pose estimator.
    *
    * @param visionPose The pose of the robot as measured by the vision camera.
-   * @param timestamp The timestamp of the vision measurement in seconds.
+   * @param timestamp  The timestamp of the vision measurement in seconds.
    */
   public void addVisionMeasurement(EstimatedRobotPose visionPose) {
     poseEstimator.addVisionMeasurement(

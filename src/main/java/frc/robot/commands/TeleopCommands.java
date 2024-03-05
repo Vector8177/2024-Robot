@@ -49,7 +49,7 @@ public class TeleopCommands {
     return Commands.sequence(
         Commands.runOnce(
             () -> {
-              intakeState = IntakeState.STOPPED;
+              // intakeState = IntakeState.STOPPED;
               shooter.setShooterSpeed(ShooterConstants.SHOOT_WHEEL_RPM);
             },
             shooter),
@@ -93,7 +93,7 @@ public class TeleopCommands {
     return Commands.sequence(
         Commands.runOnce(
             () -> {
-              intakeState = IntakeState.STOPPED;
+              // intakeState = IntakeState.STOPPED;
               shooter.setIndexerSpeed(ShooterConstants.SHOOTER_INDEXER_SPEED);
             },
             shooter),

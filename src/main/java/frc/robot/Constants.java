@@ -13,10 +13,16 @@
 
 package frc.robot;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -36,6 +42,9 @@ public final class Constants {
 
   public static final double SHOOTER_HEIGHT = 0.4318;
   public static final double SPEAKER_HEIGHT = 1.9812;
+
+  public static final AprilTagFieldLayout aprilTagFieldLayout =
+      AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
   public static final class IntakeConstants {
     public static final int LEFT_FEEDER_MOTOR_ID = 60;
@@ -80,7 +89,7 @@ public final class Constants {
     public static final double hoodPivotKD = 0d;
 
     public static final double SHOOT_POSE = 0.05;
-    public static final double AMP_POSE = 1.859;
+    public static final double AMP_POSE = 1.921;
     public static final double HP_POSE = .383;
 
     public static final double HOOD_GEAR_RATIO = 1d / (5.23 * 5.23 * 5.23 * 36d / 24);
@@ -257,8 +266,18 @@ public final class Constants {
             Units.inchesToMeters(11.240),
             Units.inchesToMeters(-13.099),
             new Rotation3d(0, Units.degreesToRadians(40), Units.degreesToRadians(180)));
+    public static final Transform3d frontRightCameraPosition =
+        new Transform3d(
+            Units.inchesToMeters(0),
+            Units.inchesToMeters(11.240),
+            Units.inchesToMeters(-13.099),
+            new Rotation3d(0, Units.degreesToRadians(40), Units.degreesToRadians(180)));
 
     public static final String frontLeftCameraName = "mainCamera";
+    public static final String fronRightCameraName = "";
+
+    public static final Matrix<N3, N1> normalSingleTagStdDev =
+        VecBuilder.fill(0, 0, Double.MAX_VALUE);
   }
 
   public static enum Mode {
