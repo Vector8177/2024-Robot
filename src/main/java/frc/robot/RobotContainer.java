@@ -52,6 +52,9 @@ import frc.robot.subsystems.swerve.ModuleIO;
 import frc.robot.subsystems.swerve.ModuleIOSim;
 import frc.robot.subsystems.swerve.ModuleIOSparkMax;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.vision.AprilTagVisionIO;
+import frc.robot.subsystems.vision.AprilTagVisionIOReal;
+
 // import frc.robot.subsystems.vision.CameraIO;
 // import frc.robot.subsystems.vision.CameraIOPhoton;
 // import frc.robot.subsystems.vision.Vision;
@@ -100,6 +103,7 @@ public class RobotContainer {
                 new ModuleIOSparkMax(1),
                 new ModuleIOSparkMax(2),
                 new ModuleIOSparkMax(3),
+                new AprilTagVisionIOReal(),
                 () -> currentDriveMode);
         shooter =
             new Shooter(
@@ -123,6 +127,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim(),
+                new AprilTagVisionIO() {},
                 () -> currentDriveMode);
         shooter =
             new Shooter(
@@ -146,6 +151,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
+                new AprilTagVisionIO() {},
                 () -> currentDriveMode);
         shooter =
             new Shooter(

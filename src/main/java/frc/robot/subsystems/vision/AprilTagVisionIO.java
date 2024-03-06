@@ -15,8 +15,7 @@ import org.photonvision.EstimatedRobotPose;
 public interface AprilTagVisionIO {
   @AutoLog
   public static class AprilTagVisionIOInputs {
-    public Pose3d[] visionPoses =
-        List.of(new Pose3d(), new Pose3d(), new Pose3d()).toArray(new Pose3d[0]);
+    public Pose3d[] visionPoses = new Pose3d[]{new Pose3d(), new Pose3d(), new Pose3d()};
     public double[] timestamps = new double[3];
     public double[] visionStdDevs = new double[9];
   }

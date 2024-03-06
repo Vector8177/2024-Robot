@@ -8,14 +8,12 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import frc.robot.Constants;
-import frc.robot.Constants.*;
 import frc.robot.Constants.VisionConstants;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy.*;
 
 public class AprilTagVisionIOReal implements AprilTagVisionIO {
   private final PhotonCamera flCam, frCam;
