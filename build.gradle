@@ -147,6 +147,7 @@ spotless {
         }
         toggleOffOn()
         googleJavaFormat()
+        importOrder('//#', 'frc.robot','edu.wpi','')
         removeUnusedImports()
         trimTrailingWhitespace()
         endWithNewline()
