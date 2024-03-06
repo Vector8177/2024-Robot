@@ -55,11 +55,12 @@ public class AprilTagVisionIOReal implements AprilTagVisionIO {
           poseArray[0] = estimatedRobotPose.estimatedPose;
           timeStampArray[0] = estimatedRobotPose.timestampSeconds;
           Matrix<N3, N1> stdDevs = getEstimationStdDevs(estimatedRobotPose);
-          arraycopy(infiniteStdDevs.getData(), 0, visionStdArray, 0, 3);
+          arraycopy(stdDevs.getData(), 0, visionStdArray, 0, 3);
         },
         () -> {
           poseArray[0] = new Pose3d();
           timeStampArray[0] = 0.0;
+          arraycopy(infiniteStdDevs.getData(), 0, visionStdArray, 0, 3);
         });
     pose = frPoseEstimator.update();
     pose.ifPresentOrElse(
@@ -72,6 +73,7 @@ public class AprilTagVisionIOReal implements AprilTagVisionIO {
         () -> {
           poseArray[1] = new Pose3d();
           timeStampArray[1] = 0.0;
+          arraycopy(infiniteStdDevs.getData(), 0, visionStdArray, 3, 3);
         });
   }
 }
