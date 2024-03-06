@@ -13,6 +13,8 @@
 
 package org.vector8177.subsystems.swerve;
 
+import org.vector8177.Constants.SwerveConstants.CanID;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
@@ -22,7 +24,6 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import java.util.Queue;
-import org.vector8177.Constants.SwerveConstants.CanID;
 
 /** IO implementation for Pigeon2 */
 public class GyroIOPigeon2 implements GyroIO {

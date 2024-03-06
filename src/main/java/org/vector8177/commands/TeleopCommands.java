@@ -1,11 +1,5 @@
 package org.vector8177.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SelectCommand;
-
-import java.util.Map;
-import java.util.function.BooleanSupplier;
 import org.vector8177.Constants;
 import org.vector8177.Constants.ClimberConstants;
 import org.vector8177.Constants.HoodConstants;
@@ -16,6 +10,13 @@ import org.vector8177.subsystems.climber.Climber;
 import org.vector8177.subsystems.hood.Hood;
 import org.vector8177.subsystems.intake.Intake;
 import org.vector8177.subsystems.shooter.Shooter;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
+
+import java.util.Map;
+import java.util.function.BooleanSupplier;
 
 public class TeleopCommands {
   public static enum ShooterState {

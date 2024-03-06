@@ -1,5 +1,10 @@
 package org.vector8177.subsystems.shooter;
 
+import org.vector8177.Constants;
+import org.vector8177.Constants.Mode;
+import org.vector8177.Constants.ShooterConstants;
+import org.vector8177.Constants.SwerveConstants.DriveMode;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -10,10 +15,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
-import org.vector8177.Constants;
-import org.vector8177.Constants.Mode;
-import org.vector8177.Constants.ShooterConstants;
-import org.vector8177.Constants.SwerveConstants.DriveMode;
 
 public class Shooter extends SubsystemBase {
   private final ShooterIO io;

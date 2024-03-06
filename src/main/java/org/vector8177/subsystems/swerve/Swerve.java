@@ -15,9 +15,20 @@ package org.vector8177.subsystems.swerve;
 
 import static edu.wpi.first.units.Units.*;
 import static org.vector8177.Constants.SwerveConstants.*;
+import static org.vector8177.util.VectorUtils.*;
 
+import org.vector8177.Constants.SwerveConstants;
+import org.vector8177.Constants.SwerveConstants.DriveMode;
+import org.vector8177.Constants.SwerveConstants.ModuleLimits;
+import org.vector8177.subsystems.swerve.controllers.AutoAlignController;
+import org.vector8177.subsystems.vision.AprilTagVisionIO;
+import org.vector8177.subsystems.vision.AprilTagVisionIOInputsAutoLogged;
+import org.vector8177.util.LocalADStarAK;
+
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -36,19 +47,13 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
+import java.util.Arrays;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
-import org.vector8177.Constants.SwerveConstants;
-import org.vector8177.Constants.SwerveConstants.DriveMode;
-import org.vector8177.Constants.SwerveConstants.ModuleLimits;
-import org.vector8177.subsystems.swerve.controllers.AutoAlignController;
-import org.vector8177.subsystems.vision.AprilTagVisionIO;
-import org.vector8177.subsystems.vision.AprilTagVisionIOInputsAutoLogged;
-import org.vector8177.util.LocalADStarAK;
 
 public class Swerve extends SubsystemBase {
   static final Lock odometryLock = new ReentrantLock();
@@ -58,7 +63,7 @@ public class Swerve extends SubsystemBase {
   private final SysIdRoutine sysId;
   private final ModuleLimits limits = MODULE_LIMITS;
   private final AprilTagVisionIO aprilTagVisionIO;
-  private final AprilTagVisionIOInputsAutoLogged aprilTagInputs =
+  private final AprilTagVisionIOInputsAutoLogged aprilTagVisionInputs =
       new AprilTagVisionIOInputsAutoLogged();
 
   @AutoLogOutput public boolean useVision = true;
@@ -231,7 +236,7 @@ public class Swerve extends SubsystemBase {
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
 
       aprilTagVisionIO.updatePose(getPose());
-      aprilTagVisionIO.updateInputs(aprilTagInputs);
+      aprilTagVisionIO.updateInputs(aprilTagVisionInputs);
 
       // if (s_Vision != null) {
       // Pose2d currentPose = getPose();
@@ -245,7 +250,40 @@ public class Swerve extends SubsystemBase {
       // }
     }
 
-    for (int i = 0; i < aprilTagInputs.timestamps.length; i++) {}
+    for (int i = 0; i < aprilTagVisionInputs.timestamps.length; i++) {
+      double currentTimeStamp = aprilTagVisionInputs.timestamps[i];
+      Pose3d currentVisionPose = aprilTagVisionInputs.visionPoses[i];
+      if (currentTimeStamp >= 1.0
+          && Math.abs(currentVisionPose.getZ()) < 0.2
+          && isInBetween(currentVisionPose.getX(), 0, 16.5, false)
+          && isInBetween(currentVisionPose.getY(), 0, 8.5, false)
+          && currentVisionPose.getRotation().getX() < 0.2
+          && currentVisionPose.getRotation().getZ() < 0.2
+          && currentVisionPose
+                  .toPose2d()
+                  .minus(poseEstimator.getEstimatedPosition())
+                  .getTranslation()
+                  .getNorm()
+              < 3.0) {
+        Logger.recordOutput("Odometry/VisionPose" + i, currentVisionPose.toPose2d());
+        Logger.recordOutput(
+            "Odometry/AprilTagStdDevs" + i,
+            Arrays.copyOfRange(aprilTagVisionInputs.visionStdDevs, 3 * i, 3 * i + 3));
+
+        if (useVision) {
+          poseEstimator.addVisionMeasurement(
+              currentVisionPose.toPose2d(),
+              currentTimeStamp,
+              VecBuilder.fill(
+                  aprilTagVisionInputs.visionStdDevs[3 * i],
+                  aprilTagVisionInputs.visionStdDevs[3 * i + 1],
+                  aprilTagVisionInputs.visionStdDevs[3 * i + 2]));
+        } else {
+          Logger.recordOutput("Drive/AprilTagPose" + i, new Pose2d());
+          Logger.recordOutput("Drive/AprilTagStdDevs" + i, new double[] {0.0, 0.0, 0.0});
+        }
+      }
+    }
   }
 
   /**

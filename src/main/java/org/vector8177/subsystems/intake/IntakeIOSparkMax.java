@@ -1,11 +1,12 @@
 package org.vector8177.subsystems.intake;
 
+import org.vector8177.Constants.IntakeConstants;
+import org.vector8177.util.SparkUtils;
+
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import org.vector8177.Constants.IntakeConstants;
-import org.vector8177.util.SparkUtils;
 
 public class IntakeIOSparkMax implements IntakeIO {
   private final CANSparkMax intakeLeftFeederSparkMax;

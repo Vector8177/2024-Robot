@@ -1,10 +1,10 @@
 package org.vector8177.subsystems.hood;
 
+import org.vector8177.Constants.HoodConstants;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-
-import org.vector8177.Constants.HoodConstants;
 
 public class HoodIOSim implements HoodIO {
   private static final double LOOP_PERIOD_SECS = 0.02;

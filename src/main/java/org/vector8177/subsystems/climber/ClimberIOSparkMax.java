@@ -1,10 +1,11 @@
 package org.vector8177.subsystems.climber;
 
+import org.vector8177.Constants.ClimberConstants;
+
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import org.vector8177.Constants.ClimberConstants;
 
 public class ClimberIOSparkMax implements ClimberIO {
   private final CANSparkMax leftClimberSparkMax;

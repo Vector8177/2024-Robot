@@ -7,13 +7,14 @@
 
 package org.vector8177.util;
 
+import org.vector8177.Constants;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
-import org.vector8177.Constants;
 
 /**
  * Class for a tunable number. Gets value from dashboard in tuning mode, returns default if not or

@@ -1,5 +1,10 @@
 package org.vector8177.subsystems.shooter;
 
+import org.vector8177.Constants.ShooterConstants;
+import org.vector8177.util.SparkUtils;
+import org.vector8177.util.SparkUtils.Data;
+import org.vector8177.util.SparkUtils.Sensor;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -11,10 +16,6 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import java.util.Set;
 import org.littletonrobotics.junction.Logger;
-import org.vector8177.Constants.ShooterConstants;
-import org.vector8177.util.SparkUtils;
-import org.vector8177.util.SparkUtils.Data;
-import org.vector8177.util.SparkUtils.Sensor;
 
 public class ShooterIOSparkMax implements ShooterIO {
   private final CANSparkMax shooterTopFixedSparkMax;

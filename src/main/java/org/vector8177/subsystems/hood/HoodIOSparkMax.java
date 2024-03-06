@@ -1,12 +1,13 @@
 package org.vector8177.subsystems.hood;
 
+import org.vector8177.Constants;
+import org.vector8177.Constants.HoodConstants;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import org.vector8177.Constants;
-import org.vector8177.Constants.HoodConstants;
 
 public class HoodIOSparkMax implements HoodIO {
   private final CANSparkMax hoodPivotSparkMax;

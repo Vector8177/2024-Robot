@@ -13,6 +13,10 @@
 
 package org.vector8177.subsystems.swerve;
 
+import org.vector8177.Constants;
+import org.vector8177.Constants.SwerveConstants.RealPID;
+import org.vector8177.Constants.SwerveConstants.SimPID;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -21,9 +25,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 
 import org.littletonrobotics.junction.Logger;
-import org.vector8177.Constants;
-import org.vector8177.Constants.SwerveConstants.RealPID;
-import org.vector8177.Constants.SwerveConstants.SimPID;
 
 public class Module {
   private static final double WHEEL_RADIUS = Units.inchesToMeters(2.0);

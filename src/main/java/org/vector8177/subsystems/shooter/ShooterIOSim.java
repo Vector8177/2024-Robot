@@ -1,11 +1,11 @@
 package org.vector8177.subsystems.shooter;
 
+import org.vector8177.Constants;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-
-import org.vector8177.Constants;
 
 public class ShooterIOSim implements ShooterIO {
   private static final double LOOP_PERIOD_SECS = 0.02;

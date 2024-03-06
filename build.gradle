@@ -147,7 +147,7 @@ spotless {
         }
         toggleOffOn()
         googleJavaFormat()
-        importOrder('//#', 'frc.robot','edu.wpi','')
+        importOrder('//#', 'org.vector8177.utils', 'org.vector8177','edu.wpi','')
         removeUnusedImports()
         trimTrailingWhitespace()
         endWithNewline()

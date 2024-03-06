@@ -1,12 +1,12 @@
 package org.vector8177.subsystems.vision;
 
 import static java.lang.System.arraycopy;
+import static org.vector8177.Constants.*;
 
-import org.vector8177.Constants;
 import org.vector8177.Constants.VisionConstants;
 
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -16,62 +16,81 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.simulation.PhotonCameraSim;
+import org.photonvision.simulation.VisionSystemSim;
 
-public class AprilTagVisionIOReal implements AprilTagVisionIO {
-  private final PhotonCamera flCam, frCam;
-  private final PhotonPoseEstimator flPoseEstimator, frPoseEstimator;
+public class AprilTagVisionIOSim implements AprilTagVisionIO {
+  private static final String PhotonCamera = null;
+
+  private final VisionSystemSim visionSim;
+
+  private final PhotonCameraSim flCam;
+  private final PhotonPoseEstimator flPoseEstimator;
+
+  private final PhotonCameraSim frCam;
+  private final PhotonPoseEstimator frPoseEstimator;
 
   private Pose3d[] poseArray = new Pose3d[3];
-  private double[] timeStampArray = new double[3];
-  private double[] visionStdArray = new double[3];
+  private double[] timestampArray = new double[3];
+  private double[] visionStdArray = new double[9];
 
-  public AprilTagVisionIOReal() {
-    flCam = new PhotonCamera(VisionConstants.frontLeftCameraName);
-    frCam = new PhotonCamera(VisionConstants.fronRightCameraName);
+  public AprilTagVisionIOSim() {
+    PhotonCamera frontL = new PhotonCamera(VisionConstants.frontLeftCameraName);
+    PhotonCamera frontR = new PhotonCamera(VisionConstants.fronRightCameraName);
 
     flPoseEstimator =
         new PhotonPoseEstimator(
-            Constants.aprilTagFieldLayout,
+            aprilTagFieldLayout,
             PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-            flCam,
             VisionConstants.frontLeftCameraPosition);
     frPoseEstimator =
         new PhotonPoseEstimator(
-            Constants.aprilTagFieldLayout,
+            aprilTagFieldLayout,
             PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-            frCam,
             VisionConstants.frontRightCameraPosition);
+
+    visionSim = new VisionSystemSim("main");
+    visionSim.addAprilTags(aprilTagFieldLayout);
+
+    flCam = new PhotonCameraSim(frontL, VisionConstants.OV9281_PROP);
+    frCam = new PhotonCameraSim(frontR, VisionConstants.OV9281_PROP);
+
+    flCam.enableDrawWireframe(true);
+    frCam.enableDrawWireframe(true);
   }
 
   @Override
   public void updateInputs(AprilTagVisionIOInputs inputs) {}
 
+  @Override
+  public void updatePose(Pose2d pose) {
+    visionSim.update(pose);
+  }
+
   public void getEstimatedPoseUpdates() {
-    Matrix<N3, N1> infiniteStdDevs =
-        VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
     Optional<EstimatedRobotPose> pose = flPoseEstimator.update();
     pose.ifPresentOrElse(
         estimatedRobotPose -> {
           poseArray[0] = estimatedRobotPose.estimatedPose;
-          timeStampArray[0] = estimatedRobotPose.timestampSeconds;
+          timestampArray[0] = estimatedRobotPose.timestampSeconds;
           Matrix<N3, N1> stdDevs = getEstimationStdDevs(estimatedRobotPose);
-          arraycopy(infiniteStdDevs.getData(), 0, visionStdArray, 0, 3);
+          arraycopy(stdDevs.getData(), 0, visionStdArray, 0, 3);
         },
         () -> {
           poseArray[0] = new Pose3d();
-          timeStampArray[0] = 0.0;
+          timestampArray[0] = 0.0;
         });
     pose = frPoseEstimator.update();
     pose.ifPresentOrElse(
         estimatedRobotPose -> {
           poseArray[1] = estimatedRobotPose.estimatedPose;
-          timeStampArray[1] = estimatedRobotPose.timestampSeconds;
+          timestampArray[1] = estimatedRobotPose.timestampSeconds;
           Matrix<N3, N1> stdDevs = getEstimationStdDevs(estimatedRobotPose);
           arraycopy(stdDevs.getData(), 0, visionStdArray, 3, 3);
         },
         () -> {
           poseArray[1] = new Pose3d();
-          timeStampArray[1] = 0.0;
+          timestampArray[1] = 0.0;
         });
   }
 }

@@ -1,5 +1,8 @@
 package org.vector8177.subsystems.vision;
 
+import org.vector8177.Constants;
+import org.vector8177.Constants.VisionConstants;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -9,22 +12,20 @@ import edu.wpi.first.math.numbers.N3;
 
 import org.littletonrobotics.junction.AutoLog;
 import org.photonvision.EstimatedRobotPose;
-import org.vector8177.Constants;
-import org.vector8177.Constants.VisionConstants;
 
 public interface AprilTagVisionIO {
   @AutoLog
   public static class AprilTagVisionIOInputs {
     public Pose3d[] visionPoses = new Pose3d[] {new Pose3d(), new Pose3d(), new Pose3d()};
-    public double[] timestamps = new double[3];
-    public double[] visionStdDevs = new double[9];
+    public double[] timestamps = new double[2];
+    public double[] visionStdDevs = new double[6];
   }
 
   public default void updateInputs(AprilTagVisionIOInputs inputs) {}
 
   public default void updatePose(Pose2d pose) {}
 
-  default Matrix<N3, N1> getEstimatedStdDevs(EstimatedRobotPose estimatedPose) {
+  default Matrix<N3, N1> getEstimationStdDevs(EstimatedRobotPose estimatedPose) {
     var estStdDevs = VisionConstants.normalSingleTagStdDev;
 
     var targets = estimatedPose.targetsUsed;

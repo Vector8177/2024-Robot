@@ -13,6 +13,8 @@
 
 package org.vector8177.commands;
 
+import org.vector8177.util.PolynomialRegression;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -21,7 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import org.vector8177.util.PolynomialRegression;
 
 public class FeedForwardCharacterization extends Command {
   private static final double START_DELAY_SECS = 2.0;

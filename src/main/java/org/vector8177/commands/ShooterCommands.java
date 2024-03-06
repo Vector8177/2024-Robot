@@ -1,11 +1,11 @@
 package org.vector8177.commands;
 
+import org.vector8177.subsystems.hood.Hood;
+import org.vector8177.subsystems.shooter.Shooter;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-
-import org.vector8177.subsystems.hood.Hood;
-import org.vector8177.subsystems.shooter.Shooter;
 
 public class ShooterCommands {
   private ShooterCommands() {}

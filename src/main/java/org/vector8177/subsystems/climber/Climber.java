@@ -1,12 +1,13 @@
 package org.vector8177.subsystems.climber;
 
+import org.vector8177.Constants;
+import org.vector8177.Constants.ClimberConstants;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import org.littletonrobotics.junction.Logger;
-import org.vector8177.Constants;
-import org.vector8177.Constants.ClimberConstants;
 
 public class Climber extends SubsystemBase {
   private final ClimberIO io;

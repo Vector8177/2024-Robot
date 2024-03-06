@@ -17,6 +17,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -24,6 +25,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+
+import org.photonvision.simulation.SimCameraProperties;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -278,6 +281,19 @@ public final class Constants {
 
     public static final Matrix<N3, N1> normalSingleTagStdDev =
         VecBuilder.fill(0, 0, Double.MAX_VALUE);
+
+    public static final SimCameraProperties OV9281_PROP = configureCamera();
+
+    public static SimCameraProperties configureCamera() {
+      SimCameraProperties temp = new SimCameraProperties();
+      temp.setCalibration(1280, 800, Rotation2d.fromDegrees(84.47));
+      temp.setCalibError(0.25, 0.10);
+      temp.setFPS(40);
+      temp.setAvgLatencyMs(40);
+      temp.setLatencyStdDevMs(10);
+
+      return temp;
+    }
   }
 
   public static enum Mode {

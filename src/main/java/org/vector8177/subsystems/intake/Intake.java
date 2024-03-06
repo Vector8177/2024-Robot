@@ -1,11 +1,12 @@
 package org.vector8177.subsystems.intake;
 
+import org.vector8177.Constants;
+
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
-import org.vector8177.Constants;
 
 public class Intake extends SubsystemBase {
   private final IntakeIO io;

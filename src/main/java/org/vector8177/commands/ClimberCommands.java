@@ -1,11 +1,12 @@
 package org.vector8177.commands;
 
+import org.vector8177.Constants.ClimberConstants;
+import org.vector8177.subsystems.climber.Climber;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 import java.util.function.BooleanSupplier;
-import org.vector8177.Constants.ClimberConstants;
-import org.vector8177.subsystems.climber.Climber;
 
 public class ClimberCommands {
   private ClimberCommands() {}

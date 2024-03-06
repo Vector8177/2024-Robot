@@ -1,5 +1,9 @@
 package org.vector8177.subsystems.swerve.controllers;
 
+import org.vector8177.Constants;
+import org.vector8177.subsystems.swerve.Swerve;
+import org.vector8177.util.LoggedTunableNumber;
+
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -10,9 +14,6 @@ import edu.wpi.first.math.util.Units;
 
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
-import org.vector8177.Constants;
-import org.vector8177.subsystems.swerve.Swerve;
-import org.vector8177.util.LoggedTunableNumber;
 
 public class AutoAlignController {
   private static LoggedTunableNumber thetakP =

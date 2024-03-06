@@ -13,6 +13,9 @@
 
 package org.vector8177.commands;
 
+import org.vector8177.subsystems.shooter.Shooter;
+import org.vector8177.subsystems.swerve.Swerve;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,8 +27,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-import org.vector8177.subsystems.shooter.Shooter;
-import org.vector8177.subsystems.swerve.Swerve;
 
 public class SwerveCommands {
   private static final double DEADBAND = 0.1;

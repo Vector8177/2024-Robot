@@ -1,5 +1,8 @@
 package org.vector8177.subsystems.hood;
 
+import org.vector8177.Constants;
+import org.vector8177.Constants.HoodConstants;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -9,8 +12,6 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import org.littletonrobotics.junction.Logger;
-import org.vector8177.Constants;
-import org.vector8177.Constants.HoodConstants;
 
 public class Hood extends SubsystemBase {
   private final HoodIO io;

@@ -13,6 +13,12 @@
 
 package org.vector8177.subsystems.swerve;
 
+import org.vector8177.Constants.SwerveConstants;
+import org.vector8177.Constants.SwerveConstants.CanID;
+import org.vector8177.util.SparkUtils;
+import org.vector8177.util.SparkUtils.Data;
+import org.vector8177.util.SparkUtils.Sensor;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
@@ -25,11 +31,6 @@ import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import java.util.Queue;
 import java.util.Set;
-import org.vector8177.Constants.SwerveConstants;
-import org.vector8177.Constants.SwerveConstants.CanID;
-import org.vector8177.util.SparkUtils;
-import org.vector8177.util.SparkUtils.Data;
-import org.vector8177.util.SparkUtils.Sensor;
 
 /**
  * Module IO implementation for SparkMax drive motor controller, SparkMax turn motor controller (NEO
