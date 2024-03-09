@@ -98,6 +98,7 @@ public class AutoAlignController {
 
   public double updateAngle() {
     Pose2d currentPose = swerve.getPose();
+<<<<<<< Updated upstream:src/main/java/org/vector8177/subsystems/swerve/controllers/AutoAlignController.java
     this.goalPose =
         new Pose2d(
             (isRedSupp.getAsBoolean() ? RED_X : BLUE_X), POSE_Y, Rotation2d.fromRotations(0));
@@ -120,6 +121,13 @@ public class AutoAlignController {
     Logger.recordOutput(
         "AutoAlign/ShooterPose/ShooterTargetPose", Units.radiansToDegrees(returnVal));
 
+=======
+    double distToTarget = goalPose.getTranslation().getDistance(currentPose.getTranslation());
+    double returnVal =
+        90 - Math.atan((Constants.SPEAKER_HEIGHT - Constants.SHOOTER_HEIGHT) / distToTarget);
+    Logger.recordOutput("ShooterTargetPose", returnVal);
+
+>>>>>>> Stashed changes:src/main/java/frc/robot/subsystems/swerve/controllers/AutoAlignController.java
     return returnVal;
   }
 }
