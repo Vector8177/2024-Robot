@@ -116,11 +116,11 @@ public class Swerve extends SubsystemBase {
         () -> kinematics.toChassisSpeeds(getModuleStates()),
         this::runVelocity,
         new HolonomicPathFollowerConfig(
-            new PIDConstants(1.0, 0),
-            new PIDConstants(1.0, 0),
-            MAX_LINEAR_VELOCITY, 
-            DRIVE_BASE_RADIUS, 
-            new ReplanningConfig(true, false)),
+            new PIDConstants(10, 0),
+            new PIDConstants(10, 0),
+            MAX_LINEAR_VELOCITY,
+            DRIVE_BASE_RADIUS,
+            new ReplanningConfig(true, true)),
         () ->
             DriverStation.getAlliance().isPresent()
                 && DriverStation.getAlliance().get() == Alliance.Red,

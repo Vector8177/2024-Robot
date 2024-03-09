@@ -72,7 +72,7 @@ public class RobotContainer {
   private final Intake intake;
   private final Hood hood;
   // private final Vision vision;
-  private int n = 0;
+  private int n = 0; // TODO: why is there a variable called n?Ishaaaaaaaaaaaan
   private final Climber climber;
 
   private DriveMode currentDriveMode = DriveMode.TELEOP;
@@ -251,7 +251,9 @@ public class RobotContainer {
                 },
                 shooter));
 
-    operatorController.povRight().onTrue(TeleopCommands.setShooterAmpPosition(shooter, hood));
+    operatorController
+        .povRight()
+        .onTrue(TeleopCommands.setShooterHumanIntakePosition(shooter, hood));
 
     operatorController.povDown().onTrue(TeleopCommands.setShooterIntakePosition(shooter, hood));
 
@@ -289,6 +291,8 @@ public class RobotContainer {
   public Command setAutoAlign(boolean autoAlign) {
     return Commands.runOnce(
         () -> {
+          // System.out.println("pew! pew!");
+
           DriverStation.reportError("Changing Auto Align to " + autoAlign, false);
           currentDriveMode = autoAlign ? DriveMode.AUTO_ALIGN : DriveMode.TELEOP;
 
@@ -304,6 +308,7 @@ public class RobotContainer {
   }
 
   public Command basicAuto() {
+
     return Commands.sequence(
         Commands.runOnce(
             () -> {

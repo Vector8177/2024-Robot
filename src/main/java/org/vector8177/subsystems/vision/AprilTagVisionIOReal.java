@@ -19,17 +19,17 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 public class AprilTagVisionIOReal implements AprilTagVisionIO {
   private final PhotonCamera flCam;
-  // private final PhotonCamera frCam;
+  private final PhotonCamera frCam;
   private final PhotonPoseEstimator flPoseEstimator;
-  // private final PhotonPoseEstimator frPoseEstimator;
+  private final PhotonPoseEstimator frPoseEstimator;
 
-  private Pose3d[] poseArray = new Pose3d[] {new Pose3d()};
-  private double[] timeStampArray = new double[1];
-  private double[] visionStdArray = new double[3];
+  private Pose3d[] poseArray = new Pose3d[] {new Pose3d(), new Pose3d()};
+  private double[] timeStampArray = new double[2];
+  private double[] visionStdArray = new double[6];
 
   public AprilTagVisionIOReal() {
     flCam = new PhotonCamera(VisionConstants.frontLeftCameraName);
-    // frCam = new PhotonCamera(VisionConstants.fronRightCameraName);
+    frCam = new PhotonCamera(VisionConstants.fronRightCameraName);
 
     flPoseEstimator =
         new PhotonPoseEstimator(
@@ -37,12 +37,12 @@ public class AprilTagVisionIOReal implements AprilTagVisionIO {
             PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
             flCam,
             VisionConstants.frontLeftCameraPosition);
-    // frPoseEstimator =
-    //     new PhotonPoseEstimator(
-    //         Constants.aprilTagFieldLayout,
-    //         PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-    //         frCam,
-    //         VisionConstants.frontRightCameraPosition);
+    frPoseEstimator =
+        new PhotonPoseEstimator(
+            Constants.aprilTagFieldLayout,
+            PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+            frCam,
+            VisionConstants.frontRightCameraPosition);
   }
 
   @Override
@@ -71,18 +71,18 @@ public class AprilTagVisionIOReal implements AprilTagVisionIO {
           // timeStampArray[0] = 0.0;
           // arraycopy(infiniteStdDevs.getData(), 0, visionStdArray, 0, 3);
         });
-    // pose = frPoseEstimator.update();
-    // pose.ifPresentOrElse(
-    //     estimatedRobotPose -> {
-    //       poseArray[1] = estimatedRobotPose.estimatedPose;
-    //       timeStampArray[1] = estimatedRobotPose.timestampSeconds;
-    //       Matrix<N3, N1> stdDevs = getEstimationStdDevs(estimatedRobotPose);
-    //       arraycopy(stdDevs.getData(), 0, visionStdArray, 3, 3);
-    //     },
-    //     () -> {
-    //       poseArray[1] = new Pose3d();
-    //       timeStampArray[1] = 0.0;
-    //       arraycopy(infiniteStdDevs.getData(), 0, visionStdArray, 3, 3);
-    //     });
+    pose = frPoseEstimator.update();
+    pose.ifPresentOrElse(
+        estimatedRobotPose -> {
+          poseArray[1] = estimatedRobotPose.estimatedPose;
+          timeStampArray[1] = estimatedRobotPose.timestampSeconds;
+          Matrix<N3, N1> stdDevs = getEstimationStdDevs(estimatedRobotPose);
+          arraycopy(stdDevs.getData(), 0, visionStdArray, 3, 3);
+        },
+        () -> {
+          // poseArray[1] = new Pose3d();
+          // timeStampArray[1] = 0.0;
+          arraycopy(infiniteStdDevs.getData(), 0, visionStdArray, 3, 3);
+        });
   }
 }

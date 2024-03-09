@@ -91,7 +91,7 @@ public final class Constants {
     public static final double hoodPivotKI = 0d;
     public static final double hoodPivotKD = 0d;
 
-    public static final double SHOOT_POSE = 0.05;
+    public static final double SHOOT_POSE = 0.0;
     public static final double AMP_POSE = 1.921;
     public static final double HP_POSE = .383;
 
@@ -160,12 +160,12 @@ public final class Constants {
     }
 
     public final class AutoAlignConstants {
-      public static final double thetaP = .1;
+      public static final double thetaP = .2;
       public static final double thetaI = 0;
       public static final double thetaD = 0;
       public static final double thetaTolerance = Units.degreesToRadians(1);
       public static final double maxAngularVelocity = MAX_ANGULAR_VELOCITY;
-      public static final double maxAngularAcceleration = 30.02;
+      public static final double maxAngularAcceleration = 25.02;
     }
 
     public record ModuleLimits(
@@ -265,19 +265,19 @@ public final class Constants {
 
     public static final Transform3d frontLeftCameraPosition =
         new Transform3d(
-            Units.inchesToMeters(0),
-            Units.inchesToMeters(11.240),
-            Units.inchesToMeters(-13.099),
-            new Rotation3d(0, Units.degreesToRadians(40), Units.degreesToRadians(180)));
+            Units.inchesToMeters(1.020),
+            Units.inchesToMeters(12.418),
+            Units.inchesToMeters(-10.847),
+            new Rotation3d(0, Units.degreesToRadians(30), Units.degreesToRadians(175)));
     public static final Transform3d frontRightCameraPosition =
         new Transform3d(
-            Units.inchesToMeters(0),
-            Units.inchesToMeters(11.240),
-            Units.inchesToMeters(-13.099),
-            new Rotation3d(0, Units.degreesToRadians(40), Units.degreesToRadians(180)));
+            Units.inchesToMeters(-1.020),
+            Units.inchesToMeters(12.418),
+            Units.inchesToMeters(-10.847),
+            new Rotation3d(0, Units.degreesToRadians(30), Units.degreesToRadians(-175)));
 
-    public static final String frontLeftCameraName = "mainCamera";
-    public static final String fronRightCameraName = "";
+    public static final String frontLeftCameraName = "flCam";
+    public static final String fronRightCameraName = "frCam";
 
     public static final Matrix<N3, N1> normalSingleTagStdDev =
         VecBuilder.fill(0.8, 0.8, Double.MAX_VALUE);
