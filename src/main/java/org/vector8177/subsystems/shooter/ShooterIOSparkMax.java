@@ -10,6 +10,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogInput;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -64,6 +65,9 @@ public class ShooterIOSparkMax implements ShooterIO {
     shooterBottomFixedEncoder = shooterBottomFixedSparkMax.getEncoder();
     shooterPivotEncoder = shooterPivotSparkMax.getEncoder();
     shooterIndexerEncoder = shooterIndexerSparkMax.getEncoder();
+
+    shooterBottomFixedSparkMax.setIdleMode(IdleMode.kCoast);
+    shooterTopFixedSparkMax.setIdleMode(IdleMode.kCoast);
 
     shooterPivotAbsoluteEncoder = shooterPivotSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
     shooterPivotAbsoluteEncoder.setPositionConversionFactor(2 * Math.PI);

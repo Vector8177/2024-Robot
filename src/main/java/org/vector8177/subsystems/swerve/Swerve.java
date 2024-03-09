@@ -45,6 +45,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 import java.util.Arrays;
@@ -115,7 +116,11 @@ public class Swerve extends SubsystemBase {
         () -> kinematics.toChassisSpeeds(getModuleStates()),
         this::runVelocity,
         new HolonomicPathFollowerConfig(
-            MAX_LINEAR_VELOCITY, DRIVE_BASE_RADIUS, new ReplanningConfig()),
+            new PIDConstants(1.0, 0),
+            new PIDConstants(1.0, 0),
+            MAX_LINEAR_VELOCITY, 
+            DRIVE_BASE_RADIUS, 
+            new ReplanningConfig(true, false)),
         () ->
             DriverStation.getAlliance().isPresent()
                 && DriverStation.getAlliance().get() == Alliance.Red,
@@ -159,6 +164,7 @@ public class Swerve extends SubsystemBase {
   public void periodic() {
     odometryLock.lock(); // Prevents odometry updates while reading data
     gyroIO.updateInputs(gyroInputs);
+
     for (var module : modules) {
       module.updateInputs();
     }
@@ -237,6 +243,7 @@ public class Swerve extends SubsystemBase {
 
       aprilTagVisionIO.updatePose(getPose());
       aprilTagVisionIO.updateInputs(aprilTagVisionInputs);
+      Logger.processInputs("Vision/AprilTag", aprilTagVisionInputs);
 
       // if (s_Vision != null) {
       // Pose2d currentPose = getPose();
@@ -253,18 +260,19 @@ public class Swerve extends SubsystemBase {
     for (int i = 0; i < aprilTagVisionInputs.timestamps.length; i++) {
       double currentTimeStamp = aprilTagVisionInputs.timestamps[i];
       Pose3d currentVisionPose = aprilTagVisionInputs.visionPoses[i];
-      if (currentTimeStamp >= 1.0
-          && Math.abs(currentVisionPose.getZ()) < 0.2
-          && isInBetween(currentVisionPose.getX(), 0, 16.5, false)
-          && isInBetween(currentVisionPose.getY(), 0, 8.5, false)
-          && currentVisionPose.getRotation().getX() < 0.2
-          && currentVisionPose.getRotation().getZ() < 0.2
-          && currentVisionPose
-                  .toPose2d()
-                  .minus(poseEstimator.getEstimatedPosition())
-                  .getTranslation()
-                  .getNorm()
-              < 3.0) {
+      // if (currentTimeStamp >= 1.0
+      //     && Math.abs(currentVisionPose.getZ()) < 0.2
+      //     && isInBetween(currentVisionPose.getX(), 0, 16.5, false)
+      //     && isInBetween(currentVisionPose.getY(), 0, 8.5, false)
+      //     && currentVisionPose.getRotation().getX() < 0.2
+      //     && currentVisionPose.getRotation().getZ() < 0.2
+      //     && currentVisionPose
+      //             .toPose2d()
+      //             .minus(poseEstimator.getEstimatedPosition())
+      //             .getTranslation()
+      //             .getNorm()
+      //         < 3.0) {
+      if (true) {
         Logger.recordOutput("Odometry/VisionPose" + i, currentVisionPose.toPose2d());
         Logger.recordOutput(
             "Odometry/AprilTagStdDevs" + i,

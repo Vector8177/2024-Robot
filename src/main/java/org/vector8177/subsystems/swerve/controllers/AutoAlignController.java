@@ -36,7 +36,7 @@ public class AutoAlignController {
 
   private static final double RED_X = 16.58;
   private static final double BLUE_X = -.0381;
-  private static final double POSE_Y = 5.55;
+  private static final double POSE_Y = 5.4;
 
   private Pose2d goalPose = new Pose2d(.24, 5.55, Rotation2d.fromRotations(0));
 
@@ -69,6 +69,7 @@ public class AutoAlignController {
 
     thetaController.setGoal(goalPose.getRotation().getRadians());
     Logger.recordOutput("AutoAlign/goalPose", goalPose);
+    Logger.recordOutput("AutoAlign/targetRotation", rotationToTarget);
   }
 
   public double updateDrive() {

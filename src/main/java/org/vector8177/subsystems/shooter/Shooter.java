@@ -6,6 +6,7 @@ import org.vector8177.Constants.ShooterConstants;
 import org.vector8177.Constants.SwerveConstants.DriveMode;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -21,7 +22,7 @@ public class Shooter extends SubsystemBase {
   private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
   private final PIDController pivotPidController;
-  private final PIDController shooterSpeedPidController;
+  private final BangBangController shooterSpeedPidController;
 
   private Supplier<DriveMode> currentDriveModeSupplier;
   private Supplier<Rotation2d> shooterAlignSupplier;
@@ -72,9 +73,10 @@ public class Shooter extends SubsystemBase {
     pivotPidController.enableContinuousInput(0, 2 * Math.PI);
     pivotPidController.setTolerance(ShooterConstants.PIVOT_TOLERANCE);
 
-    shooterSpeedPidController =
-        new PIDController(
-            SHOOTER_TOP_KP, ShooterConstants.SHOOTER_TOP_KI, ShooterConstants.SHOOTER_TOP_KD);
+    shooterSpeedPidController = new BangBangController(20);
+    // shooterSpeedPidController =
+    //     new PIDController(
+    //         SHOOTER_TOP_KP, ShooterConstants.SHOOTER_TOP_KI, ShooterConstants.SHOOTER_TOP_KD);
     // wheelTargetSpeed);
 
     // shooterSpeedFeedForward = (1 / ShooterConstants.SHOOTER_FF_V) * wheelTargetSpeed
@@ -181,7 +183,7 @@ public class Shooter extends SubsystemBase {
 
     // if (!intakingSupplier.get())
 
-    // Logger.recordOutput("Shooter/SetPoints/WheelTargetSpeed", wheelTargetSpeed);
+    Logger.recordOutput("Shooter/SetPoints/WheelTargetSpeed", wheelTargetSpeed);
 
     m_shooter.setAngle(inputs.shooterPivotRelativePosition);
 

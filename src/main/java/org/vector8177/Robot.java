@@ -13,7 +13,6 @@
 
 package org.vector8177;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -86,7 +85,7 @@ public class Robot extends LoggedRobot {
     // Start AdvantageKit logger
     Logger.start();
 
-    CameraServer.startAutomaticCapture();
+    // CameraServer.startAutomaticCapture();
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.
@@ -116,8 +115,8 @@ public class Robot extends LoggedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    autonomousCommand = robotContainer.basicAuto();
 
+    autonomousCommand = robotContainer.getAutonomousCommand();
     // schedule the autonomous command (example)
     if (autonomousCommand != null) {
       autonomousCommand.schedule();

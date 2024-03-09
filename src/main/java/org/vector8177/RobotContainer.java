@@ -255,9 +255,7 @@ public class RobotContainer {
 
     operatorController.povDown().onTrue(TeleopCommands.setShooterIntakePosition(shooter, hood));
 
-    operatorController
-        .povLeft()
-        .onTrue(TeleopCommands.setShooterHumanIntakePosition(shooter, hood));
+    operatorController.povLeft().onTrue(TeleopCommands.setShooterShootPosition(shooter, hood));
   }
 
   /**
@@ -272,6 +270,7 @@ public class RobotContainer {
   public void updateMech() {
     Logger.recordOutput("Mechanism", mainMech);
     Logger.recordOutput("TeleopCommands/ShooterState", TeleopCommands.getCurrentState());
+    Logger.recordOutput("TeleopCommands/IntakeState", TeleopCommands.getCurrentIntakeState());
     Logger.recordOutput("AutoAlign/AutoAlignMode", currentDriveMode);
     // Logger.recordOutput("Shooter/ShooterOccupied", shooter.getShooterOccupied());
   }

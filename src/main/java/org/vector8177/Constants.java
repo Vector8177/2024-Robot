@@ -101,7 +101,7 @@ public final class Constants {
   public final class SwerveConstants {
     public static final double MAX_LINEAR_VELOCITY = Units.feetToMeters(16.5);
     public static final double TRACK_WIDTH_X = Units.inchesToMeters(30.0);
-    public static final double TRACK_WIDTH_Y = Units.inchesToMeters(30.0);
+    public static final double TRACK_WIDTH_Y = Units.inchesToMeters(25.0);
     public static final double DRIVE_BASE_RADIUS =
         Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
     public static final double MAX_ANGULAR_VELOCITY = MAX_LINEAR_VELOCITY / DRIVE_BASE_RADIUS;
@@ -160,7 +160,7 @@ public final class Constants {
     }
 
     public final class AutoAlignConstants {
-      public static final double thetaP = .55;
+      public static final double thetaP = .1;
       public static final double thetaI = 0;
       public static final double thetaD = 0;
       public static final double thetaTolerance = Units.degreesToRadians(1);
@@ -194,7 +194,7 @@ public final class Constants {
 
     public static final int SHOOTER_IR_SENSOR_PORT = 0;
 
-    public static final double SHOOTER_FF_V = 484d;
+    public static final double SHOOTER_FF_V = 444d;
 
     public static final double SHOOTER_PIVOT_INTAKE_POSITION = 2.140d;
 
@@ -280,7 +280,9 @@ public final class Constants {
     public static final String fronRightCameraName = "";
 
     public static final Matrix<N3, N1> normalSingleTagStdDev =
-        VecBuilder.fill(0, 0, Double.MAX_VALUE);
+        VecBuilder.fill(0.8, 0.8, Double.MAX_VALUE);
+    public static final Matrix<N3, N1> normalMultiTagStdDev =
+        VecBuilder.fill(0.4, 0.4, Double.MAX_VALUE);
 
     public static final SimCameraProperties OV9281_PROP = configureCamera();
 

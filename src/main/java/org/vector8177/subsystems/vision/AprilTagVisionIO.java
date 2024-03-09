@@ -16,9 +16,12 @@ import org.photonvision.EstimatedRobotPose;
 public interface AprilTagVisionIO {
   @AutoLog
   public static class AprilTagVisionIOInputs {
-    public Pose3d[] visionPoses = new Pose3d[] {new Pose3d(), new Pose3d(), new Pose3d()};
-    public double[] timestamps = new double[2];
-    public double[] visionStdDevs = new double[6];
+    // public Pose3d[] visionPoses = new Pose3d[] {new Pose3d(), new Pose3d()};
+    // public double[] timestamps = new double[2];
+    // public double[] visionStdDevs = new double[6];
+    public Pose3d[] visionPoses = new Pose3d[] {new Pose3d()};
+    public double[] timestamps = new double[1];
+    public double[] visionStdDevs = new double[3];
   }
 
   public default void updateInputs(AprilTagVisionIOInputs inputs) {}
@@ -50,6 +53,8 @@ public interface AprilTagVisionIO {
     if (numTags == 0) return estStdDevs;
 
     avgDist /= numTags;
+
+    if (numTags > 1) estStdDevs = VisionConstants.normalMultiTagStdDev;
 
     if (numTags > 1 && avgDist > 4) {
       estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);

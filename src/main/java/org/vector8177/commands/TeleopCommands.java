@@ -51,7 +51,7 @@ public class TeleopCommands {
     return Commands.sequence(
         Commands.runOnce(
             () -> {
-              // intakeState = IntakeState.STOPPED;
+              intakeState = IntakeState.STOPPED;
               shooter.setShooterSpeed(ShooterConstants.SHOOT_WHEEL_RPM);
             },
             shooter),
@@ -71,19 +71,19 @@ public class TeleopCommands {
               shooter.setShooterSpeed(1500);
               shooter.setIndexerSpeed(0);
             },
-            shooter),
-        Commands.waitUntil(() -> shooter.getShooterTopFixedVelocity() < 1600),
-        Commands.runOnce(
-            () -> {
-              shooter.setShooterSpeed(400);
-            },
-            shooter),
-        Commands.waitUntil(() -> shooter.getShooterTopFixedVelocity() < 500),
-        Commands.runOnce(
-            () -> {
-              shooter.setShooterSpeed(0);
-            },
             shooter));
+    // Commands.waitUntil(() -> shooter.getShooterTopFixedVelocity() < 1600),
+    // Commands.runOnce(
+    //     () -> {
+    //       shooter.setShooterSpeed(400);
+    //     },
+    //     shooter),
+    // Commands.waitUntil(() -> shooter.getShooterTopFixedVelocity() < 500),
+    // Commands.runOnce(
+    //     () -> {
+    //       shooter.setShooterSpeed(0);
+    //     },
+    //     shooter));
     // return Commands.runOnce(
     //     () -> {
     //       shooter.setShooterSpeed(3000);
@@ -95,7 +95,7 @@ public class TeleopCommands {
     return Commands.sequence(
         Commands.runOnce(
             () -> {
-              // intakeState = IntakeState.STOPPED;
+              intakeState = IntakeState.STOPPED;
               shooter.setIndexerSpeed(ShooterConstants.SHOOTER_INDEXER_SPEED);
             },
             shooter),
@@ -108,7 +108,7 @@ public class TeleopCommands {
             shooter));
   }
 
-  private static IntakeState getCurrentIntakeState() {
+  public static IntakeState getCurrentIntakeState() {
     return intakeState;
   }
 
@@ -157,26 +157,28 @@ public class TeleopCommands {
 
   public static Command setShooterIntakePosition(Shooter shooter, Hood hood) {
 
-    return Commands.runOnce(
-        () -> {
-          currentState = ShooterState.EMPTY;
-          shooter.setPosition(ShooterConstants.SHOOTER_PIVOT_INTAKE_POSITION);
-          hood.setHoodPosition(false);
-        },
-        shooter,
-        hood);
+    return Commands.sequence(
+        Commands.runOnce(
+            () -> {
+              currentState = ShooterState.EMPTY;
+              shooter.setPosition(ShooterConstants.SHOOTER_PIVOT_INTAKE_POSITION);
+            },
+            shooter),
+        Commands.waitSeconds(1),
+        Commands.runOnce(() -> hood.setHoodPosition(false), hood));
   }
 
   public static Command setShooterAmpPosition(Shooter shooter, Hood hood) {
 
-    return Commands.runOnce(
-        () -> {
-          currentState = ShooterState.AMP;
-          shooter.setPosition(ShooterConstants.SHOOTER_PIVOT_AMP_POSITION);
-          hood.setHoodPosition(true);
-        },
-        shooter,
-        hood);
+    return Commands.sequence(
+        Commands.runOnce(
+            () -> {
+              currentState = ShooterState.AMP;
+              shooter.setPosition(ShooterConstants.SHOOTER_PIVOT_AMP_POSITION);
+            },
+            shooter),
+        Commands.waitSeconds(1),
+        Commands.runOnce(() -> hood.setHoodPosition(true), hood));
   }
 
   public static Command setShooterShootPosition(Shooter shooter, Hood hood) {
