@@ -3,6 +3,7 @@ package org.vector8177.subsystems.shooter;
 import org.vector8177.Constants;
 import org.vector8177.Constants.Mode;
 import org.vector8177.Constants.ShooterConstants;
+import org.vector8177.Constants.ShooterState;
 import org.vector8177.Constants.SwerveConstants.DriveMode;
 
 import edu.wpi.first.math.MathUtil;
@@ -29,6 +30,8 @@ public class Shooter extends SubsystemBase {
   private Supplier<Boolean> intakingSupplier;
 
   private boolean shooterOccupied = false;
+
+  public ShooterState currentState = ShooterState.EMPTY;
 
   // public boolean readyToShoot = false;
   // public boolean ampMode = false;

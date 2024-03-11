@@ -3,9 +3,11 @@ package org.vector8177.commands;
 import org.vector8177.Constants;
 import org.vector8177.Constants.ClimberConstants;
 import org.vector8177.Constants.HoodConstants;
+import org.vector8177.Constants.IntakeActiveState;
 import org.vector8177.Constants.IntakeConstants;
 import org.vector8177.Constants.Mode;
 import org.vector8177.Constants.ShooterConstants;
+import org.vector8177.Constants.ShooterState;
 import org.vector8177.subsystems.climber.Climber;
 import org.vector8177.subsystems.hood.Hood;
 import org.vector8177.subsystems.intake.Intake;
@@ -18,25 +20,13 @@ import edu.wpi.first.wpilibj2.command.SelectCommand;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
 
-public class TeleopCommands {
-  public static enum ShooterState {
-    AMP,
-    SHOOT,
-    EMPTY
-  }
+public class MainCommands {
+  private static IntakeActiveState intakeState = IntakeActiveState.ACTIVE;
 
-  public static enum IntakeState {
-    STOPPED,
-    ACTIVE
-  }
+  private MainCommands() {}
 
-  private static IntakeState intakeState = IntakeState.ACTIVE;
-  private static ShooterState currentState = ShooterState.EMPTY;
-
-  private TeleopCommands() {}
-
-  public static ShooterState getCurrentState() {
-    return currentState;
+  public static ShooterState getCurrentState(Shooter shooter) {
+    return shooter.currentState;
   }
 
   public static Command runShooter(Shooter shooter) {
@@ -44,14 +34,14 @@ public class TeleopCommands {
         Map.ofEntries(
             Map.entry(ShooterState.SHOOT, runShootSequence(shooter)),
             Map.entry(ShooterState.AMP, runAmpSequence(shooter))),
-        () -> getCurrentState());
+        () -> getCurrentState(shooter));
   }
 
   public static Command runShootSequence(Shooter shooter) {
     return Commands.sequence(
         Commands.runOnce(
             () -> {
-              intakeState = IntakeState.STOPPED;
+              intakeState = IntakeActiveState.STOPPED;
               shooter.setShooterSpeed(ShooterConstants.SHOOT_WHEEL_RPM);
             },
             shooter),
@@ -67,7 +57,7 @@ public class TeleopCommands {
         Commands.waitSeconds(2),
         Commands.runOnce(
             () -> {
-              intakeState = IntakeState.ACTIVE;
+              intakeState = IntakeActiveState.ACTIVE;
               shooter.setShooterSpeed(1500);
               shooter.setIndexerSpeed(0);
             },
@@ -95,20 +85,20 @@ public class TeleopCommands {
     return Commands.sequence(
         Commands.runOnce(
             () -> {
-              intakeState = IntakeState.STOPPED;
+              intakeState = IntakeActiveState.STOPPED;
               shooter.setIndexerSpeed(ShooterConstants.SHOOTER_INDEXER_SPEED);
             },
             shooter),
         Commands.waitSeconds(1.2),
         Commands.runOnce(
             () -> {
-              intakeState = IntakeState.ACTIVE;
+              intakeState = IntakeActiveState.ACTIVE;
               shooter.setIndexerSpeed(0);
             },
             shooter));
   }
 
-  public static IntakeState getCurrentIntakeState() {
+  public static IntakeActiveState getCurrentIntakeState() {
     return intakeState;
   }
 
@@ -116,7 +106,7 @@ public class TeleopCommands {
     return new SelectCommand<>(
         Map.ofEntries(
             Map.entry(
-                IntakeState.ACTIVE,
+                IntakeActiveState.ACTIVE,
                 Commands.runEnd(
                     () -> {
                       if (shooter.getIRSensorVoltage()
@@ -139,7 +129,7 @@ public class TeleopCommands {
     return new SelectCommand<>(
         Map.ofEntries(
             Map.entry(
-                IntakeState.ACTIVE,
+                IntakeActiveState.ACTIVE,
                 Commands.runEnd(
                     () -> {
                       intake.setFeederSpeed(IntakeConstants.FEEDER_SPEED);
@@ -160,7 +150,7 @@ public class TeleopCommands {
     return Commands.sequence(
         Commands.runOnce(
             () -> {
-              currentState = ShooterState.EMPTY;
+              shooter.currentState = ShooterState.EMPTY;
               shooter.setPosition(ShooterConstants.SHOOTER_PIVOT_INTAKE_POSITION);
             },
             shooter),
@@ -173,7 +163,7 @@ public class TeleopCommands {
     return Commands.sequence(
         Commands.runOnce(
             () -> {
-              currentState = ShooterState.AMP;
+              shooter.currentState = ShooterState.AMP;
               shooter.setPosition(ShooterConstants.SHOOTER_PIVOT_AMP_POSITION);
             },
             shooter),
@@ -185,7 +175,7 @@ public class TeleopCommands {
 
     return Commands.runOnce(
         () -> {
-          currentState = ShooterState.SHOOT;
+          shooter.currentState = ShooterState.SHOOT;
           shooter.setPosition(ShooterConstants.SHOOTER_FENDER_AIM);
           hood.setHoodPosition(false);
         },
@@ -196,7 +186,7 @@ public class TeleopCommands {
   public static Command setShooterHumanIntakePosition(Shooter shooter, Hood hood) {
     return Commands.runOnce(
         () -> {
-          currentState = ShooterState.EMPTY;
+          shooter.currentState = ShooterState.EMPTY;
           shooter.setPosition(ShooterConstants.SHOOTER_HUMAN_POSITION);
           hood.setHoodPosition(HoodConstants.HP_POSE);
         });
@@ -228,13 +218,5 @@ public class TeleopCommands {
           climber.setRightClimberPosition(rightPositionVal + climber.getRightClimberPosition());
         },
         climber);
-  }
-
-  public static ShooterState getShooterState() {
-    return currentState;
-  }
-
-  public static void setShooterState(ShooterState state) {
-    currentState = state;
   }
 }

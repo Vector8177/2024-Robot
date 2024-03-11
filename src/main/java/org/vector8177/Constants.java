@@ -308,4 +308,20 @@ public final class Constants {
     /** Replaying from a log file. */
     REPLAY
   }
+
+  public static enum ShooterState {
+    AMP,
+    SHOOT,
+    EMPTY
+  }
+
+  public static enum IntakeActiveState {
+    STOPPED,
+    ACTIVE
+  }
+
+  public static enum IntakeState {
+    INTAKING,
+    NOT_INTAKING
+  }
 }

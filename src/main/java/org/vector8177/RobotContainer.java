@@ -14,10 +14,10 @@
 package org.vector8177;
 
 import org.vector8177.Constants.ShooterConstants;
+import org.vector8177.Constants.ShooterState;
 import org.vector8177.Constants.SwerveConstants.DriveMode;
 import org.vector8177.commands.SwerveCommands;
-import org.vector8177.commands.TeleopCommands;
-import org.vector8177.commands.TeleopCommands.ShooterState;
+import org.vector8177.commands.MainCommands;
 import org.vector8177.subsystems.climber.Climber;
 import org.vector8177.subsystems.climber.ClimberIO;
 import org.vector8177.subsystems.climber.ClimberIOSim;
@@ -110,7 +110,7 @@ public class RobotContainer {
                 () -> Rotation2d.fromRadians(swerve.calculateAngleAutoAlign()),
                 () -> isIntaking,
                 mainMech);
-        intake = new Intake(new IntakeIOSparkMax(), () -> !shooter.getShooterOccupied());
+        intake = new Intake(new IntakeIOSparkMax(), () -> shooter.getShooterOccupied());
         hood = new Hood(new HoodIOSparkMax(), shooter.getMechanismLigament2d());
         climber = new Climber(new ClimberIOSparkMax());
         break;
@@ -134,7 +134,7 @@ public class RobotContainer {
                 () -> Rotation2d.fromRadians(swerve.calculateAngleAutoAlign()),
                 () -> isIntaking,
                 mainMech);
-        intake = new Intake(new IntakeIOSim(), () -> !shooter.getShooterOccupied());
+        intake = new Intake(new IntakeIOSim(), () -> shooter.getShooterOccupied());
         hood = new Hood(new HoodIOSim(), shooter.getMechanismLigament2d());
         climber = new Climber(new ClimberIOSim());
         break;
@@ -158,7 +158,7 @@ public class RobotContainer {
                 () -> Rotation2d.fromRadians(swerve.calculateAngleAutoAlign()),
                 () -> isIntaking,
                 mainMech);
-        intake = new Intake(new IntakeIO() {}, () -> !shooter.getShooterOccupied());
+        intake = new Intake(new IntakeIO() {}, () -> shooter.getShooterOccupied());
         hood = new Hood(new HoodIO() {}, shooter.getMechanismLigament2d());
         climber = new Climber(new ClimberIO() {});
         break;
@@ -167,8 +167,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Enable AutoAlign", setAutoAlign(true));
     NamedCommands.registerCommand("Disable AutoAlign", setAutoAlign(false));
     NamedCommands.registerCommand("Toggle AutoAlign", toggleAutoAlign());
-    NamedCommands.registerCommand("Run Shoot Sequence", TeleopCommands.runShootSequence(shooter));
-    NamedCommands.registerCommand("Run Intake Sequence", TeleopCommands.runIntake(intake, shooter));
+    NamedCommands.registerCommand("Run Shoot Sequence", MainCommands.runShootSequence(shooter));
+    NamedCommands.registerCommand("Run Intake Sequence", MainCommands.runIntake(intake, shooter));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
@@ -217,7 +217,7 @@ public class RobotContainer {
             driverController.leftBumper()));
 
     climber.setDefaultCommand(
-        TeleopCommands.runClimber(
+        MainCommands.runClimber(
             climber,
             operatorController.povUp(),
             operatorController.leftBumper(),
@@ -236,11 +236,11 @@ public class RobotContainer {
 
     driverController.b().onTrue(toggleAutoAlign());
 
-    operatorController.a().onTrue(TeleopCommands.runShooter(shooter));
+    operatorController.a().onTrue(MainCommands.runShooter(shooter));
 
-    operatorController.rightTrigger().whileTrue(TeleopCommands.runIntake(intake, shooter));
+    operatorController.rightTrigger().whileTrue(MainCommands.runIntake(intake, shooter));
 
-    operatorController.leftTrigger().whileTrue(TeleopCommands.runOuttake(intake, shooter));
+    operatorController.leftTrigger().whileTrue(MainCommands.runOuttake(intake, shooter));
 
     operatorController
         .b()
@@ -253,11 +253,11 @@ public class RobotContainer {
 
     operatorController
         .povRight()
-        .onTrue(TeleopCommands.setShooterHumanIntakePosition(shooter, hood));
+        .onTrue(MainCommands.setShooterHumanIntakePosition(shooter, hood));
 
-    operatorController.povDown().onTrue(TeleopCommands.setShooterIntakePosition(shooter, hood));
+    operatorController.povDown().onTrue(MainCommands.setShooterIntakePosition(shooter, hood));
 
-    operatorController.povLeft().onTrue(TeleopCommands.setShooterShootPosition(shooter, hood));
+    operatorController.povLeft().onTrue(MainCommands.setShooterShootPosition(shooter, hood));
   }
 
   /**
@@ -271,8 +271,8 @@ public class RobotContainer {
 
   public void updateMech() {
     Logger.recordOutput("Mechanism", mainMech);
-    Logger.recordOutput("TeleopCommands/ShooterState", TeleopCommands.getCurrentState());
-    Logger.recordOutput("TeleopCommands/IntakeState", TeleopCommands.getCurrentIntakeState());
+    Logger.recordOutput("TeleopCommands/ShooterState", shooter.currentState);
+    Logger.recordOutput("TeleopCommands/IntakeState", MainCommands.getCurrentIntakeState());
     Logger.recordOutput("AutoAlign/AutoAlignMode", currentDriveMode);
     // Logger.recordOutput("Shooter/ShooterOccupied", shooter.getShooterOccupied());
   }
@@ -283,7 +283,7 @@ public class RobotContainer {
           currentDriveMode =
               currentDriveMode == DriveMode.TELEOP ? DriveMode.AUTO_ALIGN : DriveMode.TELEOP;
           if (currentDriveMode == DriveMode.AUTO_ALIGN) {
-            TeleopCommands.setShooterState(ShooterState.SHOOT);
+            shooter.currentState = ShooterState.SHOOT;
           }
         });
   }
@@ -297,7 +297,7 @@ public class RobotContainer {
           currentDriveMode = autoAlign ? DriveMode.AUTO_ALIGN : DriveMode.TELEOP;
 
           if (currentDriveMode == DriveMode.AUTO_ALIGN) {
-            TeleopCommands.setShooterState(ShooterState.SHOOT);
+            shooter.currentState = (ShooterState.SHOOT);
           }
           DriverStation.reportError("Changed Auto Align to " + autoAlign, false);
         });
@@ -317,6 +317,6 @@ public class RobotContainer {
             },
             shooter,
             hood),
-        TeleopCommands.runShootSequence(shooter));
+        MainCommands.runShootSequence(shooter));
   }
 }
