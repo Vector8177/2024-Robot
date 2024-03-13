@@ -212,11 +212,15 @@ public class Shooter extends SubsystemBase {
       // Logger.recordOutput("Shooter/FF_Val", shooterFF);
       // Logger.recordOutput("Shooter/PID_Val", shooterSpeed);
 
-      io.setShooterSpeedVoltage(
-          MathUtil.clamp(
-              shooterSpeed + shooterFF,
-              -ShooterConstants.MAX_MOTOR_VOLTAGE,
-              ShooterConstants.MAX_MOTOR_VOLTAGE));
+      if (wheelTargetSpeed != 0) {
+        io.setShooterSpeedVoltage(
+            MathUtil.clamp(
+                shooterSpeed + shooterFF,
+                -ShooterConstants.MAX_MOTOR_VOLTAGE,
+                ShooterConstants.MAX_MOTOR_VOLTAGE));
+      } else {
+        io.setShooterSpeedVoltage(0);
+      }
     }
   }
 

@@ -4,6 +4,7 @@ import static java.lang.System.arraycopy;
 import static org.vector8177.Constants.*;
 
 import org.vector8177.Constants.VisionConstants;
+import org.vector8177.Constants.VisionConstants.CameraResolution;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -52,15 +53,20 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
     visionSim = new VisionSystemSim("main");
     visionSim.addAprilTags(aprilTagFieldLayout);
 
-    flCam = new PhotonCameraSim(frontL, VisionConstants.OV9281_PROP);
-    frCam = new PhotonCameraSim(frontR, VisionConstants.OV9281_PROP);
+    flCam = new PhotonCameraSim(frontL, VisionConstants.OV2311_PROP);
+    frCam = new PhotonCameraSim(frontR, VisionConstants.OV2311_PROP);
 
     flCam.enableDrawWireframe(true);
     frCam.enableDrawWireframe(true);
   }
 
   @Override
-  public void updateInputs(AprilTagVisionIOInputs inputs) {}
+  public void updateInputs(AprilTagVisionIOInputs inputs) {
+    getEstimatedPoseUpdates();
+    inputs.visionPoses = poseArray;
+    inputs.timestamps = timestampArray;
+    inputs.visionStdDevs = visionStdArray;
+  }
 
   @Override
   public void updatePose(Pose2d pose) {
@@ -73,7 +79,8 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
         estimatedRobotPose -> {
           poseArray[0] = estimatedRobotPose.estimatedPose;
           timestampArray[0] = estimatedRobotPose.timestampSeconds;
-          Matrix<N3, N1> stdDevs = getEstimationStdDevs(estimatedRobotPose);
+          Matrix<N3, N1> stdDevs =
+              getEstimationStdDevs(estimatedRobotPose, CameraResolution.HIGH_RES);
           arraycopy(stdDevs.getData(), 0, visionStdArray, 0, 3);
         },
         () -> {
@@ -85,7 +92,8 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
         estimatedRobotPose -> {
           poseArray[1] = estimatedRobotPose.estimatedPose;
           timestampArray[1] = estimatedRobotPose.timestampSeconds;
-          Matrix<N3, N1> stdDevs = getEstimationStdDevs(estimatedRobotPose);
+          Matrix<N3, N1> stdDevs =
+              getEstimationStdDevs(estimatedRobotPose, CameraResolution.HIGH_RES);
           arraycopy(stdDevs.getData(), 0, visionStdArray, 3, 3);
         },
         () -> {

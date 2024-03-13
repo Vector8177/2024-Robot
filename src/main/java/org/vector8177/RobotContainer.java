@@ -13,11 +13,13 @@
 
 package org.vector8177;
 
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
+import static org.vector8177.commands.MainCommands.*;
+
 import org.vector8177.Constants.ShooterConstants;
 import org.vector8177.Constants.ShooterState;
 import org.vector8177.Constants.SwerveConstants.DriveMode;
 import org.vector8177.commands.SwerveCommands;
-import org.vector8177.commands.MainCommands;
 import org.vector8177.subsystems.climber.Climber;
 import org.vector8177.subsystems.climber.ClimberIO;
 import org.vector8177.subsystems.climber.ClimberIOSim;
@@ -42,6 +44,7 @@ import org.vector8177.subsystems.swerve.ModuleIOSparkMax;
 import org.vector8177.subsystems.swerve.Swerve;
 import org.vector8177.subsystems.vision.AprilTagVisionIO;
 import org.vector8177.subsystems.vision.AprilTagVisionIOReal;
+import org.vector8177.subsystems.vision.AprilTagVisionIOSim;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -125,7 +128,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim(),
-                new AprilTagVisionIO() {},
+                new AprilTagVisionIOSim(),
                 () -> currentDriveMode);
         shooter =
             new Shooter(
@@ -167,8 +170,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("Enable AutoAlign", setAutoAlign(true));
     NamedCommands.registerCommand("Disable AutoAlign", setAutoAlign(false));
     NamedCommands.registerCommand("Toggle AutoAlign", toggleAutoAlign());
-    NamedCommands.registerCommand("Run Shoot Sequence", MainCommands.runShootSequence(shooter));
-    NamedCommands.registerCommand("Run Intake Sequence", MainCommands.runIntake(intake, shooter));
+    NamedCommands.registerCommand("Run Shoot Sequence", runShootSequence(shooter));
+    NamedCommands.registerCommand("Run Intake Sequence", runIntake(intake, shooter, hood));
+    NamedCommands.registerCommand("Fender Shot Position", setShooterShootPosition(shooter, hood));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
@@ -217,7 +221,7 @@ public class RobotContainer {
             driverController.leftBumper()));
 
     climber.setDefaultCommand(
-        MainCommands.runClimber(
+        runClimber(
             climber,
             operatorController.povUp(),
             operatorController.leftBumper(),
@@ -236,11 +240,16 @@ public class RobotContainer {
 
     driverController.b().onTrue(toggleAutoAlign());
 
-    operatorController.a().onTrue(MainCommands.runShooter(shooter));
+    driverController.a().onTrue(runOnce(() -> swerve.useVision = !swerve.useVision));
 
-    operatorController.rightTrigger().whileTrue(MainCommands.runIntake(intake, shooter));
+    operatorController.povDown().onTrue(setShooterShootPosition(shooter, hood));
 
-    operatorController.leftTrigger().whileTrue(MainCommands.runOuttake(intake, shooter));
+    operatorController.a().onTrue(runShooter(shooter));
+
+    operatorController.rightTrigger().onTrue(runIntake(intake, shooter, hood));
+    operatorController.rightTrigger().onFalse(stopIntake(intake, shooter));
+
+    operatorController.leftTrigger().whileTrue(runOuttake(intake, shooter));
 
     operatorController
         .b()
@@ -251,13 +260,9 @@ public class RobotContainer {
                 },
                 shooter));
 
-    operatorController
-        .povRight()
-        .onTrue(MainCommands.setShooterHumanIntakePosition(shooter, hood));
+    operatorController.povRight().onTrue(setShooterAmpPosition(shooter, hood));
 
-    operatorController.povDown().onTrue(MainCommands.setShooterIntakePosition(shooter, hood));
-
-    operatorController.povLeft().onTrue(MainCommands.setShooterShootPosition(shooter, hood));
+    operatorController.povLeft().onTrue(setShooterShootPosition(shooter, hood));
   }
 
   /**
@@ -272,7 +277,7 @@ public class RobotContainer {
   public void updateMech() {
     Logger.recordOutput("Mechanism", mainMech);
     Logger.recordOutput("TeleopCommands/ShooterState", shooter.currentState);
-    Logger.recordOutput("TeleopCommands/IntakeState", MainCommands.getCurrentIntakeState());
+    Logger.recordOutput("TeleopCommands/IntakeState", getCurrentIntakeState());
     Logger.recordOutput("AutoAlign/AutoAlignMode", currentDriveMode);
     // Logger.recordOutput("Shooter/ShooterOccupied", shooter.getShooterOccupied());
   }
@@ -317,6 +322,6 @@ public class RobotContainer {
             },
             shooter,
             hood),
-        MainCommands.runShootSequence(shooter));
+        runShootSequence(shooter));
   }
 }

@@ -4,6 +4,7 @@ import static java.lang.System.arraycopy;
 
 import org.vector8177.Constants;
 import org.vector8177.Constants.VisionConstants;
+import org.vector8177.Constants.VisionConstants.CameraResolution;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -63,7 +64,8 @@ public class AprilTagVisionIOReal implements AprilTagVisionIO {
         estimatedRobotPose -> {
           poseArray[0] = estimatedRobotPose.estimatedPose;
           timeStampArray[0] = estimatedRobotPose.timestampSeconds;
-          Matrix<N3, N1> stdDevs = getEstimationStdDevs(estimatedRobotPose);
+          Matrix<N3, N1> stdDevs =
+              getEstimationStdDevs(estimatedRobotPose, CameraResolution.HIGH_RES);
           arraycopy(stdDevs.getData(), 0, visionStdArray, 0, 3);
         },
         () -> {
@@ -76,7 +78,8 @@ public class AprilTagVisionIOReal implements AprilTagVisionIO {
         estimatedRobotPose -> {
           poseArray[1] = estimatedRobotPose.estimatedPose;
           timeStampArray[1] = estimatedRobotPose.timestampSeconds;
-          Matrix<N3, N1> stdDevs = getEstimationStdDevs(estimatedRobotPose);
+          Matrix<N3, N1> stdDevs =
+              getEstimationStdDevs(estimatedRobotPose, CameraResolution.HIGH_RES);
           arraycopy(stdDevs.getData(), 0, visionStdArray, 3, 3);
         },
         () -> {

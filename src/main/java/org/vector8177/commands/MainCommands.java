@@ -1,5 +1,7 @@
 package org.vector8177.commands;
 
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+
 import org.vector8177.Constants;
 import org.vector8177.Constants.ClimberConstants;
 import org.vector8177.Constants.HoodConstants;
@@ -14,7 +16,6 @@ import org.vector8177.subsystems.intake.Intake;
 import org.vector8177.subsystems.shooter.Shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 
 import java.util.Map;
@@ -38,59 +39,59 @@ public class MainCommands {
   }
 
   public static Command runShootSequence(Shooter shooter) {
-    return Commands.sequence(
-        Commands.runOnce(
+    return sequence(
+        runOnce(
             () -> {
               intakeState = IntakeActiveState.STOPPED;
               shooter.setShooterSpeed(ShooterConstants.SHOOT_WHEEL_RPM);
             },
             shooter),
-        Commands.waitUntil(
+        waitUntil(
             () ->
                 shooter.getShooterTopFixedVelocity()
                     > (Constants.currentMode == Mode.REAL ? ShooterConstants.SHOOT_RPM_CUTOFF : 0)),
-        Commands.runOnce(
+        runOnce(
             () -> {
               shooter.setIndexerSpeed(-ShooterConstants.SHOOTER_INDEXER_SPEED);
             },
             shooter),
-        Commands.waitSeconds(2),
-        Commands.runOnce(
+        waitSeconds(1),
+        runOnce(
             () -> {
               intakeState = IntakeActiveState.ACTIVE;
               shooter.setShooterSpeed(1500);
               shooter.setIndexerSpeed(0);
             },
             shooter));
-    // Commands.waitUntil(() -> shooter.getShooterTopFixedVelocity() < 1600),
-    // Commands.runOnce(
-    //     () -> {
-    //       shooter.setShooterSpeed(400);
-    //     },
-    //     shooter),
-    // Commands.waitUntil(() -> shooter.getShooterTopFixedVelocity() < 500),
-    // Commands.runOnce(
-    //     () -> {
-    //       shooter.setShooterSpeed(0);
-    //     },
-    //     shooter));
-    // return Commands.runOnce(
-    //     () -> {
-    //       shooter.setShooterSpeed(3000);
-    //     },
-    //     shooter);
+    // waitUntil(() -> shooter.getShooterTopFixedVelocity() < 1600),
+    // runOnce(
+    // () -> {
+    // shooter.setShooterSpeed(400);
+    // },
+    // shooter),
+    // waitUntil(() -> shooter.getShooterTopFixedVelocity() < 500),
+    // runOnce(
+    // () -> {
+    // shooter.setShooterSpeed(0);
+    // },
+    // shooter));
+    // return runOnce(
+    // () -> {
+    // shooter.setShooterSpeed(3000);
+    // },
+    // shooter);
   }
 
   public static Command runAmpSequence(Shooter shooter) {
-    return Commands.sequence(
-        Commands.runOnce(
+    return sequence(
+        runOnce(
             () -> {
               intakeState = IntakeActiveState.STOPPED;
               shooter.setIndexerSpeed(ShooterConstants.SHOOTER_INDEXER_SPEED);
             },
             shooter),
-        Commands.waitSeconds(1.2),
-        Commands.runOnce(
+        waitSeconds(1.2),
+        runOnce(
             () -> {
               intakeState = IntakeActiveState.ACTIVE;
               shooter.setIndexerSpeed(0);
@@ -102,26 +103,61 @@ public class MainCommands {
     return intakeState;
   }
 
-  public static Command runIntake(Intake intake, Shooter shooter) {
+  public static Command stopIntake(Intake intake, Shooter shooter) {
+    return runOnce(
+        () -> {
+          shooter.setIndexerSpeed(0);
+          intake.setFeederSpeed(0);
+          intake.setIndexerSpeed(0);
+        },
+        shooter,
+        intake);
+  }
+
+  // public static Command runIntake(Intake intake, Shooter shooter, Hood hood) {
+  // return new SelectCommand<>(
+  // Map.ofEntries(
+  // Map.entry(
+  // IntakeActiveState.ACTIVE,
+  // sequence(
+  // setShooterIntakePosition(shooter, hood),
+  // runOnce(
+  // () -> {
+  // shooter.setIndexerSpeed(-ShooterConstants.SHOOTER_INDEXER_IN_SPEED);
+  // intake.setFeederSpeed(-IntakeConstants.FEEDER_SPEED);
+  // intake.setFeederSpeed(-IntakeConstants.INDEXER_SPEED);
+  // },
+  // shooter,
+  // intake),
+  // waitUntil(() -> shooter.getShooterOccupied()),
+  // stopIntake(intake, shooter)))),
+  // () -> getCurrentIntakeState());
+  // }
+
+  public static Command runIntake(Intake intake, Shooter shooter, Hood hood) {
     return new SelectCommand<>(
         Map.ofEntries(
             Map.entry(
                 IntakeActiveState.ACTIVE,
-                Commands.runEnd(
-                    () -> {
-                      if (shooter.getIRSensorVoltage()
-                          < ShooterConstants.SHOOTER_IR_TARGET_VOLTAGE) {
-                        intake.setFeederSpeed(-IntakeConstants.FEEDER_SPEED);
-                        intake.setIndexerSpeed(-IntakeConstants.INDEXER_SPEED);
-                        shooter.setIndexerSpeed(-ShooterConstants.SHOOTER_INDEXER_IN_SPEED);
-                      }
-                    },
-                    () -> {
-                      intake.setFeederSpeed(0);
-                      intake.setIndexerSpeed(0);
-                      shooter.setIndexerSpeed(0);
-                    },
-                    intake))),
+                sequence(
+                    setShooterIntakePosition(shooter, hood),
+                    runOnce(
+                        () -> {
+                          intake.setFeederSpeed(-IntakeConstants.FEEDER_SPEED);
+                          intake.setIndexerSpeed(-IntakeConstants.INDEXER_SPEED);
+                          shooter.setIndexerSpeed(-ShooterConstants.SHOOTER_INDEXER_IN_SPEED);
+                        },
+                        intake,
+                        shooter),
+                    waitUntil(() -> shooter.getShooterOccupied()),
+                    runOnce(
+                        () -> {
+                          intake.setFeederSpeed(0);
+                          intake.setIndexerSpeed(0);
+                          shooter.setIndexerSpeed(0);
+                        },
+                        intake,
+                        shooter)))),
         () -> getCurrentIntakeState());
   }
 
@@ -130,7 +166,7 @@ public class MainCommands {
         Map.ofEntries(
             Map.entry(
                 IntakeActiveState.ACTIVE,
-                Commands.runEnd(
+                runEnd(
                     () -> {
                       intake.setFeederSpeed(IntakeConstants.FEEDER_SPEED);
                       intake.setIndexerSpeed(IntakeConstants.INDEXER_SPEED);
@@ -147,33 +183,32 @@ public class MainCommands {
 
   public static Command setShooterIntakePosition(Shooter shooter, Hood hood) {
 
-    return Commands.sequence(
-        Commands.runOnce(
+    return sequence(
+        runOnce(
             () -> {
               shooter.currentState = ShooterState.EMPTY;
               shooter.setPosition(ShooterConstants.SHOOTER_PIVOT_INTAKE_POSITION);
             },
             shooter),
-        Commands.waitSeconds(1),
-        Commands.runOnce(() -> hood.setHoodPosition(false), hood));
+        runOnce(() -> hood.setHoodPosition(false), hood));
   }
 
   public static Command setShooterAmpPosition(Shooter shooter, Hood hood) {
 
-    return Commands.sequence(
-        Commands.runOnce(
+    return sequence(
+        runOnce(
             () -> {
               shooter.currentState = ShooterState.AMP;
               shooter.setPosition(ShooterConstants.SHOOTER_PIVOT_AMP_POSITION);
             },
             shooter),
-        Commands.waitSeconds(1),
-        Commands.runOnce(() -> hood.setHoodPosition(true), hood));
+        waitSeconds(1),
+        runOnce(() -> hood.setHoodPosition(true), hood));
   }
 
   public static Command setShooterShootPosition(Shooter shooter, Hood hood) {
 
-    return Commands.runOnce(
+    return runOnce(
         () -> {
           shooter.currentState = ShooterState.SHOOT;
           shooter.setPosition(ShooterConstants.SHOOTER_FENDER_AIM);
@@ -184,7 +219,7 @@ public class MainCommands {
   }
 
   public static Command setShooterHumanIntakePosition(Shooter shooter, Hood hood) {
-    return Commands.runOnce(
+    return runOnce(
         () -> {
           shooter.currentState = ShooterState.EMPTY;
           shooter.setPosition(ShooterConstants.SHOOTER_HUMAN_POSITION);
@@ -198,7 +233,7 @@ public class MainCommands {
       BooleanSupplier leftDecrease,
       BooleanSupplier rightIncrease,
       BooleanSupplier rightDecrease) {
-    return Commands.run(
+    return run(
         () -> {
           double leftPoisitionVal = 0d;
           double rightPositionVal = 0d;

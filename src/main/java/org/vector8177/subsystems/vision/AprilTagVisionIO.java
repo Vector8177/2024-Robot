@@ -1,7 +1,9 @@
 package org.vector8177.subsystems.vision;
 
+import static org.vector8177.Constants.VisionConstants.*;
+
 import org.vector8177.Constants;
-import org.vector8177.Constants.VisionConstants;
+import org.vector8177.Constants.VisionConstants.CameraResolution;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -28,8 +30,13 @@ public interface AprilTagVisionIO {
 
   public default void updatePose(Pose2d pose) {}
 
-  default Matrix<N3, N1> getEstimationStdDevs(EstimatedRobotPose estimatedPose) {
-    var estStdDevs = VisionConstants.normalSingleTagStdDev;
+  default Matrix<N3, N1> getEstimationStdDevs(
+      EstimatedRobotPose estimatedPose, CameraResolution resolution) {
+    var estStdDevs =
+        switch (resolution) {
+          case HIGH_RES -> highResSingleTagStdDev;
+          case NORMAL -> normalSingleTagStdDev;
+        };
 
     var targets = estimatedPose.targetsUsed;
     int numTags = 0;
@@ -54,12 +61,30 @@ public interface AprilTagVisionIO {
 
     avgDist /= numTags;
 
-    if (numTags > 1) estStdDevs = VisionConstants.normalMultiTagStdDev;
-
-    if (numTags > 1 && avgDist > 4) {
+    if (numTags > 1
+        && avgDist
+            > switch (resolution) {
+              case HIGH_RES -> 8;
+              case NORMAL -> 5;
+            }) {
       estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
     } else {
-      estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
+      estStdDevs =
+          switch (resolution) {
+            case HIGH_RES -> highResMultiTagStdDev;
+            case NORMAL -> normalMultiTagStdDev;
+          };
+    }
+
+    if (numTags > 1
+        && avgDist
+            > switch (resolution) {
+              case HIGH_RES -> 6;
+              case NORMAL -> 4;
+            }) {
+      estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+    } else {
+      estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 20));
     }
 
     return estStdDevs;

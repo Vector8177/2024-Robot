@@ -99,7 +99,7 @@ public final class Constants {
   }
 
   public final class SwerveConstants {
-    public static final double MAX_LINEAR_VELOCITY = Units.feetToMeters(5);
+    public static final double MAX_LINEAR_VELOCITY = Units.feetToMeters(14);
     public static final double TRACK_WIDTH_X = Units.inchesToMeters(30.0);
     public static final double TRACK_WIDTH_Y = Units.inchesToMeters(25.0);
     public static final double DRIVE_BASE_RADIUS =
@@ -160,9 +160,9 @@ public final class Constants {
     }
 
     public final class AutoAlignConstants {
-      public static final double thetaP = .2;
+      public static final double thetaP = .4;
       public static final double thetaI = 0;
-      public static final double thetaD = 0;
+      public static final double thetaD = 1e-5;
       public static final double thetaTolerance = Units.degreesToRadians(1);
       public static final double maxAngularVelocity = MAX_ANGULAR_VELOCITY;
       public static final double maxAngularAcceleration = 25.02;
@@ -207,7 +207,7 @@ public final class Constants {
     public static final double SHOOTER_HUMAN_POSITION = 5.634d;
 
     public static final int SHOOT_WHEEL_RPM = 5000;
-    public static final int SHOOT_RPM_CUTOFF = 4500;
+    public static final int SHOOT_RPM_CUTOFF = 4800;
 
     public static final double SHOOTER_GEAR_RATIO = 1 / 1.5;
     public static final double ABSOLUTE_OFFSET = 0.802d;
@@ -284,9 +284,14 @@ public final class Constants {
     public static final Matrix<N3, N1> normalMultiTagStdDev =
         VecBuilder.fill(0.4, 0.4, Double.MAX_VALUE);
 
-    public static final SimCameraProperties OV9281_PROP = configureCamera();
+    public static final Matrix<N3, N1> highResSingleTagStdDev =
+        VecBuilder.fill(0.4, 0.4, Double.MAX_VALUE);
+    public static final Matrix<N3, N1> highResMultiTagStdDev =
+        VecBuilder.fill(0.2, 0.2, Double.MAX_VALUE);
 
-    public static SimCameraProperties configureCamera() {
+    public static final SimCameraProperties OV9281_PROP = configureNormalCamera();
+
+    public static SimCameraProperties configureNormalCamera() {
       SimCameraProperties temp = new SimCameraProperties();
       temp.setCalibration(1280, 800, Rotation2d.fromDegrees(84.47));
       temp.setCalibError(0.25, 0.10);
@@ -295,6 +300,24 @@ public final class Constants {
       temp.setLatencyStdDevMs(10);
 
       return temp;
+    }
+
+    public static final SimCameraProperties OV2311_PROP = configureHighResCamera();
+
+    public static SimCameraProperties configureHighResCamera() {
+      SimCameraProperties temp = new SimCameraProperties();
+      temp.setCalibration(1600, 1200, Rotation2d.fromDegrees(84.47));
+      temp.setCalibError(0.25, 0.10);
+      temp.setFPS(40);
+      temp.setAvgLatencyMs(40);
+      temp.setLatencyStdDevMs(10);
+
+      return temp;
+    }
+
+    public static enum CameraResolution {
+      HIGH_RES,
+      NORMAL
     }
   }
 

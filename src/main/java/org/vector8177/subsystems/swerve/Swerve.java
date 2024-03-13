@@ -260,19 +260,9 @@ public class Swerve extends SubsystemBase {
     for (int i = 0; i < aprilTagVisionInputs.timestamps.length; i++) {
       double currentTimeStamp = aprilTagVisionInputs.timestamps[i];
       Pose3d currentVisionPose = aprilTagVisionInputs.visionPoses[i];
-      // if (currentTimeStamp >= 1.0
-      //     && Math.abs(currentVisionPose.getZ()) < 0.2
-      //     && isInBetween(currentVisionPose.getX(), 0, 16.5, false)
-      //     && isInBetween(currentVisionPose.getY(), 0, 8.5, false)
-      //     && currentVisionPose.getRotation().getX() < 0.2
-      //     && currentVisionPose.getRotation().getZ() < 0.2
-      //     && currentVisionPose
-      //             .toPose2d()
-      //             .minus(poseEstimator.getEstimatedPosition())
-      //             .getTranslation()
-      //             .getNorm()
-      //         < 3.0) {
-      if (true) {
+      if (currentTimeStamp >= 1.0
+          && isInBetween(currentVisionPose.getX(), 0, 16.5, false)
+          && isInBetween(currentVisionPose.getY(), 0, 8.5, false)) {
         Logger.recordOutput("Odometry/VisionPose" + i, currentVisionPose.toPose2d());
         Logger.recordOutput(
             "Odometry/AprilTagStdDevs" + i,
