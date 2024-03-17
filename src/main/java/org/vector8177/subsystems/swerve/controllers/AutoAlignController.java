@@ -34,8 +34,8 @@ public class AutoAlignController {
           "AutoAlign/maxAngularAcceleration",
           Constants.SwerveConstants.AutoAlignConstants.maxAngularAcceleration);
 
-  private static final double RED_X = 16.58;
-  private static final double BLUE_X = -.0381;
+  private static final double RED_X = 16.68;
+  private static final double BLUE_X = -.1381;
   private static final double POSE_Y = 5.55;
 
   private Pose2d goalPose = new Pose2d(.04, POSE_Y, Rotation2d.fromRotations(0));
