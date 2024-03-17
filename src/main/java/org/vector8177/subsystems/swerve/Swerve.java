@@ -213,18 +213,26 @@ public class Swerve extends SubsystemBase {
                       .getRadians()
                   / dt;
 
-          if (Math.abs(omega) <= limits.maxSteeringVelocity()
-              && Math.abs(velocity) <= limits.maxDriveVelocity()) {
-            moduleDeltas[moduleIndex] =
-                new SwerveModulePosition(
-                    modulePositions[moduleIndex].distanceMeters
-                        - lastModulePositions[moduleIndex].distanceMeters,
-                    modulePositions[moduleIndex].angle);
+          moduleDeltas[moduleIndex] =
+              new SwerveModulePosition(
+                  modulePositions[moduleIndex].distanceMeters
+                      - lastModulePositions[moduleIndex].distanceMeters,
+                  modulePositions[moduleIndex].angle);
 
-            lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
-          } else {
-            break;
-          }
+          lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
+
+          // if (Math.abs(omega) <= limits.maxSteeringVelocity()
+          // && Math.abs(velocity) <= limits.maxDriveVelocity()) {
+          // moduleDeltas[moduleIndex] =
+          // new SwerveModulePosition(
+          // modulePositions[moduleIndex].distanceMeters
+          // - lastModulePositions[moduleIndex].distanceMeters,
+          // modulePositions[moduleIndex].angle);
+
+          // lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
+          // } else {
+          // break;
+          // }
         }
       }
 

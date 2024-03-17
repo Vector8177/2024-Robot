@@ -260,6 +260,8 @@ public class RobotContainer {
                 },
                 shooter));
 
+    driverController.povDown().onTrue(runOnce(() -> swerve.useVision = !swerve.useVision));
+
     operatorController.povRight().onTrue(setShooterAmpPosition(shooter, hood));
 
     operatorController.povLeft().onTrue(setShooterShootPosition(shooter, hood));

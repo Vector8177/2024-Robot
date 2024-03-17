@@ -23,6 +23,7 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import java.util.OptionalDouble;
 import java.util.Queue;
 
 /** IO implementation for Pigeon2 */
@@ -47,7 +48,15 @@ public class GyroIOPigeon2 implements GyroIO {
       yawTimestampQueue = SparkMaxOdometryThread.getInstance().makeTimestampQueue();
       yawPositionQueue =
           SparkMaxOdometryThread.getInstance()
-              .registerSignal(() -> pigeon.getYaw().getValueAsDouble());
+              .registerSignal(
+                  () -> {
+                    boolean valid = yaw.refresh().getStatus().isOK();
+                    if (valid) {
+                      return OptionalDouble.of(yaw.getValueAsDouble());
+                    } else {
+                      return OptionalDouble.empty();
+                    }
+                  });
     }
   }
 

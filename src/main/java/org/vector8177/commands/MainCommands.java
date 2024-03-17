@@ -141,6 +141,7 @@ public class MainCommands {
                 IntakeActiveState.ACTIVE,
                 sequence(
                     setShooterIntakePosition(shooter, hood),
+                    waitSeconds(.2),
                     runOnce(
                         () -> {
                           intake.setFeederSpeed(-IntakeConstants.FEEDER_SPEED);
