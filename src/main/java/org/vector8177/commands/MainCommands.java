@@ -63,23 +63,32 @@ public class MainCommands {
               shooter.setIndexerSpeed(0);
             },
             shooter));
-    // waitUntil(() -> shooter.getShooterTopFixedVelocity() < 1600),
-    // runOnce(
-    // () -> {
-    // shooter.setShooterSpeed(400);
-    // },
-    // shooter),
-    // waitUntil(() -> shooter.getShooterTopFixedVelocity() < 500),
-    // runOnce(
-    // () -> {
-    // shooter.setShooterSpeed(0);
-    // },
-    // shooter));
-    // return runOnce(
-    // () -> {
-    // shooter.setShooterSpeed(3000);
-    // },
-    // shooter);
+  }
+
+  public static Command runShootSequenceAuto(Shooter shooter) {
+    return sequence(
+        runOnce(
+            () -> {
+              intakeState = IntakeActiveState.STOPPED;
+              shooter.setShooterSpeed(ShooterConstants.SHOOT_WHEEL_RPM);
+            },
+            shooter),
+        waitUntil(
+            () ->
+                shooter.getShooterTopFixedVelocity()
+                    > (Constants.currentMode == Mode.REAL ? ShooterConstants.SHOOT_RPM_CUTOFF : 0)),
+        runOnce(
+            () -> {
+              shooter.setIndexerSpeed(-ShooterConstants.SHOOTER_INDEXER_SPEED);
+            },
+            shooter),
+        waitSeconds(1),
+        runOnce(
+            () -> {
+              intakeState = IntakeActiveState.ACTIVE;
+              shooter.setIndexerSpeed(0);
+            },
+            shooter));
   }
 
   public static Command runAmpSequence(Shooter shooter) {
