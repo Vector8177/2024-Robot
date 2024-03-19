@@ -28,6 +28,7 @@ public class Shooter extends SubsystemBase {
   private Supplier<DriveMode> currentDriveModeSupplier;
   private Supplier<Rotation2d> shooterAlignSupplier;
   private Supplier<Boolean> intakingSupplier;
+  private Supplier<Double> shooterSpeedSupplier;
 
   private boolean shooterOccupied = false;
 
@@ -54,11 +55,14 @@ public class Shooter extends SubsystemBase {
       Supplier<DriveMode> modeSupplier,
       Supplier<Rotation2d> shooterAngleSupp,
       Supplier<Boolean> iSupplier,
+      Supplier<Double> shooterSpeedSupp,
       Mechanism2d mainMech) {
     this.io = io;
     this.intakingSupplier = iSupplier;
     this.currentDriveModeSupplier = modeSupplier;
     this.shooterAlignSupplier = shooterAngleSupp;
+    this.shooterSpeedSupplier = shooterSpeedSupp;
+
     this.SHOOTER_TOP_KP =
         Constants.currentMode == Mode.REAL
             ? ShooterConstants.SHOOTER_TOP_KP
@@ -164,6 +168,14 @@ public class Shooter extends SubsystemBase {
   // public Command sysIdDynamic(SysIdRoutine.Direction direction) {
   // return sysId.dynamic(direction);
   // }
+
+  public double getTargetSpeed() {
+    return wheelTargetSpeed;
+  }
+
+  public double getLinearizedTargetSpeed() {
+    return shooterSpeedSupplier.get();
+  }
 
   @Override
   public void periodic() {

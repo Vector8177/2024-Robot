@@ -38,6 +38,12 @@ public class AutoAlignController {
   private static final double BLUE_X = -.1381;
   private static final double POSE_Y = 5.55;
 
+  private static final double CLOSE_RPM = 3000;
+  private static final double FAR_RPM = 5000;
+
+  private static final double CLOSE_DIST = 1;
+  private static final double FAR_DIST = 4.5;
+
   private Pose2d goalPose = new Pose2d(.04, POSE_Y, Rotation2d.fromRotations(0));
 
   private ProfiledPIDController thetaController;
@@ -122,5 +128,23 @@ public class AutoAlignController {
         "AutoAlign/ShooterPose/ShooterTargetPose", Units.radiansToDegrees(returnVal));
 
     return returnVal;
+  }
+
+  public double getShooterTarget() {
+    Pose2d currentPose = swerve.getPose();
+    this.goalPose =
+        new Pose2d(
+            (isRedSupp.getAsBoolean() ? RED_X : BLUE_X), POSE_Y, Rotation2d.fromRotations(0));
+
+    double distance = currentPose.getTranslation().getDistance(goalPose.getTranslation());
+
+    double target =
+        CLOSE_RPM
+            + (FAR_RPM - CLOSE_RPM)
+                * Math.abs((FAR_DIST - CLOSE_DIST) - distance)
+                / (FAR_DIST - CLOSE_DIST);
+
+    Logger.recordOutput("AutoAlign/Shooter/TargetWheelSpeed", target);
+    return target;
   }
 }

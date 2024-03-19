@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 2.939353857244122,
-        "y": 5.53650223579517
+        "x": 1.2211290254423093,
+        "y": 5.565873600441298
       },
       "prevControl": {
-        "x": 2.939353857244122,
-        "y": 5.53650223579517
+        "x": 1.2211290254423093,
+        "y": 5.565873600441298
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,25 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.55,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Fender Shot Position"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.089,
     "maxAcceleration": 4.715,

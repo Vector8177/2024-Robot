@@ -67,7 +67,7 @@ public class Swerve extends SubsystemBase {
   private final AprilTagVisionIOInputsAutoLogged aprilTagVisionInputs =
       new AprilTagVisionIOInputsAutoLogged();
 
-  @AutoLogOutput public boolean useVision = true;
+  @AutoLogOutput public boolean useVision = false;
 
   private Supplier<DriveMode> currentModeSupplier;
 
@@ -116,8 +116,8 @@ public class Swerve extends SubsystemBase {
         () -> kinematics.toChassisSpeeds(getModuleStates()),
         this::runVelocity,
         new HolonomicPathFollowerConfig(
-            new PIDConstants(.1, 0),
-            new PIDConstants(.1, 0),
+            new PIDConstants(1, 0),
+            new PIDConstants(1, 0),
             MAX_LINEAR_VELOCITY,
             DRIVE_BASE_RADIUS,
             new ReplanningConfig(true, true)),
@@ -419,5 +419,9 @@ public class Swerve extends SubsystemBase {
 
   public double calculateAngleAutoAlign() {
     return autoAlignController.updateAngle();
+  }
+
+  public double calculateSpeedAutoAlign() {
+    return autoAlignController.getShooterTarget();
   }
 }

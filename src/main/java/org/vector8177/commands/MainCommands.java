@@ -43,13 +43,13 @@ public class MainCommands {
         runOnce(
             () -> {
               intakeState = IntakeActiveState.STOPPED;
-              shooter.setShooterSpeed(ShooterConstants.SHOOT_WHEEL_RPM);
+              shooter.setShooterSpeed(shooter.getLinearizedTargetSpeed());
             },
             shooter),
         waitUntil(
             () ->
                 shooter.getShooterTopFixedVelocity()
-                    > (Constants.currentMode == Mode.REAL ? ShooterConstants.SHOOT_RPM_CUTOFF : 0)),
+                    > (Constants.currentMode == Mode.REAL ? shooter.getTargetSpeed() : 0)),
         runOnce(
             () -> {
               shooter.setIndexerSpeed(-ShooterConstants.SHOOTER_INDEXER_SPEED);
@@ -73,6 +73,7 @@ public class MainCommands {
               shooter.setShooterSpeed(ShooterConstants.SHOOT_WHEEL_RPM);
             },
             shooter),
+        waitSeconds(.2),
         waitUntil(
             () ->
                 shooter.getShooterTopFixedVelocity()

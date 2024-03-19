@@ -112,6 +112,7 @@ public class RobotContainer {
                 () -> currentDriveMode,
                 () -> Rotation2d.fromRadians(swerve.calculateAngleAutoAlign()),
                 () -> isIntaking,
+                () -> swerve.calculateSpeedAutoAlign(),
                 mainMech);
         intake = new Intake(new IntakeIOSparkMax(), () -> shooter.getShooterOccupied());
         hood = new Hood(new HoodIOSparkMax(), shooter.getMechanismLigament2d());
@@ -136,6 +137,7 @@ public class RobotContainer {
                 () -> currentDriveMode,
                 () -> Rotation2d.fromRadians(swerve.calculateAngleAutoAlign()),
                 () -> isIntaking,
+                () -> swerve.calculateSpeedAutoAlign(),
                 mainMech);
         intake = new Intake(new IntakeIOSim(), () -> shooter.getShooterOccupied());
         hood = new Hood(new HoodIOSim(), shooter.getMechanismLigament2d());
@@ -160,6 +162,7 @@ public class RobotContainer {
                 () -> currentDriveMode,
                 () -> Rotation2d.fromRadians(swerve.calculateAngleAutoAlign()),
                 () -> isIntaking,
+                () -> swerve.calculateSpeedAutoAlign(),
                 mainMech);
         intake = new Intake(new IntakeIO() {}, () -> shooter.getShooterOccupied());
         hood = new Hood(new HoodIO() {}, shooter.getMechanismLigament2d());
@@ -170,7 +173,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Enable AutoAlign", setAutoAlign(true));
     NamedCommands.registerCommand("Disable AutoAlign", setAutoAlign(false));
     NamedCommands.registerCommand("Toggle AutoAlign", toggleAutoAlign());
-    NamedCommands.registerCommand("Run Shoot Sequence", runShootSequence(shooter));
+    NamedCommands.registerCommand("Run Shoot Sequence", runShootSequenceAuto(shooter));
     NamedCommands.registerCommand("Run Intake Sequence", runIntake(intake, shooter, hood));
     NamedCommands.registerCommand("Fender Shot Position", setShooterShootPosition(shooter, hood));
 
@@ -312,6 +315,10 @@ public class RobotContainer {
 
   public void setIntakingState(boolean iState) {
     this.isIntaking = iState;
+  }
+
+  public void enableVision() {
+    swerve.useVision = true;
   }
 
   public Command basicAuto() {

@@ -100,8 +100,8 @@ public final class Constants {
 
   public final class SwerveConstants {
     public static final double MAX_LINEAR_VELOCITY = Units.feetToMeters(14);
-    public static final double TRACK_WIDTH_X = Units.inchesToMeters(30.0);
-    public static final double TRACK_WIDTH_Y = Units.inchesToMeters(25.0);
+    public static final double TRACK_WIDTH_X = Units.inchesToMeters(29.0);
+    public static final double TRACK_WIDTH_Y = Units.inchesToMeters(24.0);
     public static final double DRIVE_BASE_RADIUS =
         Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
     public static final double MAX_ANGULAR_VELOCITY = MAX_LINEAR_VELOCITY / DRIVE_BASE_RADIUS;

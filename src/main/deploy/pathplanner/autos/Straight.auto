@@ -100,12 +100,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Enable AutoAlign"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Central Speaker-Note 2ALIGN"
@@ -115,12 +109,6 @@
           "type": "sequential",
           "data": {
             "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.2
-                }
-              },
               {
                 "type": "named",
                 "data": {
