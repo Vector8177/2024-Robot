@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.939353857244122,
-        "y": 7.034441832746648
+        "x": 2.777811351687105,
+        "y": 7.019756150424644
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.939353857244122,
-        "y": 7.019756150423584
+        "x": 2.777811351687105,
+        "y": 7.0050704681015805
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.2211290254423093,
-        "y": 5.565873600441298
+        "x": 2.777811351687105,
+        "y": 5.551187918118234
       },
       "prevControl": {
-        "x": 1.2211290254423093,
-        "y": 5.565873600441298
+        "x": 2.777811351687105,
+        "y": 5.551187918118234
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +32,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "New Event Marker",
+      "name": "AutoAlign",
       "waypointRelativePos": 0.55,
       "command": {
         "type": "sequential",
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Fender Shot Position"
+                "name": "Enable AutoAlign"
               }
             }
           ]

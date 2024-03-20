@@ -160,7 +160,7 @@ public final class Constants {
     }
 
     public final class AutoAlignConstants {
-      public static final double thetaP = .4;
+      public static final double thetaP = .6;
       public static final double thetaI = 0;
       public static final double thetaD = 1e-5;
       public static final double thetaTolerance = Units.degreesToRadians(1);
@@ -266,15 +266,17 @@ public final class Constants {
     public static final Transform3d frontLeftCameraPosition =
         new Transform3d(
             Units.inchesToMeters(-10.847),
+            Units.inchesToMeters(-1.020),
             Units.inchesToMeters(12.418),
-            Units.inchesToMeters(1.020),
-            new Rotation3d(0, Units.degreesToRadians(30), Units.degreesToRadians(175)));
+            new Rotation3d(0, Units.degreesToRadians(-30), 0)
+                .rotateBy(new Rotation3d(0, 0, Units.degreesToRadians(185))));
     public static final Transform3d frontRightCameraPosition =
         new Transform3d(
             Units.inchesToMeters(-10.847),
+            Units.inchesToMeters(1.020),
             Units.inchesToMeters(12.418),
-            Units.inchesToMeters(-1.020),
-            new Rotation3d(0, Units.degreesToRadians(30), Units.degreesToRadians(-175)));
+            new Rotation3d(0, Units.degreesToRadians(-30), 0)
+                .rotateBy(new Rotation3d(0, 0, Units.degreesToRadians(175))));
 
     public static final String frontLeftCameraName = "flCam";
     public static final String fronRightCameraName = "frCam";

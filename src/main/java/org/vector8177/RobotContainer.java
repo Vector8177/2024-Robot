@@ -19,6 +19,7 @@ import static org.vector8177.commands.MainCommands.*;
 import org.vector8177.Constants.ShooterConstants;
 import org.vector8177.Constants.ShooterState;
 import org.vector8177.Constants.SwerveConstants.DriveMode;
+import org.vector8177.Constants.VisionConstants;
 import org.vector8177.commands.SwerveCommands;
 import org.vector8177.subsystems.climber.Climber;
 import org.vector8177.subsystems.climber.ClimberIO;
@@ -284,6 +285,8 @@ public class RobotContainer {
     Logger.recordOutput("TeleopCommands/ShooterState", shooter.currentState);
     Logger.recordOutput("TeleopCommands/IntakeState", getCurrentIntakeState());
     Logger.recordOutput("AutoAlign/AutoAlignMode", currentDriveMode);
+    Logger.recordOutput("Constants/CamOffsetLeft", VisionConstants.frontLeftCameraPosition);
+    Logger.recordOutput("Constants/CamOffsetRight", VisionConstants.frontRightCameraPosition);
     // Logger.recordOutput("Shooter/ShooterOccupied", shooter.getShooterOccupied());
   }
 

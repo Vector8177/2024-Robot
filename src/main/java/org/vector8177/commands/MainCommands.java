@@ -73,7 +73,7 @@ public class MainCommands {
               shooter.setShooterSpeed(ShooterConstants.SHOOT_WHEEL_RPM);
             },
             shooter),
-        waitSeconds(.2),
+        waitSeconds(.1),
         waitUntil(
             () ->
                 shooter.getShooterTopFixedVelocity()
@@ -83,7 +83,7 @@ public class MainCommands {
               shooter.setIndexerSpeed(-ShooterConstants.SHOOTER_INDEXER_SPEED);
             },
             shooter),
-        waitSeconds(1),
+        waitSeconds(.2),
         runOnce(
             () -> {
               intakeState = IntakeActiveState.ACTIVE;
