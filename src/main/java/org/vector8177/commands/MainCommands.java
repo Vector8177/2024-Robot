@@ -213,7 +213,7 @@ public class MainCommands {
               shooter.setPosition(ShooterConstants.SHOOTER_PIVOT_AMP_POSITION);
             },
             shooter),
-        waitSeconds(1),
+        waitSeconds(.2),
         runOnce(() -> hood.setHoodPosition(true), hood));
   }
 

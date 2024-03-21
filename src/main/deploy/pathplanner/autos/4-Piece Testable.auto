@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.2363821091278546,
+      "y": 5.550603828480384
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Straight-Speaker-Note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center-LeftNotePickup"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftNote-RightNote"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
