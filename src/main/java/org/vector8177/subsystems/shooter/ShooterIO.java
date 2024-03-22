@@ -30,7 +30,7 @@ public interface ShooterIO {
 
   public default void updateInputs(ShooterIOInputs inputs) {}
 
-  public default void setShooterSpeedVoltage(double volts) {}
+  public default void setShooterSpeedVoltage(double top, double bottom) {}
 
   public default void setShooterPositionVoltage(double volts) {}
 

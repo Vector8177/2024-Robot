@@ -424,4 +424,8 @@ public class Swerve extends SubsystemBase {
   public double calculateSpeedAutoAlign() {
     return autoAlignController.getShooterTarget();
   }
+
+  public double calculateDistanceToStage() {
+    return autoAlignController.getDistance();
+  }
 }

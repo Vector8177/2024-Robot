@@ -7,7 +7,6 @@ import org.vector8177.Constants.ShooterState;
 import org.vector8177.Constants.SwerveConstants.DriveMode;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -23,12 +22,13 @@ public class Shooter extends SubsystemBase {
   private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
   private final PIDController pivotPidController;
-  private final BangBangController shooterSpeedPidController;
+  private final PIDController shooterSpeedController;
 
   private Supplier<DriveMode> currentDriveModeSupplier;
   private Supplier<Rotation2d> shooterAlignSupplier;
   private Supplier<Boolean> intakingSupplier;
   private Supplier<Double> shooterSpeedSupplier;
+  private Supplier<Double> speakerDistanceSupplier;
 
   private boolean shooterOccupied = false;
 
@@ -56,16 +56,18 @@ public class Shooter extends SubsystemBase {
       Supplier<Rotation2d> shooterAngleSupp,
       Supplier<Boolean> iSupplier,
       Supplier<Double> shooterSpeedSupp,
+      Supplier<Double> speakerDistanceSupp,
       Mechanism2d mainMech) {
     this.io = io;
     this.intakingSupplier = iSupplier;
     this.currentDriveModeSupplier = modeSupplier;
     this.shooterAlignSupplier = shooterAngleSupp;
     this.shooterSpeedSupplier = shooterSpeedSupp;
+    this.speakerDistanceSupplier = speakerDistanceSupp;
 
     this.SHOOTER_TOP_KP =
         Constants.currentMode == Mode.REAL
-            ? ShooterConstants.SHOOTER_TOP_KP
+            ? ShooterConstants.SHOOTER_SPEED_KP
             : ShooterConstants.SHOOTER_TOP_SIM_KP;
     this.FF_V =
         Constants.currentMode == Mode.REAL
@@ -80,14 +82,14 @@ public class Shooter extends SubsystemBase {
     pivotPidController.enableContinuousInput(0, 2 * Math.PI);
     pivotPidController.setTolerance(ShooterConstants.PIVOT_TOLERANCE);
 
-    shooterSpeedPidController = new BangBangController(20);
-    // shooterSpeedPidController =
-    //     new PIDController(
-    //         SHOOTER_TOP_KP, ShooterConstants.SHOOTER_TOP_KI, ShooterConstants.SHOOTER_TOP_KD);
+    // shooterSpeedController = new BangBangController(20);
+    shooterSpeedController =
+        new PIDController(
+            SHOOTER_TOP_KP, ShooterConstants.SHOOTER_SPEED_KI, ShooterConstants.SHOOTER_SPEED_KD);
     // wheelTargetSpeed);
 
     // shooterSpeedFeedForward = (1 / ShooterConstants.SHOOTER_FF_V) * wheelTargetSpeed
-    shooterSpeedPidController.setTolerance(ShooterConstants.SHOOTER_SPEED_TOLERANCE);
+    shooterSpeedController.setTolerance(ShooterConstants.SHOOTER_SPEED_TOLERANCE);
 
     // pivotRelativeOffset =
     // inputs.shooterPivotAbsolutePosition.minus(inputs.shooterPivotRelativePosition);
@@ -119,7 +121,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setShooterRawVolts(double volts) {
-    io.setShooterSpeedVoltage(volts);
+    io.setShooterSpeedVoltage(volts, -volts);
   }
 
   public void setPosition(double rad) {
@@ -129,7 +131,7 @@ public class Shooter extends SubsystemBase {
   public void runCharacterization(double volts) {
     wheelTargetSpeed = null;
 
-    io.setShooterSpeedVoltage(volts);
+    io.setShooterSpeedVoltage(volts, -volts);
   }
 
   public void setIndexerSpeed(double speed) {
@@ -182,6 +184,9 @@ public class Shooter extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter", inputs);
 
+    double distanceAdjustedDiff =
+        speakerDistanceSupplier.get() <= 2.6 ? ShooterConstants.TOP_BOTTOM_DIFF : 0;
+
     if (currentDriveModeSupplier.get() == DriveMode.AUTO_ALIGN) {
       targetPosition = shooterAlignSupplier.get();
     }
@@ -195,10 +200,14 @@ public class Shooter extends SubsystemBase {
       shooterOccupied = false;
       Logger.recordOutput("Shooter/ShooterOccupied", shooterOccupied);
     }
+    Logger.recordOutput("Shooter/ShooterIRThreshold", ShooterConstants.SHOOTER_IR_TARGET_VOLTAGE);
 
     // if (!intakingSupplier.get())
 
-    Logger.recordOutput("Shooter/SetPoints/WheelTargetSpeed", wheelTargetSpeed);
+    Logger.recordOutput(
+        "Shooter/SetPoints/WheelTargetSpeedTop",
+        MathUtil.clamp(wheelTargetSpeed - distanceAdjustedDiff, 0, 5500));
+    Logger.recordOutput("Shooter/SetPoints/WheelTargetSpeedBottom", wheelTargetSpeed);
 
     m_shooter.setAngle(inputs.shooterPivotRelativePosition);
 
@@ -213,9 +222,15 @@ public class Shooter extends SubsystemBase {
             ShooterConstants.MAX_MOTOR_VOLTAGE));
 
     if (wheelTargetSpeed != null) {
-      double shooterSpeed =
-          shooterSpeedPidController.calculate(inputs.shooterTopFixedRPM, wheelTargetSpeed);
-      double shooterFF = (1 / FF_V) * wheelTargetSpeed;
+      double shooterTopSpeed =
+          shooterSpeedController.calculate(
+              inputs.shooterTopFixedRPM,
+              MathUtil.clamp(wheelTargetSpeed - distanceAdjustedDiff, 0, 5500));
+      double shooterBottomSpeed =
+          shooterSpeedController.calculate(inputs.shooterBottomFixedRPM, wheelTargetSpeed);
+      double shooterTopFF =
+          (1 / FF_V) * MathUtil.clamp(wheelTargetSpeed - distanceAdjustedDiff, 0, 5500);
+      double shooterBottomFF = (1 / FF_V) * wheelTargetSpeed;
       // DriverStation.reportWarning(
       // "TOP: " + shooterTopSpeed + "; BOTTOM: " + shooterBottomSpeed, false);
       // double shooterFF =
@@ -226,12 +241,11 @@ public class Shooter extends SubsystemBase {
 
       if (wheelTargetSpeed != 0) {
         io.setShooterSpeedVoltage(
+            MathUtil.clamp(shooterTopSpeed + shooterTopFF, 0, ShooterConstants.MAX_MOTOR_VOLTAGE),
             MathUtil.clamp(
-                shooterSpeed + shooterFF,
-                -ShooterConstants.MAX_MOTOR_VOLTAGE,
-                ShooterConstants.MAX_MOTOR_VOLTAGE));
+                shooterBottomSpeed + shooterBottomFF, 0, ShooterConstants.MAX_MOTOR_VOLTAGE));
       } else {
-        io.setShooterSpeedVoltage(0);
+        io.setShooterSpeedVoltage(0, 0);
       }
     }
   }

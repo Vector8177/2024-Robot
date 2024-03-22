@@ -85,15 +85,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "Central Speaker-Note 2"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "Run Intake Sequence"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Central Speaker-Note 2"
                 }
               }
             ]
@@ -114,14 +114,33 @@
                 "data": {
                   "name": "Run Shoot Sequence"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Disable AutoAlign"
+                }
               }
             ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Center-LeftNote"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake Sequence"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Center-LeftNote"
+                }
+              }
+            ]
           }
         },
         {

@@ -52,9 +52,9 @@ public class ShooterIOSim implements ShooterIO {
   }
 
   @Override
-  public void setShooterSpeedVoltage(double volts) {
-    shooterTopAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
-    shooterBottomAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
+  public void setShooterSpeedVoltage(double top, double bottom) {
+    shooterTopAppliedVolts = MathUtil.clamp(top, -12.0, 12.0);
+    shooterBottomAppliedVolts = MathUtil.clamp(bottom, -12.0, 12.0);
 
     shooterTopSim.setInputVoltage(shooterTopAppliedVolts);
     shooterBottomSim.setInputVoltage(shooterBottomAppliedVolts);

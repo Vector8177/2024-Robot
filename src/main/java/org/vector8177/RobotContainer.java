@@ -49,6 +49,7 @@ import org.vector8177.subsystems.vision.AprilTagVisionIOSim;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -79,9 +80,13 @@ public class RobotContainer {
   private int n = 0; // TODO: why is there a variable called n?Ishaaaaaaaaaaaan
   private final Climber climber;
 
+  private InterpolatingDoubleTreeMap shooterSpeedMap = new InterpolatingDoubleTreeMap();
+
   private DriveMode currentDriveMode = DriveMode.TELEOP;
 
   private boolean isIntaking = false;
+
+  private double shooterSpeed = 3000;
 
   private final Mechanism2d mainMech = new Mechanism2d(10, 10);
 
@@ -114,6 +119,7 @@ public class RobotContainer {
                 () -> Rotation2d.fromRadians(swerve.calculateAngleAutoAlign()),
                 () -> isIntaking,
                 () -> swerve.calculateSpeedAutoAlign(),
+                () -> swerve.calculateDistanceToStage(),
                 mainMech);
         intake = new Intake(new IntakeIOSparkMax(), () -> shooter.getShooterOccupied());
         hood = new Hood(new HoodIOSparkMax(), shooter.getMechanismLigament2d());
@@ -139,6 +145,7 @@ public class RobotContainer {
                 () -> Rotation2d.fromRadians(swerve.calculateAngleAutoAlign()),
                 () -> isIntaking,
                 () -> swerve.calculateSpeedAutoAlign(),
+                () -> swerve.calculateDistanceToStage(),
                 mainMech);
         intake = new Intake(new IntakeIOSim(), () -> shooter.getShooterOccupied());
         hood = new Hood(new HoodIOSim(), shooter.getMechanismLigament2d());
@@ -164,12 +171,20 @@ public class RobotContainer {
                 () -> Rotation2d.fromRadians(swerve.calculateAngleAutoAlign()),
                 () -> isIntaking,
                 () -> swerve.calculateSpeedAutoAlign(),
+                () -> swerve.calculateDistanceToStage(),
                 mainMech);
         intake = new Intake(new IntakeIO() {}, () -> shooter.getShooterOccupied());
         hood = new Hood(new HoodIO() {}, shooter.getMechanismLigament2d());
         climber = new Climber(new ClimberIO() {});
         break;
     }
+
+    shooterSpeedMap.put(1.401, 2625d);
+    shooterSpeedMap.put(2.590, 3500d);
+    shooterSpeedMap.put(3.357, 3750d);
+    shooterSpeedMap.put(3.933, 4000d);
+    shooterSpeedMap.put(4.704, 4250d);
+    shooterSpeedMap.put(5.665, 4750d);
 
     NamedCommands.registerCommand("Enable AutoAlign", setAutoAlign(true));
     NamedCommands.registerCommand("Disable AutoAlign", setAutoAlign(false));
@@ -248,7 +263,9 @@ public class RobotContainer {
 
     operatorController.povDown().onTrue(setShooterShootPosition(shooter, hood));
 
-    operatorController.a().onTrue(runShooter(shooter));
+    operatorController
+        .a()
+        .onTrue(runShooter(shooter, () -> shooterSpeedMap.get(swerve.calculateDistanceToStage())));
 
     operatorController.rightTrigger().onTrue(runIntake(intake, shooter, hood));
     operatorController.rightTrigger().onFalse(stopIntake(intake, shooter));
@@ -271,6 +288,13 @@ public class RobotContainer {
     operatorController.povRight().onTrue(setShooterAmpPosition(shooter, hood));
 
     operatorController.povLeft().onTrue(setShooterShootPosition(shooter, hood));
+
+    driverController.povLeft().onTrue(runOnce(() -> shooterSpeed -= 125));
+    driverController.povRight().onTrue(runOnce(() -> shooterSpeed += 125));
+  }
+
+  public double getSpeed() {
+    return shooterSpeed;
   }
 
   /**
@@ -289,6 +313,8 @@ public class RobotContainer {
     Logger.recordOutput("AutoAlign/AutoAlignMode", currentDriveMode);
     Logger.recordOutput("Constants/CamOffsetLeft", VisionConstants.frontLeftCameraPosition);
     Logger.recordOutput("Constants/CamOffsetRight", VisionConstants.frontRightCameraPosition);
+    Logger.recordOutput("Shooter/CurrentTargetSpeeed", shooterSpeed);
+    Logger.recordOutput("AutoAlign/DistanceToSpeaker", swerve.calculateDistanceToStage());
     // Logger.recordOutput("Shooter/ShooterOccupied", shooter.getShooterOccupied());
   }
 
@@ -306,7 +332,7 @@ public class RobotContainer {
   public Command setAutoAlign(boolean autoAlign) {
     return Commands.runOnce(
         () -> {
-          // System.out.println("pew! pew!");
+          // System.out.println("pew, pew");
 
           DriverStation.reportError("Changing Auto Align to " + autoAlign, false);
           currentDriveMode = autoAlign ? DriveMode.AUTO_ALIGN : DriveMode.TELEOP;

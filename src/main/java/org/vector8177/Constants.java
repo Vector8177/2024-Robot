@@ -213,6 +213,8 @@ public final class Constants {
     public static final double ABSOLUTE_OFFSET = 0.802d;
     public static final double SHOOTER_PIVOT_GEAR_RATIO = 1d / (3 * 3 * 4 * 64d / 24);
 
+    public static final double TOP_BOTTOM_DIFF = 125;
+
     // Shooter Pivot PID
     public static final double SHOOTER_PIVOT_KP = 10d;
     // public static final double SHOOTER_PIVOT_KP = 6.4d;
@@ -221,18 +223,18 @@ public final class Constants {
     public static final double PIVOT_TOLERANCE = 0.2;
 
     // Shooter Top Wheel PID
-    public static final double SHOOTER_TOP_KP = .0001d;
+    public static final double SHOOTER_SPEED_KP = .0001d;
     // public static final double SHOOTER_TOP_KI = .000085d;
-    public static final double SHOOTER_TOP_KI = .00;
-    public static final double SHOOTER_TOP_KD = 0d;
+    public static final double SHOOTER_SPEED_KI = .00;
+    public static final double SHOOTER_SPEED_KD = 0d;
 
     public static final double SHOOTER_TOP_SIM_KP = 5d;
     public static final double SHOOTER_SIM_FF_V = 2000;
 
     // Shooter Bottom Wheel PID
-    public static final double SHOOTER_BOTTOM_KP = 1d;
-    public static final double SHOOTER_BOTTOM_KI = 0d;
-    public static final double SHOOTER_BOTTOM_KD = 0d;
+    // public static final double SHOOTER_BOTTOM_KP = 1d;
+    // public static final double SHOOTER_BOTTOM_KI = 0d;
+    // public static final double SHOOTER_BOTTOM_KD = 0d;
 
     public static final double SHOOTER_SPEED_TOLERANCE = 0.5;
 
@@ -247,7 +249,7 @@ public final class Constants {
 
     public static final double SHOOTER_TARGET_SPEED = .8f;
 
-    public static final double SHOOTER_IR_TARGET_VOLTAGE = 1.25d;
+    public static final double SHOOTER_IR_TARGET_VOLTAGE = 2d;
 
     public static final double MAX_MOTOR_VOLTAGE = 12d;
   }

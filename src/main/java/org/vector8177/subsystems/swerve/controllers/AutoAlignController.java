@@ -147,4 +147,15 @@ public class AutoAlignController {
     Logger.recordOutput("AutoAlign/Shooter/TargetWheelSpeed", target);
     return target;
   }
+
+  public double getDistance() {
+    Pose2d currentPose = swerve.getPose();
+    this.goalPose =
+        new Pose2d(
+            (isRedSupp.getAsBoolean() ? RED_X : BLUE_X), POSE_Y, Rotation2d.fromRotations(0));
+
+    double distance = currentPose.getTranslation().getDistance(goalPose.getTranslation());
+
+    return distance;
+  }
 }

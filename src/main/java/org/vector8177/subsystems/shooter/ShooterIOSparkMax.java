@@ -76,6 +76,8 @@ public class ShooterIOSparkMax implements ShooterIO {
     shooterPivotEncoder.setPosition(shooterPivotAbsoluteEncoder.getPosition());
     shooterPivotEncoder.setPositionConversionFactor(2 * Math.PI);
 
+    shooterBottomFixedSparkMax.setInverted(true);
+
     Logger.recordOutput("Shooter/PivotRelativeOffset", pivotRelativeOffset);
     Logger.recordOutput("Shooter/Absolute", shooterPivotAbsoluteEncoder.getPosition());
     Logger.recordOutput("Shooter/Relative", shooterPivotEncoder.getPosition());
@@ -101,9 +103,13 @@ public class ShooterIOSparkMax implements ShooterIO {
         Set.of(Data.POSITION, Data.VELOCITY, Data.APPLIED_OUTPUT),
         Set.of(Sensor.ABSOLUTE),
         false);
-    SparkUtils.configureNothingFrameStrategy(shooterIndexerSparkMax);
+    SparkUtils.configureFrameStrategy(
+        shooterIndexerSparkMax,
+        Set.of(Data.POSITION, Data.VELOCITY, Data.APPLIED_OUTPUT),
+        Set.of(Sensor.ABSOLUTE),
+        false);
 
-    shooterBottomFixedSparkMax.follow(shooterTopFixedSparkMax, true);
+    // shooterBottomFixedSparkMax.follow(shooterTopFixedSparkMax, true);
 
     shooterTopFixedSparkMax.burnFlash();
     shooterBottomFixedSparkMax.burnFlash();
@@ -146,9 +152,9 @@ public class ShooterIOSparkMax implements ShooterIO {
   }
 
   @Override
-  public void setShooterSpeedVoltage(double volts) {
-    shooterTopFixedSparkMax.setVoltage(volts);
-    shooterBottomFixedSparkMax.setVoltage(-volts);
+  public void setShooterSpeedVoltage(double top, double bottom) {
+    shooterTopFixedSparkMax.setVoltage(top);
+    shooterBottomFixedSparkMax.setVoltage(bottom);
   }
 
   @Override

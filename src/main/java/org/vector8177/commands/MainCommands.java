@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.SelectCommand;
 
 import java.util.Map;
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 public class MainCommands {
   private static IntakeActiveState intakeState = IntakeActiveState.ACTIVE;
@@ -30,10 +31,10 @@ public class MainCommands {
     return shooter.currentState;
   }
 
-  public static Command runShooter(Shooter shooter) {
+  public static Command runShooter(Shooter shooter, DoubleSupplier speed) {
     return new SelectCommand<>(
         Map.ofEntries(
-            Map.entry(ShooterState.SHOOT, runShootSequence(shooter)),
+            Map.entry(ShooterState.SHOOT, runShootSequenceNum(shooter, speed)),
             Map.entry(ShooterState.AMP, runAmpSequence(shooter))),
         () -> getCurrentState(shooter));
   }
@@ -50,6 +51,33 @@ public class MainCommands {
             () ->
                 shooter.getShooterTopFixedVelocity()
                     > (Constants.currentMode == Mode.REAL ? shooter.getTargetSpeed() : 0)),
+        runOnce(
+            () -> {
+              shooter.setIndexerSpeed(-ShooterConstants.SHOOTER_INDEXER_SPEED);
+            },
+            shooter),
+        waitSeconds(1),
+        runOnce(
+            () -> {
+              intakeState = IntakeActiveState.ACTIVE;
+              shooter.setShooterSpeed(1500);
+              shooter.setIndexerSpeed(0);
+            },
+            shooter));
+  }
+
+  public static Command runShootSequenceNum(Shooter shooter, DoubleSupplier speed) {
+    return sequence(
+        runOnce(
+            () -> {
+              intakeState = IntakeActiveState.STOPPED;
+              shooter.setShooterSpeed(speed.getAsDouble());
+            },
+            shooter),
+        waitUntil(
+            () ->
+                shooter.getShooterTopFixedVelocity()
+                    > (Constants.currentMode == Mode.REAL ? shooter.getTargetSpeed() - 100 : 0)),
         runOnce(
             () -> {
               shooter.setIndexerSpeed(-ShooterConstants.SHOOTER_INDEXER_SPEED);
