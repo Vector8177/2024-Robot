@@ -17,6 +17,8 @@ import static edu.wpi.first.units.Units.*;
 import static org.vector8177.Constants.SwerveConstants.*;
 import static org.vector8177.util.VectorUtils.*;
 
+import org.vector8177.Constants;
+import org.vector8177.Constants.Mode;
 import org.vector8177.Constants.SwerveConstants;
 import org.vector8177.Constants.SwerveConstants.DriveMode;
 import org.vector8177.Constants.SwerveConstants.ModuleLimits;
@@ -249,10 +251,6 @@ public class Swerve extends SubsystemBase {
       // Apply update
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
 
-      aprilTagVisionIO.updatePose(getPose());
-      aprilTagVisionIO.updateInputs(aprilTagVisionInputs);
-      Logger.processInputs("Vision/AprilTag", aprilTagVisionInputs);
-
       // if (s_Vision != null) {
       // Pose2d currentPose = getPose();
       // List<Optional<EstimatedRobotPose>> vPoses =
@@ -264,6 +262,12 @@ public class Swerve extends SubsystemBase {
       // setPose(new Pose2d(getPose().getTranslation(), currentPose.getRotation()));
       // }
     }
+
+    if (Constants.currentMode == Mode.SIM) return;
+
+    aprilTagVisionIO.updatePose(getPose());
+    aprilTagVisionIO.updateInputs(aprilTagVisionInputs);
+    Logger.processInputs("Vision/AprilTag", aprilTagVisionInputs);
 
     for (int i = 0; i < aprilTagVisionInputs.timestamps.length; i++) {
       double currentTimeStamp = aprilTagVisionInputs.timestamps[i];
@@ -301,6 +305,9 @@ public class Swerve extends SubsystemBase {
     // Calculate module setpoints\
     if (currentModeSupplier.get() == DriveMode.AUTO_ALIGN) {
       double omegaVel = autoAlignController.updateDrive();
+      speeds = new ChassisSpeeds(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, omegaVel);
+    } else if (currentModeSupplier.get() == DriveMode.AMP_ALIGN) {
+      double omegaVel = autoAlignController.updateDriveAmp();
       speeds = new ChassisSpeeds(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, omegaVel);
     }
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
@@ -426,6 +433,6 @@ public class Swerve extends SubsystemBase {
   }
 
   public double calculateDistanceToStage() {
-    return autoAlignController.getDistance();
+    return autoAlignController.getDistanceToSpeaker();
   }
 }

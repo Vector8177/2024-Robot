@@ -17,6 +17,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -99,16 +100,15 @@ public final class Constants {
   }
 
   public final class SwerveConstants {
-    public static final double MAX_LINEAR_VELOCITY = Units.feetToMeters(14);
+    public static final double MAX_LINEAR_VELOCITY = Units.feetToMeters(12);
     public static final double TRACK_WIDTH_X = Units.inchesToMeters(29.0);
     public static final double TRACK_WIDTH_Y = Units.inchesToMeters(24.0);
     public static final double DRIVE_BASE_RADIUS =
         Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
-    public static final double MAX_ANGULAR_VELOCITY = MAX_LINEAR_VELOCITY / DRIVE_BASE_RADIUS;
+    public static final double MAX_ANGULAR_VELOCITY = 7.328;
 
     public static final ModuleLimits MODULE_LIMITS =
-        new ModuleLimits(
-            MAX_LINEAR_VELOCITY, MAX_LINEAR_VELOCITY * 5.0, Units.degreesToRadians(1080));
+        new ModuleLimits(MAX_LINEAR_VELOCITY, Units.inchesToMeters(18.054), 7.328, 32.484);
 
     // SDS Mk4I L3 Gear Ratio - 16.5ft/s
     public static final double DRIVE_GEAR_RATIO = (50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0);
@@ -160,16 +160,37 @@ public final class Constants {
     }
 
     public final class AutoAlignConstants {
-      public static final double thetaP = .6;
-      public static final double thetaI = 0;
+      public static final double thetaP = 1;
+      public static final double thetaI = 1e-6;
       public static final double thetaD = 1e-5;
       public static final double thetaTolerance = Units.degreesToRadians(1);
       public static final double maxAngularVelocity = MAX_ANGULAR_VELOCITY;
       public static final double maxAngularAcceleration = 25.02;
+
+      public static final double drivekP = 3.0;
+      public static final double drivekI = 0;
+      public static final double drivekD = 0;
+
+      public static final AlliancePoseShifter SPEAKER_POSE =
+          new AlliancePoseShifter(5.55, 16.68, -.1381);
+      public static final AlliancePoseShifter AMP_POSE = new AlliancePoseShifter(7.9, 14.70, 1.81);
+    }
+
+    public record AlliancePoseShifter(double yPose, double redX, double blueX) {
+      public Pose2d getRedPose() {
+        return new Pose2d(redX, yPose, new Rotation2d());
+      }
+
+      public Pose2d getBluePose() {
+        return new Pose2d(blueX, yPose, new Rotation2d());
+      }
     }
 
     public record ModuleLimits(
-        double maxDriveVelocity, double maxDriveAcceleration, double maxSteeringVelocity) {}
+        double maxDriveVelocity,
+        double maxDriveAcceleration,
+        double maxSteeringVelocity,
+        double maxSteeringAcceleration) {}
 
     public record DriveConfig(
         double wheelRadius,
@@ -182,7 +203,8 @@ public final class Constants {
 
     public enum DriveMode {
       TELEOP,
-      AUTO_ALIGN
+      AUTO_ALIGN,
+      AMP_ALIGN
     }
   }
 
@@ -196,7 +218,7 @@ public final class Constants {
 
     public static final double SHOOTER_FF_V = 444d;
 
-    public static final double SHOOTER_PIVOT_INTAKE_POSITION = 2.140d;
+    public static final double SHOOTER_PIVOT_INTAKE_POSITION = 2.0d;
 
     public static final double SHOOTER_PIVOT_AMP_POSITION = 5.931d;
 
@@ -284,14 +306,14 @@ public final class Constants {
     public static final String fronRightCameraName = "frCam";
 
     public static final Matrix<N3, N1> normalSingleTagStdDev =
-        VecBuilder.fill(0.8, 0.8, Double.MAX_VALUE);
+        VecBuilder.fill(1.6, 1.6, Double.MAX_VALUE);
     public static final Matrix<N3, N1> normalMultiTagStdDev =
-        VecBuilder.fill(0.4, 0.4, Double.MAX_VALUE);
+        VecBuilder.fill(0.8, 0.8, Double.MAX_VALUE);
 
     public static final Matrix<N3, N1> highResSingleTagStdDev =
-        VecBuilder.fill(0.4, 0.4, Double.MAX_VALUE);
+        VecBuilder.fill(0.8, 0.8, Double.MAX_VALUE);
     public static final Matrix<N3, N1> highResMultiTagStdDev =
-        VecBuilder.fill(0.2, 0.2, Double.MAX_VALUE);
+        VecBuilder.fill(0.4, 0.4, Double.MAX_VALUE);
 
     public static final SimCameraProperties OV9281_PROP = configureNormalCamera();
 

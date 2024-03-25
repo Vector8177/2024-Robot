@@ -1,6 +1,5 @@
 // Copyright 2021-2024 FRC 6328
 // http://github.com/Mechanical-Advantage
-// Barghav is a yapper
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // version 3 as published by the Free Software Foundation or
@@ -33,6 +32,7 @@ import org.vector8177.subsystems.intake.Intake;
 import org.vector8177.subsystems.intake.IntakeIO;
 import org.vector8177.subsystems.intake.IntakeIOSim;
 import org.vector8177.subsystems.intake.IntakeIOSparkMax;
+import org.vector8177.subsystems.leds.Leds;
 import org.vector8177.subsystems.shooter.Shooter;
 import org.vector8177.subsystems.shooter.ShooterIO;
 import org.vector8177.subsystems.shooter.ShooterIOSim;
@@ -45,7 +45,6 @@ import org.vector8177.subsystems.swerve.ModuleIOSparkMax;
 import org.vector8177.subsystems.swerve.Swerve;
 import org.vector8177.subsystems.vision.AprilTagVisionIO;
 import org.vector8177.subsystems.vision.AprilTagVisionIOReal;
-import org.vector8177.subsystems.vision.AprilTagVisionIOSim;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -77,16 +76,15 @@ public class RobotContainer {
   private final Intake intake;
   private final Hood hood;
   // private final Vision vision;
-  private int n = 0; // TODO: why is there a variable called n?Ishaaaaaaaaaaaan
   private final Climber climber;
+
+  private final Leds leds = Leds.getInstance();
 
   private InterpolatingDoubleTreeMap shooterSpeedMap = new InterpolatingDoubleTreeMap();
 
   private DriveMode currentDriveMode = DriveMode.TELEOP;
 
   private boolean isIntaking = false;
-
-  private double shooterSpeed = 3000;
 
   private final Mechanism2d mainMech = new Mechanism2d(10, 10);
 
@@ -136,7 +134,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim(),
-                new AprilTagVisionIOSim(),
+                new AprilTagVisionIO() {},
                 () -> currentDriveMode);
         shooter =
             new Shooter(
@@ -189,8 +187,12 @@ public class RobotContainer {
     NamedCommands.registerCommand("Enable AutoAlign", setAutoAlign(true));
     NamedCommands.registerCommand("Disable AutoAlign", setAutoAlign(false));
     NamedCommands.registerCommand("Toggle AutoAlign", toggleAutoAlign());
-    NamedCommands.registerCommand("Run Shoot Sequence", runShootSequenceAuto(shooter));
-    NamedCommands.registerCommand("Run Intake Sequence", runIntake(intake, shooter, hood));
+    NamedCommands.registerCommand(
+        "Run Shoot Sequence",
+        runShootSequenceAuto(
+            shooter, () -> shooterSpeedMap.get(swerve.calculateDistanceToStage())));
+    NamedCommands.registerCommand(
+        "Run Intake Sequence", runIntake(intake, shooter, hood, (bob) -> disableAutoAlign()));
     NamedCommands.registerCommand("Fender Shot Position", setShooterShootPosition(shooter, hood));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -259,7 +261,7 @@ public class RobotContainer {
 
     driverController.b().onTrue(toggleAutoAlign());
 
-    driverController.a().onTrue(runOnce(() -> swerve.useVision = !swerve.useVision));
+    driverController.a().onTrue(toggleAmpAlign());
 
     operatorController.povDown().onTrue(setShooterShootPosition(shooter, hood));
 
@@ -267,7 +269,9 @@ public class RobotContainer {
         .a()
         .onTrue(runShooter(shooter, () -> shooterSpeedMap.get(swerve.calculateDistanceToStage())));
 
-    operatorController.rightTrigger().onTrue(runIntake(intake, shooter, hood));
+    operatorController
+        .rightTrigger()
+        .onTrue(runIntake(intake, shooter, hood, (bob) -> disableAutoAlign()));
     operatorController.rightTrigger().onFalse(stopIntake(intake, shooter));
 
     operatorController.leftTrigger().whileTrue(runOuttake(intake, shooter));
@@ -278,6 +282,7 @@ public class RobotContainer {
             Commands.runOnce(
                 () -> {
                   shooter.setShooterSpeed(0);
+                  shooter.currentState = ShooterState.SHOOT;
                 },
                 shooter));
 
@@ -288,13 +293,6 @@ public class RobotContainer {
     operatorController.povRight().onTrue(setShooterAmpPosition(shooter, hood));
 
     operatorController.povLeft().onTrue(setShooterShootPosition(shooter, hood));
-
-    driverController.povLeft().onTrue(runOnce(() -> shooterSpeed -= 125));
-    driverController.povRight().onTrue(runOnce(() -> shooterSpeed += 125));
-  }
-
-  public double getSpeed() {
-    return shooterSpeed;
   }
 
   /**
@@ -313,18 +311,28 @@ public class RobotContainer {
     Logger.recordOutput("AutoAlign/AutoAlignMode", currentDriveMode);
     Logger.recordOutput("Constants/CamOffsetLeft", VisionConstants.frontLeftCameraPosition);
     Logger.recordOutput("Constants/CamOffsetRight", VisionConstants.frontRightCameraPosition);
-    Logger.recordOutput("Shooter/CurrentTargetSpeeed", shooterSpeed);
     Logger.recordOutput("AutoAlign/DistanceToSpeaker", swerve.calculateDistanceToStage());
     // Logger.recordOutput("Shooter/ShooterOccupied", shooter.getShooterOccupied());
   }
 
   public Command toggleAutoAlign() {
-    return Commands.runOnce(
+    return runOnce(
         () -> {
           currentDriveMode =
-              currentDriveMode == DriveMode.TELEOP ? DriveMode.AUTO_ALIGN : DriveMode.TELEOP;
+              currentDriveMode != DriveMode.AUTO_ALIGN ? DriveMode.AUTO_ALIGN : DriveMode.TELEOP;
           if (currentDriveMode == DriveMode.AUTO_ALIGN) {
             shooter.currentState = ShooterState.SHOOT;
+          }
+        });
+  }
+
+  public Command toggleAmpAlign() {
+    return runOnce(
+        () -> {
+          currentDriveMode =
+              currentDriveMode != DriveMode.AMP_ALIGN ? DriveMode.AMP_ALIGN : DriveMode.TELEOP;
+          if (currentDriveMode == DriveMode.AMP_ALIGN) {
+            shooter.currentState = ShooterState.AMP;
           }
         });
   }
@@ -350,6 +358,10 @@ public class RobotContainer {
 
   public void enableVision() {
     swerve.useVision = true;
+  }
+
+  public void disableAutoAlign() {
+    this.currentDriveMode = DriveMode.TELEOP;
   }
 
   public void disableVision() {

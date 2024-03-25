@@ -56,6 +56,9 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
     flCam = new PhotonCameraSim(frontL, VisionConstants.OV2311_PROP);
     frCam = new PhotonCameraSim(frontR, VisionConstants.OV2311_PROP);
 
+    visionSim.addCamera(flCam, VisionConstants.frontLeftCameraPosition);
+    visionSim.addCamera(frCam, VisionConstants.frontRightCameraPosition);
+
     flCam.enableDrawWireframe(true);
     frCam.enableDrawWireframe(true);
   }

@@ -30,8 +30,8 @@ public class IntakeIOSparkMax implements IntakeIO {
     intakeIndexerSparkMax.restoreFactoryDefaults();
     intakeIndexerSparkMax.setCANTimeout(250);
 
-    intakeLeftFeederSparkMax.setSmartCurrentLimit(20);
-    intakeRightFeederSparkMax.setSmartCurrentLimit(20);
+    intakeLeftFeederSparkMax.setSmartCurrentLimit(40);
+    intakeRightFeederSparkMax.setSmartCurrentLimit(40);
     intakeIndexerSparkMax.setSmartCurrentLimit(35);
 
     intakeLeftFeederEncoder = intakeLeftFeederSparkMax.getEncoder();
@@ -53,6 +53,7 @@ public class IntakeIOSparkMax implements IntakeIO {
 
     intakeRightFeederSparkMax.follow(intakeLeftFeederSparkMax);
     intakeRightFeederSparkMax.setInverted(true);
+    intakeIndexerSparkMax.setInverted(true);
 
     intakeLeftFeederSparkMax.burnFlash();
     intakeRightFeederSparkMax.burnFlash();

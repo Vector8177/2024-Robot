@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.6924444618120014,
+      "y": 6.535128633763529
+    },
+    "rotation": 62.44718842328222
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left-Far1-Score"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score-Far2-Score"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score-Far3-Score"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

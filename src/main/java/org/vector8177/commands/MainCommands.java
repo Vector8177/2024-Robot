@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.SelectCommand;
 
 import java.util.Map;
 import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 
 public class MainCommands {
@@ -43,7 +44,7 @@ public class MainCommands {
     return sequence(
         runOnce(
             () -> {
-              intakeState = IntakeActiveState.STOPPED;
+              // intakeState = IntakeActiveState.STOPPED;
               shooter.setShooterSpeed(shooter.getLinearizedTargetSpeed());
             },
             shooter),
@@ -70,7 +71,7 @@ public class MainCommands {
     return sequence(
         runOnce(
             () -> {
-              intakeState = IntakeActiveState.STOPPED;
+              // intakeState = IntakeActiveState.STOPPED;
               shooter.setShooterSpeed(speed.getAsDouble());
             },
             shooter),
@@ -93,19 +94,18 @@ public class MainCommands {
             shooter));
   }
 
-  public static Command runShootSequenceAuto(Shooter shooter) {
+  public static Command runShootSequenceAuto(Shooter shooter, DoubleSupplier speed) {
     return sequence(
         runOnce(
             () -> {
-              intakeState = IntakeActiveState.STOPPED;
-              shooter.setShooterSpeed(ShooterConstants.SHOOT_WHEEL_RPM);
+              // intakeState = IntakeActiveState.STOPPED;
+              shooter.setShooterSpeed(speed.getAsDouble());
             },
             shooter),
-        waitSeconds(.1),
         waitUntil(
             () ->
-                shooter.getShooterTopFixedVelocity()
-                    > (Constants.currentMode == Mode.REAL ? ShooterConstants.SHOOT_RPM_CUTOFF : 0)),
+                shooter.getShooterBottomFixedVelocity()
+                    > (Constants.currentMode == Mode.REAL ? shooter.getTargetSpeed() - 125 : 0)),
         runOnce(
             () -> {
               shooter.setIndexerSpeed(-ShooterConstants.SHOOTER_INDEXER_SPEED);
@@ -120,11 +120,12 @@ public class MainCommands {
             shooter));
   }
 
+  //
   public static Command runAmpSequence(Shooter shooter) {
     return sequence(
         runOnce(
             () -> {
-              intakeState = IntakeActiveState.STOPPED;
+              // intakeState = IntakeActiveState.STOPPED;
               shooter.setIndexerSpeed(ShooterConstants.SHOOTER_INDEXER_SPEED);
             },
             shooter),
@@ -172,12 +173,14 @@ public class MainCommands {
   // () -> getCurrentIntakeState());
   // }
 
-  public static Command runIntake(Intake intake, Shooter shooter, Hood hood) {
+  public static Command runIntake(
+      Intake intake, Shooter shooter, Hood hood, Consumer<Boolean> disableAA) {
     return new SelectCommand<>(
         Map.ofEntries(
             Map.entry(
                 IntakeActiveState.ACTIVE,
                 sequence(
+                    runOnce(() -> disableAA.accept(false)),
                     setShooterIntakePosition(shooter, hood),
                     waitSeconds(.2),
                     runOnce(

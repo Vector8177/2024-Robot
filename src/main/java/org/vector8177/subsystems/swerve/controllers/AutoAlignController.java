@@ -1,6 +1,9 @@
 package org.vector8177.subsystems.swerve.controllers;
 
+import static org.vector8177.Constants.SwerveConstants.AutoAlignConstants.*;
+
 import org.vector8177.Constants;
+import org.vector8177.Constants.SwerveConstants;
 import org.vector8177.subsystems.swerve.Swerve;
 import org.vector8177.util.LoggedTunableNumber;
 
@@ -34,19 +37,16 @@ public class AutoAlignController {
           "AutoAlign/maxAngularAcceleration",
           Constants.SwerveConstants.AutoAlignConstants.maxAngularAcceleration);
 
-  private static final double RED_X = 16.68;
-  private static final double BLUE_X = -.1381;
-  private static final double POSE_Y = 5.55;
-
   private static final double CLOSE_RPM = 3000;
   private static final double FAR_RPM = 5000;
 
   private static final double CLOSE_DIST = 1;
   private static final double FAR_DIST = 4.5;
 
-  private Pose2d goalPose = new Pose2d(.04, POSE_Y, Rotation2d.fromRotations(0));
+  private Pose2d goalPose = SPEAKER_POSE.getBluePose();
 
   private ProfiledPIDController thetaController;
+  private ProfiledPIDController linearController;
 
   private final Swerve swerve;
 
@@ -62,9 +62,19 @@ public class AutoAlignController {
             0,
             thetakD.get(),
             new TrapezoidProfile.Constraints(
-                maxAngularVelocity.get(), maxAngularAcceleration.get()));
+                SwerveConstants.MODULE_LIMITS.maxSteeringVelocity(),
+                SwerveConstants.MODULE_LIMITS.maxSteeringAcceleration()));
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
-    thetaController.setTolerance(thetaTolerance.get());
+    thetaController.setTolerance(Units.degreesToRadians(1.5));
+
+    linearController =
+        new ProfiledPIDController(
+            drivekP,
+            drivekI,
+            drivekD,
+            new TrapezoidProfile.Constraints(
+                SwerveConstants.MODULE_LIMITS.maxDriveVelocity() / 8,
+                SwerveConstants.MODULE_LIMITS.maxDriveAcceleration() / 8));
 
     Pose2d currentPose = swerve.getPose();
     ChassisSpeeds fieldVel = swerve.getSpeeds();
@@ -80,8 +90,7 @@ public class AutoAlignController {
 
   public double updateDrive() {
     this.goalPose =
-        new Pose2d(
-            (isRedSupp.getAsBoolean() ? RED_X : BLUE_X), POSE_Y, Rotation2d.fromRotations(0));
+        isRedSupp.getAsBoolean() ? SPEAKER_POSE.getRedPose() : SPEAKER_POSE.getBluePose();
     Pose2d currentPose = swerve.getPose();
     Rotation2d rotationToTarget =
         goalPose
@@ -91,14 +100,21 @@ public class AutoAlignController {
             .plus(Rotation2d.fromDegrees(180));
 
     Logger.recordOutput(
-        "AutoAlign/RotationTarget", new Pose2d(currentPose.getTranslation(), rotationToTarget));
+        "AutoAlign/Speaker/RotationTarget",
+        new Pose2d(currentPose.getTranslation(), rotationToTarget));
+
+    thetaController.setGoal(rotationToTarget.getRadians());
 
     double angularVelocity =
         thetaController.calculate(
                 currentPose.getRotation().getRadians(), rotationToTarget.getRadians())
             + thetaController.getSetpoint().velocity;
 
-    Logger.recordOutput("AutoAlign/Setpoint", angularVelocity);
+    if (thetaController.atSetpoint()) {
+      angularVelocity = 0;
+    }
+
+    Logger.recordOutput("AutoAlign/Speaker/Setpoint", angularVelocity);
 
     return angularVelocity;
   }
@@ -106,16 +122,15 @@ public class AutoAlignController {
   public double updateAngle() {
     Pose2d currentPose = swerve.getPose();
     this.goalPose =
-        new Pose2d(
-            (isRedSupp.getAsBoolean() ? RED_X : BLUE_X), POSE_Y, Rotation2d.fromRotations(0));
+        isRedSupp.getAsBoolean() ? SPEAKER_POSE.getRedPose() : SPEAKER_POSE.getBluePose();
 
     Translation2d targ = goalPose.getTranslation();
-    Logger.recordOutput("AutoAlign/Trans", targ);
+    Logger.recordOutput("AutoAlign/Speaker/Trans", targ);
 
-    Logger.recordOutput("AutoAlign/Shooter/Current", currentPose);
-    Logger.recordOutput("AutoAlign/Shooter/Target", goalPose);
+    Logger.recordOutput("AutoAlign/Speaker/Shooter/Current", currentPose);
+    Logger.recordOutput("AutoAlign/Speaker/Shooter/Target", goalPose);
     double distToTarget = goalPose.getTranslation().getDistance(currentPose.getTranslation());
-    Logger.recordOutput("AutoAlign/ShooterPose/Distance", distToTarget);
+    Logger.recordOutput("AutoAlign/Speaker/ShooterPose/Distance", distToTarget);
     double returnVal =
         Rotation2d.fromDegrees(90).getRadians()
             + Math.atan((Constants.SPEAKER_HEIGHT - Constants.SHOOTER_HEIGHT) / distToTarget);
@@ -133,8 +148,7 @@ public class AutoAlignController {
   public double getShooterTarget() {
     Pose2d currentPose = swerve.getPose();
     this.goalPose =
-        new Pose2d(
-            (isRedSupp.getAsBoolean() ? RED_X : BLUE_X), POSE_Y, Rotation2d.fromRotations(0));
+        isRedSupp.getAsBoolean() ? SPEAKER_POSE.getRedPose() : SPEAKER_POSE.getBluePose();
 
     double distance = currentPose.getTranslation().getDistance(goalPose.getTranslation());
 
@@ -148,14 +162,41 @@ public class AutoAlignController {
     return target;
   }
 
-  public double getDistance() {
+  public double getDistanceToSpeaker() {
     Pose2d currentPose = swerve.getPose();
     this.goalPose =
-        new Pose2d(
-            (isRedSupp.getAsBoolean() ? RED_X : BLUE_X), POSE_Y, Rotation2d.fromRotations(0));
+        isRedSupp.getAsBoolean() ? SPEAKER_POSE.getRedPose() : SPEAKER_POSE.getBluePose();
 
     double distance = currentPose.getTranslation().getDistance(goalPose.getTranslation());
 
     return distance;
+  }
+
+  public double updateDriveAmp() {
+    Pose2d currentPose = swerve.getPose();
+    this.goalPose = isRedSupp.getAsBoolean() ? AMP_POSE.getRedPose() : AMP_POSE.getBluePose();
+    Rotation2d rotationTarget =
+        isRedSupp.getAsBoolean() ? Rotation2d.fromDegrees(90) : Rotation2d.fromDegrees(-90);
+    Logger.recordOutput(
+        "AutoAlign/Amp/GoalPose", new Pose2d(goalPose.getTranslation(), rotationTarget));
+
+    double distance = currentPose.getTranslation().getDistance(goalPose.getTranslation());
+    // double scalarizedLinearVelocity = linearController.calculate(distance, 0);
+
+    // var driveVelocity =
+    //     new Pose2d(
+    //             new Translation2d(),
+    //             currentPose.getTranslation().minus(goalPose.getTranslation()).getAngle())
+    //         .transformBy(
+    //             GeomUtil.toTransform2d(MathUtil.clamp(scalarizedLinearVelocity, -1, 1), 0));
+
+    var thetaVelocity =
+        thetaController.calculate(
+            currentPose.getRotation().getRadians(), rotationTarget.getRadians());
+
+    return thetaVelocity;
+
+    // return ChassisSpeeds.fromFieldRelativeSpeeds(
+    //     driveVelocity.getX(), driveVelocity.getY(), thetaVelocity, swerve.getRotation());
   }
 }

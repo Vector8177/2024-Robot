@@ -59,7 +59,7 @@ public class ShooterIOSparkMax implements ShooterIO {
     shooterTopFixedSparkMax.setSmartCurrentLimit(20);
     shooterBottomFixedSparkMax.setSmartCurrentLimit(20);
     shooterPivotSparkMax.setSmartCurrentLimit(20);
-    shooterIndexerSparkMax.setSmartCurrentLimit(35);
+    shooterIndexerSparkMax.setSmartCurrentLimit(40);
 
     shooterTopFixedEncoder = shooterTopFixedSparkMax.getEncoder();
     shooterBottomFixedEncoder = shooterBottomFixedSparkMax.getEncoder();

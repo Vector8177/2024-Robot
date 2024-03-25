@@ -116,8 +116,8 @@ public class Shooter extends SubsystemBase {
     // this));
   }
 
-  public void setShooterSpeed(double speed) {
-    wheelTargetSpeed = speed;
+  public void setShooterSpeed(double wheelTargetSpeed) {
+    this.wheelTargetSpeed = wheelTargetSpeed;
   }
 
   public void setShooterRawVolts(double volts) {
@@ -139,7 +139,6 @@ public class Shooter extends SubsystemBase {
   }
 
   public void disableClosedLoop() {
-
     wheelTargetSpeed = null;
   }
 
