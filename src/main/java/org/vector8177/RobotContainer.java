@@ -259,9 +259,13 @@ public class RobotContainer {
                     swerve)
                 .ignoringDisable(true));
 
-    driverController.b().onTrue(toggleAutoAlign());
+    driverController.b()
+    .onTrue(runOnce(() -> currentDriveMode = DriveMode.AUTO_ALIGN))
+    .onFalse(runOnce(() -> currentDriveMode = DriveMode.TELEOP));
 
-    driverController.a().onTrue(toggleAmpAlign());
+    driverController.a()
+    .onTrue(runOnce(() -> currentDriveMode = DriveMode.AMP_ALIGN))
+    .onFalse(runOnce(() -> currentDriveMode = DriveMode.TELEOP));
 
     operatorController.povDown().onTrue(setShooterShootPosition(shooter, hood));
 
@@ -271,8 +275,8 @@ public class RobotContainer {
 
     operatorController
         .rightTrigger()
-        .onTrue(runIntake(intake, shooter, hood, (bob) -> disableAutoAlign()));
-    operatorController.rightTrigger().onFalse(stopIntake(intake, shooter));
+        .onTrue(runIntake(intake, shooter, hood, (bob) -> disableAutoAlign()))
+        .onFalse(stopIntake(intake, shooter));
 
     operatorController.leftTrigger().whileTrue(runOuttake(intake, shooter));
 
