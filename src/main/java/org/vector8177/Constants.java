@@ -45,7 +45,7 @@ public final class Constants {
   public static final boolean tuningMode = true;
 
   public static final double SHOOTER_HEIGHT = 0.4318;
-  public static final double SPEAKER_HEIGHT = 2.2;
+  public static final double SPEAKER_HEIGHT = 2.1;
 
   public static final AprilTagFieldLayout aprilTagFieldLayout =
       AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
@@ -160,8 +160,8 @@ public final class Constants {
     }
 
     public final class AutoAlignConstants {
-      public static final double thetaP = 1.125;
-      public static final double thetaI = 1e-6;
+      public static final double thetaP = 1;
+      public static final double thetaI = 0;
       public static final double thetaD = 0;
       public static final double thetaTolerance = Units.degreesToRadians(.5);
       public static final double maxAngularVelocity = MAX_ANGULAR_VELOCITY;
@@ -171,7 +171,7 @@ public final class Constants {
       public static final double drivekI = 0;
       public static final double drivekD = 0;
 
-      public static final double MIN_THETA_CONTROL_EFFORT = 0.1;
+      public static final double MIN_THETA_CONTROL_EFFORT = 0.005;
 
       public static final AlliancePoseShifter SPEAKER_POSE =
           new AlliancePoseShifter(5.55, 16.68 - .28, -.1381 + .28);
@@ -294,15 +294,18 @@ public final class Constants {
             Units.inchesToMeters(-10.847),
             Units.inchesToMeters(-1.020),
             Units.inchesToMeters(12.418),
-            new Rotation3d(0, Units.degreesToRadians(-30), 0)
-                .rotateBy(new Rotation3d(0, 0, Units.degreesToRadians(185))));
+            new Rotation3d(0, Units.degreesToRadians(30), 0)
+                .rotateBy(new Rotation3d(Units.degreesToRadians(0), 0, Units.degreesToRadians(185)))
+                .rotateBy(new Rotation3d(Units.degreesToRadians(180), 0, 0)));
+
     public static final Transform3d frontRightCameraPosition =
         new Transform3d(
             Units.inchesToMeters(-10.847),
             Units.inchesToMeters(1.020),
             Units.inchesToMeters(12.418),
-            new Rotation3d(0, Units.degreesToRadians(-30), 0)
-                .rotateBy(new Rotation3d(0, 0, Units.degreesToRadians(175))));
+            new Rotation3d(0, Units.degreesToRadians(30), 0)
+                .rotateBy(new Rotation3d(Units.degreesToRadians(0), 0, Units.degreesToRadians(175)))
+                .rotateBy(new Rotation3d(Units.degreesToRadians(180), 0, 0)));
 
     public static final String frontLeftCameraName = "flCam";
     public static final String fronRightCameraName = "frCam";

@@ -12,21 +12,166 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "sequential",
           "data": {
-            "pathName": "Left-Far1-Score"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Fender Shot Position"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Shoot Sequence"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Score-Far2-Score"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake Sequence"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Left-Far1-Score"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "sequential",
           "data": {
-            "pathName": "Score-Far3-Score"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Enable AutoAlign"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Shoot Sequence"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Disable AutoAlign"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake Sequence"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Score-Far2-Score"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Enable AutoAlign"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Shoot Sequence"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Disable AutoAlign"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake Sequence"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Score-Far3-Score"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Enable AutoAlign"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Shoot Sequence"
+                }
+              }
+            ]
           }
         }
       ]
