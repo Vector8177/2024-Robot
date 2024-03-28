@@ -9,8 +9,11 @@ import org.vector8177.util.LoggedTunableNumber;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -103,6 +106,17 @@ public class AutoAlignController {
         "AutoAlign/Speaker/RotationTarget",
         new Pose2d(currentPose.getTranslation(), rotationToTarget));
 
+    Pose3d speaker =
+        new Pose3d(
+            new Translation3d(goalPose.getX(), goalPose.getY(), Constants.SPEAKER_HEIGHT),
+            new Rotation3d());
+
+    Logger.recordOutput("AutoAlign/Speaker/TargetPose", speaker);
+
+    Logger.recordOutput(
+        "AutoAlign/Trajectory",
+        speaker.toPose2d().getTranslation().minus(currentPose.getTranslation()));
+
     thetaController.setGoal(rotationToTarget.getRadians());
 
     double angularVelocity =
@@ -110,7 +124,7 @@ public class AutoAlignController {
                 currentPose.getRotation().getRadians(), rotationToTarget.getRadians())
             + thetaController.getSetpoint().velocity;
 
-    if (thetaController.atSetpoint()) {
+    if (Math.abs(angularVelocity) <= MIN_THETA_CONTROL_EFFORT) {
       angularVelocity = 0;
     }
 
@@ -193,6 +207,8 @@ public class AutoAlignController {
     var thetaVelocity =
         thetaController.calculate(
             currentPose.getRotation().getRadians(), rotationTarget.getRadians());
+
+    if (Math.abs(thetaVelocity) <= MIN_THETA_CONTROL_EFFORT) thetaVelocity = 0;
 
     return thetaVelocity;
 

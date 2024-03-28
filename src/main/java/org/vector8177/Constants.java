@@ -45,7 +45,7 @@ public final class Constants {
   public static final boolean tuningMode = true;
 
   public static final double SHOOTER_HEIGHT = 0.4318;
-  public static final double SPEAKER_HEIGHT = 1.9812;
+  public static final double SPEAKER_HEIGHT = 2.2;
 
   public static final AprilTagFieldLayout aprilTagFieldLayout =
       AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
@@ -160,10 +160,10 @@ public final class Constants {
     }
 
     public final class AutoAlignConstants {
-      public static final double thetaP = 1;
+      public static final double thetaP = 1.125;
       public static final double thetaI = 1e-6;
-      public static final double thetaD = 1e-5;
-      public static final double thetaTolerance = Units.degreesToRadians(1);
+      public static final double thetaD = 0;
+      public static final double thetaTolerance = Units.degreesToRadians(.5);
       public static final double maxAngularVelocity = MAX_ANGULAR_VELOCITY;
       public static final double maxAngularAcceleration = 25.02;
 
@@ -171,8 +171,10 @@ public final class Constants {
       public static final double drivekI = 0;
       public static final double drivekD = 0;
 
+      public static final double MIN_THETA_CONTROL_EFFORT = 0.1;
+
       public static final AlliancePoseShifter SPEAKER_POSE =
-          new AlliancePoseShifter(5.55, 16.68, -.1381);
+          new AlliancePoseShifter(5.55, 16.68 - .28, -.1381 + .28);
       public static final AlliancePoseShifter AMP_POSE = new AlliancePoseShifter(7.9, 14.70, 1.81);
     }
 
@@ -218,11 +220,11 @@ public final class Constants {
 
     public static final double SHOOTER_FF_V = 444d;
 
-    public static final double SHOOTER_PIVOT_INTAKE_POSITION = 2.0d;
+    public static final double SHOOTER_PIVOT_INTAKE_POSITION = 2.19d;
 
     public static final double SHOOTER_PIVOT_AMP_POSITION = 5.931d;
 
-    public static final double SHOOTER_FENDER_AIM = 2.508d;
+    public static final double SHOOTER_FENDER_AIM = 2.601d;
 
     public static final double SHOOTER_LONG_SHOT = 1.85d;
 
@@ -232,14 +234,14 @@ public final class Constants {
     public static final int SHOOT_RPM_CUTOFF = 4800;
 
     public static final double SHOOTER_GEAR_RATIO = 1 / 1.5;
-    public static final double ABSOLUTE_OFFSET = 0.802d;
+    public static final double ABSOLUTE_OFFSET = 4.723d;
     public static final double SHOOTER_PIVOT_GEAR_RATIO = 1d / (3 * 3 * 4 * 64d / 24);
 
-    public static final double TOP_BOTTOM_DIFF = 125;
+    public static final double TOP_BOTTOM_DIFF = 0;
 
     // Shooter Pivot PID
     public static final double SHOOTER_PIVOT_KP = 10d;
-    // public static final double SHOOTER_PIVOT_KP = 6.4d;
+    // public static final double SHOOTER_PIVOT_KP = 0d;
     public static final double SHOOTER_PIVOT_KI = 0d;
     public static final double SHOOTER_PIVOT_KD = 0d;
     public static final double PIVOT_TOLERANCE = 0.2;

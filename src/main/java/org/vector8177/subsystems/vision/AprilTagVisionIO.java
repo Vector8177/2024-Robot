@@ -64,7 +64,7 @@ public interface AprilTagVisionIO {
     if (numTags > 1
         && avgDist
             > switch (resolution) {
-              case HIGH_RES -> 8;
+              case HIGH_RES -> 5;
               case NORMAL -> 5;
             }) {
       estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
@@ -84,7 +84,7 @@ public interface AprilTagVisionIO {
             }) {
       estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
     } else {
-      estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 20));
+      estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 2));
     }
 
     return estStdDevs;

@@ -49,6 +49,7 @@ import org.vector8177.subsystems.vision.AprilTagVisionIOReal;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -179,10 +180,8 @@ public class RobotContainer {
 
     shooterSpeedMap.put(1.401, 2625d);
     shooterSpeedMap.put(2.590, 3500d);
-    shooterSpeedMap.put(3.357, 3750d);
-    shooterSpeedMap.put(3.933, 4000d);
-    shooterSpeedMap.put(4.704, 4250d);
-    shooterSpeedMap.put(5.665, 4750d);
+    shooterSpeedMap.put(3.357, 4500d);
+    shooterSpeedMap.put(4.665, 5000d);
 
     NamedCommands.registerCommand("Enable AutoAlign", setAutoAlign(true));
     NamedCommands.registerCommand("Disable AutoAlign", setAutoAlign(false));
@@ -259,13 +258,20 @@ public class RobotContainer {
                     swerve)
                 .ignoringDisable(true));
 
-    driverController.b()
-    .onTrue(runOnce(() -> currentDriveMode = DriveMode.AUTO_ALIGN))
-    .onFalse(runOnce(() -> currentDriveMode = DriveMode.TELEOP));
+    driverController.b().onTrue(toggleAutoAlign());
 
-    driverController.a()
-    .onTrue(runOnce(() -> currentDriveMode = DriveMode.AMP_ALIGN))
-    .onFalse(runOnce(() -> currentDriveMode = DriveMode.TELEOP));
+    driverController.a().onTrue(toggleAmpAlign());
+
+    driverController
+        .povRight()
+        .onTrue(runOnce(() -> shooter.setPosition(Units.degreesToRadians(90))));
+    driverController.povUp().onTrue(runOnce(() -> shooter.setPosition(Units.degreesToRadians(0))));
+    driverController
+        .povDown()
+        .onTrue(runOnce(() -> shooter.setPosition(Units.degreesToRadians(135))));
+    driverController
+        .povLeft()
+        .onTrue(runOnce(() -> shooter.setPosition(Units.degreesToRadians(45))));
 
     operatorController.povDown().onTrue(setShooterShootPosition(shooter, hood));
 
@@ -326,6 +332,7 @@ public class RobotContainer {
               currentDriveMode != DriveMode.AUTO_ALIGN ? DriveMode.AUTO_ALIGN : DriveMode.TELEOP;
           if (currentDriveMode == DriveMode.AUTO_ALIGN) {
             shooter.currentState = ShooterState.SHOOT;
+            shooter.setShooterSpeed(1500);
           }
         });
   }

@@ -88,7 +88,7 @@ public class MainCommands {
         runOnce(
             () -> {
               intakeState = IntakeActiveState.ACTIVE;
-              shooter.setShooterSpeed(1500);
+              shooter.setShooterSpeed(00);
               shooter.setIndexerSpeed(0);
             },
             shooter));
