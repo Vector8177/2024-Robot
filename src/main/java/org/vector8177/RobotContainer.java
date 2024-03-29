@@ -20,10 +20,6 @@ import org.vector8177.Constants.ShooterState;
 import org.vector8177.Constants.SwerveConstants.DriveMode;
 import org.vector8177.Constants.VisionConstants;
 import org.vector8177.commands.SwerveCommands;
-import org.vector8177.subsystems.climber.Climber;
-import org.vector8177.subsystems.climber.ClimberIO;
-import org.vector8177.subsystems.climber.ClimberIOSim;
-import org.vector8177.subsystems.climber.ClimberIOSparkMax;
 import org.vector8177.subsystems.hood.Hood;
 import org.vector8177.subsystems.hood.HoodIO;
 import org.vector8177.subsystems.hood.HoodIOSim;
@@ -178,7 +174,7 @@ public class RobotContainer {
         break;
     }
 
-    shooterSpeedMap.put(1.401, 2625d);
+    shooterSpeedMap.put(1.401, 2900d);
     shooterSpeedMap.put(2.590, 3500d);
     shooterSpeedMap.put(3.357, 4500d);
     shooterSpeedMap.put(4.665, 5000d);
@@ -239,7 +235,6 @@ public class RobotContainer {
             () -> -driverController.getLeftX(),
             () -> -driverController.getRightX(),
             driverController.leftBumper()));
-    
 
     // climber.satorController.rightBumper()));
 

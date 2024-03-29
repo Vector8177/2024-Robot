@@ -240,12 +240,16 @@ public class MainCommands {
     return sequence(
         runOnce(
             () -> {
-              shooter.currentState = ShooterState.AMP;
               shooter.setPosition(ShooterConstants.SHOOTER_PIVOT_AMP_POSITION);
             },
             shooter),
         waitSeconds(.2),
-        runOnce(() -> hood.setHoodPosition(true), hood));
+        runOnce(
+            () -> {
+              hood.setHoodPosition(true);
+              shooter.currentState = ShooterState.AMP;
+            },
+            hood));
   }
 
   public static Command setShooterShootPosition(Shooter shooter, Hood hood) {
