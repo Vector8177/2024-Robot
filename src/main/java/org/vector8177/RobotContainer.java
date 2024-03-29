@@ -77,7 +77,7 @@ public class RobotContainer {
   private final Intake intake;
   private final Hood hood;
   // private final Vision vision;
-  private final Climber climber;
+  // private final Climber climber;
 
   private final Leds leds = Leds.getInstance();
 
@@ -122,7 +122,7 @@ public class RobotContainer {
                 mainMech);
         intake = new Intake(new IntakeIOSparkMax(), () -> shooter.getShooterOccupied());
         hood = new Hood(new HoodIOSparkMax(), shooter.getMechanismLigament2d());
-        climber = new Climber(new ClimberIOSparkMax());
+        // climber = new Climber(new ClimberIOSparkMax());
         break;
 
       case SIM:
@@ -148,7 +148,7 @@ public class RobotContainer {
                 mainMech);
         intake = new Intake(new IntakeIOSim(), () -> shooter.getShooterOccupied());
         hood = new Hood(new HoodIOSim(), shooter.getMechanismLigament2d());
-        climber = new Climber(new ClimberIOSim());
+        // climber = new Climber(new ClimberIOSim());
         break;
 
       default:
@@ -174,7 +174,7 @@ public class RobotContainer {
                 mainMech);
         intake = new Intake(new IntakeIO() {}, () -> shooter.getShooterOccupied());
         hood = new Hood(new HoodIO() {}, shooter.getMechanismLigament2d());
-        climber = new Climber(new ClimberIO() {});
+        // climber = new Climber(new ClimberIO() {});
         break;
     }
 
@@ -239,14 +239,9 @@ public class RobotContainer {
             () -> -driverController.getLeftX(),
             () -> -driverController.getRightX(),
             driverController.leftBumper()));
+    
 
-    climber.setDefaultCommand(
-        runClimber(
-            climber,
-            operatorController.povUp(),
-            operatorController.leftBumper(),
-            operatorController.povUp(),
-            operatorController.rightBumper()));
+    // climber.satorController.rightBumper()));
 
     driverController
         .y()
