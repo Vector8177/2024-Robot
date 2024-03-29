@@ -227,7 +227,7 @@ public class MainCommands {
     return sequence(
         runOnce(
             () -> {
-              shooter.currentState = ShooterState.EMPTY;
+              shooter.currentState = ShooterState.SHOOT;
               shooter.setPosition(ShooterConstants.SHOOTER_PIVOT_INTAKE_POSITION);
             },
             shooter),
