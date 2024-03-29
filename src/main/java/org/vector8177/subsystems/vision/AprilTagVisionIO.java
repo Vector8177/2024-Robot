@@ -76,7 +76,7 @@ public interface AprilTagVisionIO {
           };
     }
 
-    if (numTags > 1
+    if (numTags == 1
         && avgDist
             > switch (resolution) {
               case HIGH_RES -> 6;

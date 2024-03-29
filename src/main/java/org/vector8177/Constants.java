@@ -311,9 +311,9 @@ public final class Constants {
     public static final String fronRightCameraName = "frCam";
 
     public static final Matrix<N3, N1> normalSingleTagStdDev =
-        VecBuilder.fill(1.6, 1.6, Double.MAX_VALUE);
+        VecBuilder.fill(3.2, 3.2, Double.MAX_VALUE);
     public static final Matrix<N3, N1> normalMultiTagStdDev =
-        VecBuilder.fill(0.8, 0.8, Double.MAX_VALUE);
+        VecBuilder.fill(3.2, 3.2, Double.MAX_VALUE);
 
     public static final Matrix<N3, N1> highResSingleTagStdDev =
         VecBuilder.fill(0.8, 0.8, Double.MAX_VALUE);

@@ -134,8 +134,7 @@ public class MainCommands {
             () -> {
               intakeState = IntakeActiveState.ACTIVE;
               shooter.setIndexerSpeed(0);
-            },
-            shooter));
+            }));
   }
 
   public static IntakeActiveState getCurrentIntakeState() {

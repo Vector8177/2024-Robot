@@ -1,0 +1,31 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.6630730971658731,
+      "y": 6.60855704537885
+    },
+    "rotation": 62.447188423282206
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Fender Shot Position"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Run Shoot Sequence"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

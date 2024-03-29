@@ -113,8 +113,10 @@ public class ModuleIOSparkMax implements ModuleIO {
     driveEncoder.setAverageDepth(2);
 
     turnRelativeEncoder.setPosition(0);
-    turnRelativeEncoder.setMeasurementPeriod(10);
-    turnRelativeEncoder.setAverageDepth(2);
+    turnRelativeEncoder.setMeasurementPeriod(32);
+    turnRelativeEncoder.setAverageDepth(8);
+
+    turnAbsoluteEncoder.setAverageDepth(16);
     // turnRelativeEncoder.setInverted(true);
 
     driveSparkMax.setCANTimeout(0);
