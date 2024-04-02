@@ -8,11 +8,16 @@ import org.vector8177.util.SparkUtils.Sensor;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.util.Color;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ColorSensorV3;
+import com.revrobotics.ColorSensorV3.ProximitySensorMeasurementRate;
+import com.revrobotics.ColorSensorV3.ProximitySensorResolution;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import java.util.Set;
@@ -34,6 +39,9 @@ public class ShooterIOSparkMax implements ShooterIO {
   private Rotation2d pivotRelativeOffset = new Rotation2d();
 
   private final AnalogInput shooterIRSensor;
+  private final I2C.Port i2cPort = I2C.Port.kOnboard;
+
+  private final ColorSensorV3 colorSensorV3;
 
   public ShooterIOSparkMax() {
     shooterTopFixedSparkMax =
@@ -45,6 +53,10 @@ public class ShooterIOSparkMax implements ShooterIO {
         new CANSparkMax(ShooterConstants.SHOOTER_INDEXER_ID, MotorType.kBrushless);
 
     shooterIRSensor = new AnalogInput(ShooterConstants.SHOOTER_IR_SENSOR_PORT);
+
+    colorSensorV3 = new ColorSensorV3(i2cPort);
+    colorSensorV3.configureProximitySensor(
+        ProximitySensorResolution.kProxRes11bit, ProximitySensorMeasurementRate.kProxRate12ms);
 
     shooterTopFixedSparkMax.restoreFactoryDefaults();
     shooterBottomFixedSparkMax.restoreFactoryDefaults();
@@ -59,7 +71,7 @@ public class ShooterIOSparkMax implements ShooterIO {
     shooterTopFixedSparkMax.setSmartCurrentLimit(24);
     shooterBottomFixedSparkMax.setSmartCurrentLimit(24);
     shooterPivotSparkMax.setSmartCurrentLimit(20);
-    shooterIndexerSparkMax.setSmartCurrentLimit(40);
+    shooterIndexerSparkMax.setSmartCurrentLimit(35);
 
     shooterTopFixedEncoder = shooterTopFixedSparkMax.getEncoder();
     shooterBottomFixedEncoder = shooterBottomFixedSparkMax.getEncoder();
@@ -104,10 +116,7 @@ public class ShooterIOSparkMax implements ShooterIO {
         Set.of(Sensor.ABSOLUTE),
         false);
     SparkUtils.configureFrameStrategy(
-        shooterIndexerSparkMax,
-        Set.of(Data.POSITION, Data.VELOCITY, Data.APPLIED_OUTPUT),
-        Set.of(Sensor.ABSOLUTE),
-        false);
+        shooterIndexerSparkMax, Set.of(Data.APPLIED_OUTPUT), Set.of(), false);
 
     // shooterBottomFixedSparkMax.follow(shooterTopFixedSparkMax, true);
 
@@ -141,7 +150,7 @@ public class ShooterIOSparkMax implements ShooterIO {
         shooterIndexerSparkMax.getAppliedOutput() * shooterIndexerSparkMax.getBusVoltage();
     // inputs.shooterIndexerVelocityRadPerSec =
     //     Units.rotationsPerMinuteToRadiansPerSecond(shooterIndexerEncoder.getVelocity());
-    // inputs.shooterIndexerCurrentAmps = new double[] {shooterIndexerSparkMax.getOutputCurrent()};
+    inputs.shooterIndexerCurrentAmps = new double[] {shooterIndexerSparkMax.getOutputCurrent()};
 
     inputs.shooterPivotRelativePosition =
         (Rotation2d.fromRadians(shooterPivotAbsoluteEncoder.getPosition()));
@@ -149,6 +158,12 @@ public class ShooterIOSparkMax implements ShooterIO {
         Rotation2d.fromRadians(shooterPivotAbsoluteEncoder.getPosition());
 
     inputs.shooterSensorTriggerVoltage = shooterIRSensor.getVoltage();
+
+    Color colorDetected = colorSensorV3.getColor();
+    inputs.colorDetected =
+        new double[] {colorDetected.red, colorDetected.blue, colorDetected.green};
+    inputs.proximity = colorSensorV3.getProximity();
+    inputs.irOutputRaw = colorSensorV3.getIR();
   }
 
   @Override

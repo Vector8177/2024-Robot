@@ -41,6 +41,7 @@ import org.vector8177.subsystems.swerve.ModuleIOSparkMax;
 import org.vector8177.subsystems.swerve.Swerve;
 import org.vector8177.subsystems.vision.AprilTagVisionIO;
 import org.vector8177.subsystems.vision.AprilTagVisionIOReal;
+import org.vector8177.util.CommandXboxControllerSubsystem;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -52,7 +53,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -86,8 +86,10 @@ public class RobotContainer {
   private final Mechanism2d mainMech = new Mechanism2d(10, 10);
 
   // Controller
-  private final CommandXboxController driverController = new CommandXboxController(0);
-  private final CommandXboxController operatorController = new CommandXboxController(1);
+  private final CommandXboxControllerSubsystem driverController =
+      new CommandXboxControllerSubsystem(0);
+  private final CommandXboxControllerSubsystem operatorController =
+      new CommandXboxControllerSubsystem(1);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -186,7 +188,8 @@ public class RobotContainer {
         runShootSequenceAuto(
             shooter, () -> shooterSpeedMap.get(swerve.calculateDistanceToStage())));
     NamedCommands.registerCommand(
-        "Run Intake Sequence", runIntake(intake, shooter, hood, (bob) -> disableAutoAlign()));
+        "Run Intake Sequence",
+        runIntake(intake, shooter, hood, (bob) -> disableAutoAlign(), operatorController));
     NamedCommands.registerCommand("Fender Shot Position", setShooterShootPosition(shooter, hood));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -279,7 +282,7 @@ public class RobotContainer {
 
     operatorController
         .rightTrigger()
-        .onTrue(runIntake(intake, shooter, hood, (bob) -> disableAutoAlign()))
+        .onTrue(runIntake(intake, shooter, hood, (bob) -> disableAutoAlign(), operatorController))
         .onFalse(stopIntake(intake, shooter));
 
     operatorController.leftTrigger().whileTrue(runOuttake(intake, shooter));

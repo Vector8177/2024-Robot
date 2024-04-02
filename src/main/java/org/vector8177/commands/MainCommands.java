@@ -14,6 +14,7 @@ import org.vector8177.subsystems.climber.Climber;
 import org.vector8177.subsystems.hood.Hood;
 import org.vector8177.subsystems.intake.Intake;
 import org.vector8177.subsystems.shooter.Shooter;
+import org.vector8177.util.CommandXboxControllerSubsystem;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
@@ -191,7 +192,11 @@ public class MainCommands {
   // }
 
   public static Command runIntake(
-      Intake intake, Shooter shooter, Hood hood, Consumer<Boolean> disableAA) {
+      Intake intake,
+      Shooter shooter,
+      Hood hood,
+      Consumer<Boolean> disableAA,
+      CommandXboxControllerSubsystem operatorController) {
     return new SelectCommand<>(
         Map.ofEntries(
             Map.entry(
@@ -211,12 +216,15 @@ public class MainCommands {
                     waitUntil(() -> shooter.getShooterOccupied()),
                     runOnce(
                         () -> {
+                          operatorController.rumbleCommand(.5);
                           intake.setFeederSpeed(0);
                           intake.setIndexerSpeed(0);
-                          shooter.setIndexerSpeed(0);
+                          shooter.setIndexerSpeed(ShooterConstants.SHOOTER_INDEXER_SPEED);
                         },
                         intake,
-                        shooter)))),
+                        shooter),
+                    waitSeconds(.05),
+                    runOnce(() -> shooter.setIndexerSpeed(0), shooter)))),
         () -> getCurrentIntakeState());
   }
 

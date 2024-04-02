@@ -160,18 +160,18 @@ public final class Constants {
     }
 
     public final class AutoAlignConstants {
-      public static final double thetaP = 1;
+      public static final double thetaP = 3.5;
       public static final double thetaI = 0;
-      public static final double thetaD = 0;
-      public static final double thetaTolerance = Units.degreesToRadians(.5);
-      public static final double maxAngularVelocity = MAX_ANGULAR_VELOCITY;
-      public static final double maxAngularAcceleration = 25.02;
+      public static final double thetaD = 0.02;
+      public static final double thetaTolerance = Units.degreesToRadians(1);
+      public static final double maxAngularVelocity = 2;
+      public static final double maxAngularAcceleration = 4;
 
       public static final double drivekP = 3.0;
       public static final double drivekI = 0;
       public static final double drivekD = 0;
 
-      public static final double MIN_THETA_CONTROL_EFFORT = 0.005;
+      public static final double MIN_THETA_CONTROL_EFFORT = 0.1;
 
       public static final AlliancePoseShifter SPEAKER_POSE =
           new AlliancePoseShifter(5.55, 16.68 - .28, -.1381 + .28);
@@ -274,6 +274,7 @@ public final class Constants {
     public static final double SHOOTER_TARGET_SPEED = .8f;
 
     public static final double SHOOTER_IR_TARGET_VOLTAGE = 2d;
+    public static final double SHOOTER_IR_TARGET_VAL = 150;
 
     public static final double MAX_MOTOR_VOLTAGE = 12d;
   }
@@ -311,14 +312,14 @@ public final class Constants {
     public static final String fronRightCameraName = "frCam";
 
     public static final Matrix<N3, N1> normalSingleTagStdDev =
-        VecBuilder.fill(3.2, 3.2, Double.MAX_VALUE);
+        VecBuilder.fill(.6, .6, Double.MAX_VALUE);
     public static final Matrix<N3, N1> normalMultiTagStdDev =
-        VecBuilder.fill(3.2, 3.2, Double.MAX_VALUE);
+        VecBuilder.fill(.3, .3, Double.MAX_VALUE);
 
     public static final Matrix<N3, N1> highResSingleTagStdDev =
-        VecBuilder.fill(0.8, 0.8, Double.MAX_VALUE);
+        VecBuilder.fill(.2, .2, Double.MAX_VALUE);
     public static final Matrix<N3, N1> highResMultiTagStdDev =
-        VecBuilder.fill(0.4, 0.4, Double.MAX_VALUE);
+        VecBuilder.fill(0.05, 0.05, Double.MAX_VALUE);
 
     public static final SimCameraProperties OV9281_PROP = configureNormalCamera();
 

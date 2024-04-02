@@ -128,6 +128,11 @@ public class AutoAlignController {
       angularVelocity = 0;
     }
 
+    if (thetaController.atSetpoint()) {
+      angularVelocity = 0;
+    }
+
+    Logger.recordOutput("AutoAlign/Speaker/AtSetpoint", thetaController.atSetpoint());
     Logger.recordOutput("AutoAlign/Speaker/Setpoint", angularVelocity);
 
     return angularVelocity;

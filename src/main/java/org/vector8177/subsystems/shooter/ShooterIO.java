@@ -26,6 +26,10 @@ public interface ShooterIO {
     public double[] shooterIndexerCurrentAmps = new double[] {};
 
     public double shooterSensorTriggerVoltage = 0d;
+
+    public double[] colorDetected = new double[3];
+    public int proximity = 0;
+    public double irOutputRaw = 0.0;
   }
 
   public default void updateInputs(ShooterIOInputs inputs) {}
