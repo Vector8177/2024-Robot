@@ -32,6 +32,15 @@ public class MainCommands {
     return shooter.currentState;
   }
 
+  public static boolean shooterAtGoal(Shooter shooter) {
+    return shooter.atGoal();
+  }
+
+  public static Command runShooterBob(Shooter shooter, DoubleSupplier speed) {
+    return new SelectCommand<>(
+        Map.ofEntries(Map.entry(true, runShooter(shooter, speed))), () -> shooterAtGoal(shooter));
+  }
+
   public static Command runShooter(Shooter shooter, DoubleSupplier speed) {
     return new SelectCommand<>(
         Map.ofEntries(
@@ -51,7 +60,11 @@ public class MainCommands {
         waitUntil(
             () ->
                 shooter.getShooterTopFixedVelocity()
-                    > (Constants.currentMode == Mode.REAL ? shooter.getTargetSpeed() : 0)),
+                        > (Constants.currentMode == Mode.REAL ? shooter.getTargetSpeed() - 100 : 0)
+                    || shooter.getShooterBottomFixedVelocity()
+                        > (Constants.currentMode == Mode.REAL
+                            ? shooter.getTargetSpeed() - 100
+                            : 0)),
         runOnce(
             () -> {
               shooter.setIndexerSpeed(-ShooterConstants.SHOOTER_INDEXER_SPEED);
@@ -123,6 +136,11 @@ public class MainCommands {
   //
   public static Command runAmpSequence(Shooter shooter) {
     return sequence(
+        runOnce(
+            () -> {
+              shooter.setIndexerSpeed(-ShooterConstants.SHOOTER_INDEXER_IN_SPEED);
+            }),
+        waitSeconds(.1),
         runOnce(
             () -> {
               // intakeState = IntakeActiveState.STOPPED;
@@ -237,6 +255,7 @@ public class MainCommands {
   public static Command setShooterAmpPosition(Shooter shooter, Hood hood) {
 
     return sequence(
+        runOnce(() -> shooter.setShooterSpeed(0)),
         runOnce(
             () -> {
               shooter.setPosition(ShooterConstants.SHOOTER_PIVOT_AMP_POSITION);

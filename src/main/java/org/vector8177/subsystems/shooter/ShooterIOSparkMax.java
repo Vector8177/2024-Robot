@@ -56,8 +56,8 @@ public class ShooterIOSparkMax implements ShooterIO {
     shooterPivotSparkMax.setCANTimeout(250);
     shooterIndexerSparkMax.setCANTimeout(250);
 
-    shooterTopFixedSparkMax.setSmartCurrentLimit(20);
-    shooterBottomFixedSparkMax.setSmartCurrentLimit(20);
+    shooterTopFixedSparkMax.setSmartCurrentLimit(24);
+    shooterBottomFixedSparkMax.setSmartCurrentLimit(24);
     shooterPivotSparkMax.setSmartCurrentLimit(20);
     shooterIndexerSparkMax.setSmartCurrentLimit(40);
 

@@ -142,6 +142,10 @@ public class Shooter extends SubsystemBase {
     wheelTargetSpeed = null;
   }
 
+  public boolean atGoal() {
+    return pivotPidController.atSetpoint();
+  }
+
   public double getShooterTopFixedVelocity() {
     return inputs.shooterTopFixedRPM;
   }

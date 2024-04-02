@@ -175,8 +175,7 @@ public class RobotContainer {
     }
 
     shooterSpeedMap.put(1.401, 2900d);
-    shooterSpeedMap.put(2.590, 3500d);
-    shooterSpeedMap.put(3.357, 4500d);
+    shooterSpeedMap.put(2.590, 4000d);
     shooterSpeedMap.put(4.665, 5000d);
 
     NamedCommands.registerCommand("Enable AutoAlign", setAutoAlign(true));
@@ -254,20 +253,29 @@ public class RobotContainer {
 
     driverController
         .povRight()
-        .onTrue(runOnce(() -> shooter.setPosition(Units.degreesToRadians(90))));
-    driverController.povUp().onTrue(runOnce(() -> shooter.setPosition(Units.degreesToRadians(0))));
-    driverController
-        .povDown()
-        .onTrue(runOnce(() -> shooter.setPosition(Units.degreesToRadians(135))));
-    driverController
-        .povLeft()
-        .onTrue(runOnce(() -> shooter.setPosition(Units.degreesToRadians(45))));
+        .onTrue(
+            runOnce(
+                () -> {
+                  shooter.setPosition(Units.degreesToRadians(90));
+                  shooter.setShooterSpeed(4500);
+                  shooter.currentState = ShooterState.SHOOT;
+                }));
+    // driverController.povUp().onTrue(runOnce(() ->
+    // shooter.setPosition(Units.degreesToRadians(0))));
+    // driverController
+    //     .povDown()
+    //     .onTrue(runOnce(() -> shooter.setPosition(Units.degreesToRadians(135))));
+    // driverController
+    //     .povLeft()
+    //     .onTrue(runOnce(() -> shooter.setPosition(Units.degreesToRadians(45))));
 
     operatorController.povDown().onTrue(setShooterShootPosition(shooter, hood));
 
     operatorController
         .a()
         .onTrue(runShooter(shooter, () -> shooterSpeedMap.get(swerve.calculateDistanceToStage())));
+
+    operatorController.x().onTrue(runOnce(() -> shooter.setShooterSpeed(2000)));
 
     operatorController
         .rightTrigger()

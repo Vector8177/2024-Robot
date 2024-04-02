@@ -220,7 +220,7 @@ public final class Constants {
 
     public static final double SHOOTER_FF_V = 444d;
 
-    public static final double SHOOTER_PIVOT_INTAKE_POSITION = 2.19d;
+    public static final double SHOOTER_PIVOT_INTAKE_POSITION = 2.12d;
 
     public static final double SHOOTER_PIVOT_AMP_POSITION = 5.931d;
 
