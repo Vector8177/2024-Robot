@@ -22,6 +22,12 @@
           "data": {
             "name": "Run Shoot Sequence"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source Fender"
+          }
         }
       ]
     }

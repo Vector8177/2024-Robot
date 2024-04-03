@@ -173,25 +173,6 @@
               }
             ]
           }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Run Intake Sequence"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Center Double"
-                }
-              }
-            ]
-          }
         }
       ]
     }

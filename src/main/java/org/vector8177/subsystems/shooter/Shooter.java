@@ -159,7 +159,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public double getIRReading() {
-    return inputs.irOutputRaw;
+    return inputs.proximity;
   }
 
   public boolean getShooterOccupied() {

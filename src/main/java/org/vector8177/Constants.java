@@ -162,7 +162,7 @@ public final class Constants {
     public final class AutoAlignConstants {
       public static final double thetaP = 3.5;
       public static final double thetaI = 0;
-      public static final double thetaD = 0.02;
+      public static final double thetaD = 0;
       public static final double thetaTolerance = Units.degreesToRadians(1);
       public static final double maxAngularVelocity = 2;
       public static final double maxAngularAcceleration = 4;
@@ -269,12 +269,12 @@ public final class Constants {
     public static final double SHOOTER_ARM_KA = 0d;
 
     public static final double SHOOTER_INDEXER_SPEED = 1d;
-    public static final double SHOOTER_INDEXER_IN_SPEED = .5d;
+    public static final double SHOOTER_INDEXER_IN_SPEED = .55d;
 
     public static final double SHOOTER_TARGET_SPEED = .8f;
 
     public static final double SHOOTER_IR_TARGET_VOLTAGE = 2d;
-    public static final double SHOOTER_IR_TARGET_VAL = 150;
+    public static final double SHOOTER_IR_TARGET_VAL = 110;
 
     public static final double MAX_MOTOR_VOLTAGE = 12d;
   }

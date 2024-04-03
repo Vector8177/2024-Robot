@@ -102,7 +102,7 @@ public class MainCommands {
         runOnce(
             () -> {
               intakeState = IntakeActiveState.ACTIVE;
-              shooter.setShooterSpeed(00);
+              shooter.setShooterSpeed(1000);
               shooter.setIndexerSpeed(0);
             },
             shooter));
@@ -216,15 +216,13 @@ public class MainCommands {
                     waitUntil(() -> shooter.getShooterOccupied()),
                     runOnce(
                         () -> {
-                          operatorController.rumbleCommand(.5);
+                          operatorController.rumbleCommand(0);
                           intake.setFeederSpeed(0);
                           intake.setIndexerSpeed(0);
-                          shooter.setIndexerSpeed(ShooterConstants.SHOOTER_INDEXER_SPEED);
+                          shooter.setIndexerSpeed(0);
                         },
                         intake,
-                        shooter),
-                    waitSeconds(.05),
-                    runOnce(() -> shooter.setIndexerSpeed(0), shooter)))),
+                        shooter)))),
         () -> getCurrentIntakeState());
   }
 
