@@ -71,7 +71,7 @@ public class AprilTagVisionIOReal implements AprilTagVisionIO {
         () -> {
           // poseArray[0] = new Pose3d();
           // timeStampArray[0] = 0.0;
-          // arraycopy(infiniteStdDevs.getData(), 0, visionStdArray, 0, 3);
+          arraycopy(infiniteStdDevs.getData(), 0, visionStdArray, 0, 3);
         });
     pose = frPoseEstimator.update();
     pose.ifPresentOrElse(
