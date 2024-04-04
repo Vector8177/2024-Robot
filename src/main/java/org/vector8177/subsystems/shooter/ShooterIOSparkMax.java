@@ -148,8 +148,8 @@ public class ShooterIOSparkMax implements ShooterIO {
 
     inputs.shooterIndexerAppliedVolts =
         shooterIndexerSparkMax.getAppliedOutput() * shooterIndexerSparkMax.getBusVoltage();
-    // inputs.shooterIndexerVelocityRadPerSec =
-    //     Units.rotationsPerMinuteToRadiansPerSecond(shooterIndexerEncoder.getVelocity());
+    inputs.shooterIndexerVelocityRadPerSec =
+        Units.rotationsPerMinuteToRadiansPerSecond(shooterIndexerEncoder.getVelocity());
     inputs.shooterIndexerCurrentAmps = new double[] {shooterIndexerSparkMax.getOutputCurrent()};
 
     inputs.shooterPivotRelativePosition =

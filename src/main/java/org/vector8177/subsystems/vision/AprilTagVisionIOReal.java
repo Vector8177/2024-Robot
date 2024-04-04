@@ -44,6 +44,8 @@ public class AprilTagVisionIOReal implements AprilTagVisionIO {
             PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
             frCam,
             VisionConstants.frontRightCameraPosition);
+
+    // flPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.);
   }
 
   @Override

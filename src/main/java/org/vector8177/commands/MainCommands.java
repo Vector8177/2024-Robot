@@ -139,11 +139,6 @@ public class MainCommands {
     return sequence(
         runOnce(
             () -> {
-              shooter.setIndexerSpeed(-ShooterConstants.SHOOTER_INDEXER_IN_SPEED);
-            }),
-        waitSeconds(.1),
-        runOnce(
-            () -> {
               // intakeState = IntakeActiveState.STOPPED;
               shooter.setIndexerSpeed(ShooterConstants.SHOOTER_INDEXER_SPEED);
             },
