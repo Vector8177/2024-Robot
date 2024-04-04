@@ -238,7 +238,13 @@ public class RobotContainer {
             () -> -driverController.getRightX(),
             driverController.leftBumper()));
 
-    // climber.satorController.rightBumper()));
+    // climber.setDefaultCommand(
+    //     MainCommands.runClimber(
+    //         climber,
+    //         operatorController.leftBumper(),
+    //         operatorController.povUp(),
+    //         operatorController.rightBumper(),
+    //         operatorController.povUp()));
 
     driverController
         .y()

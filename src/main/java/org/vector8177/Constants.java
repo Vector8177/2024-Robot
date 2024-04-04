@@ -79,7 +79,7 @@ public final class Constants {
 
     public static final double climberSpeed = 30d;
 
-    public static final double climberTopLimit = 210.8d;
+    public static final double climberTopLimit = 20000d;
     public static final double climberBottomLimit = 0.2d;
   }
 

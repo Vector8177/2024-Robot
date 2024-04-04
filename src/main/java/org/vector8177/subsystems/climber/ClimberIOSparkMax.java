@@ -2,6 +2,8 @@ package org.vector8177.subsystems.climber;
 
 import org.vector8177.Constants.ClimberConstants;
 
+import edu.wpi.first.math.util.Units;
+
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
@@ -54,17 +56,17 @@ public class ClimberIOSparkMax implements ClimberIO {
   public void updateInputs(ClimberIOInputs inputs) {
     inputs.leftClimberAppliedVolts =
         leftClimberSparkMax.getAppliedOutput() * leftClimberSparkMax.getBusVoltage();
-    // inputs.leftClimberVelocityRadPerSec =
-    //     Units.rotationsPerMinuteToRadiansPerSecond(leftClimberEncoder.getVelocity());
-    // inputs.leftClimberCurrentAmps = new double[] {leftClimberSparkMax.getOutputCurrent()};
+    inputs.leftClimberVelocityRadPerSec =
+        Units.rotationsPerMinuteToRadiansPerSecond(leftClimberEncoder.getVelocity());
+    inputs.leftClimberCurrentAmps = new double[] {leftClimberSparkMax.getOutputCurrent()};
     inputs.leftClimberEncoderPosition = leftClimberEncoder.getPosition();
     // inputs.leftClimberAbsoluteEncoderPosition = inputs.leftClimberEncoderPosition;
 
     inputs.rightClimberAppliedVolts =
         rightClimberSparkMax.getAppliedOutput() * rightClimberSparkMax.getBusVoltage();
-    // inputs.rightClimberVelocityRadPerSec =
-    //     Units.rotationsPerMinuteToRadiansPerSecond(rightClimberEncoder.getVelocity());
-    // inputs.rightClimberCurrentAmps = new double[] {rightClimberSparkMax.getOutputCurrent()};
+    inputs.rightClimberVelocityRadPerSec =
+        Units.rotationsPerMinuteToRadiansPerSecond(rightClimberEncoder.getVelocity());
+    inputs.rightClimberCurrentAmps = new double[] {rightClimberSparkMax.getOutputCurrent()};
     inputs.rightClimberEncoderPosition = rightClimberEncoder.getPosition();
     // inputs.rightClimberAbsoluteEncoderPosition = inputs.rightClimberEncoderPosition;
   }

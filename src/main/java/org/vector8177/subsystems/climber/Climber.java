@@ -16,9 +16,9 @@ public class Climber extends SubsystemBase {
   private final PIDController climberController;
 
   private double leftClimberRelativeOffset;
-  private double desiredLeftClimberPosition = 0.25;
+  private double desiredLeftClimberPosition = 170;
   private double rightClimberRelativeOffset;
-  private double desiredRightClimberPosition = 0.25;
+  private double desiredRightClimberPosition = 170;
 
   public Climber(ClimberIO io) {
     this.io = io;
