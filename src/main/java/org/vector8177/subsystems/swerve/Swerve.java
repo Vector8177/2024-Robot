@@ -251,6 +251,8 @@ public class Swerve extends SubsystemBase {
       // Apply update
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
 
+      Logger.recordOutput("Odometry/WheelOdo", getPose());
+
       // if (s_Vision != null) {
       // Pose2d currentPose = getPose();
       // List<Optional<EstimatedRobotPose>> vPoses =

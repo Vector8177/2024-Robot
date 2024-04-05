@@ -13,6 +13,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 
 import org.littletonrobotics.junction.AutoLog;
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 
 public interface AprilTagVisionIO {
@@ -68,12 +69,14 @@ public interface AprilTagVisionIO {
               case NORMAL -> 4;
             }) {
       estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+      Logger.recordOutput("Vision/StdDev/MultiTagDist", false);
     } else {
       estStdDevs =
           switch (resolution) {
             case HIGH_RES -> highResMultiTagStdDev;
             case NORMAL -> normalMultiTagStdDev;
           };
+      Logger.recordOutput("Vision/StdDev/MultiTagDist", true);
     }
 
     if (numTags == 1
@@ -83,8 +86,11 @@ public interface AprilTagVisionIO {
               case NORMAL -> 1;
             }) {
       estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+      Logger.recordOutput("Vision/StdDev/SingleTagDist", false);
+
     } else {
       estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 2));
+      Logger.recordOutput("Vision/StdDev/SingleTagDist", true);
     }
 
     return estStdDevs;

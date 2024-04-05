@@ -15,9 +15,6 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ColorSensorV3;
-import com.revrobotics.ColorSensorV3.ProximitySensorMeasurementRate;
-import com.revrobotics.ColorSensorV3.ProximitySensorResolution;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import java.util.Set;
@@ -41,7 +38,7 @@ public class ShooterIOSparkMax implements ShooterIO {
   private final AnalogInput shooterIRSensor;
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
 
-  private final ColorSensorV3 colorSensorV3;
+  //   private final ColorSensorV3 colorSensorV3;
 
   public ShooterIOSparkMax() {
     shooterTopFixedSparkMax =
@@ -54,9 +51,9 @@ public class ShooterIOSparkMax implements ShooterIO {
 
     shooterIRSensor = new AnalogInput(ShooterConstants.SHOOTER_IR_SENSOR_PORT);
 
-    colorSensorV3 = new ColorSensorV3(i2cPort);
-    colorSensorV3.configureProximitySensor(
-        ProximitySensorResolution.kProxRes11bit, ProximitySensorMeasurementRate.kProxRate12ms);
+    // colorSensorV3 = new ColorSensorV3(i2cPort);
+    // colorSensorV3.configureProximitySensor(
+    //     ProximitySensorResolution.kProxRes11bit, ProximitySensorMeasurementRate.kProxRate12ms);
 
     shooterTopFixedSparkMax.restoreFactoryDefaults();
     shooterBottomFixedSparkMax.restoreFactoryDefaults();
@@ -71,7 +68,7 @@ public class ShooterIOSparkMax implements ShooterIO {
     shooterTopFixedSparkMax.setSmartCurrentLimit(24);
     shooterBottomFixedSparkMax.setSmartCurrentLimit(24);
     shooterPivotSparkMax.setSmartCurrentLimit(20);
-    shooterIndexerSparkMax.setSmartCurrentLimit(35);
+    shooterIndexerSparkMax.setSmartCurrentLimit(40);
 
     shooterTopFixedEncoder = shooterTopFixedSparkMax.getEncoder();
     shooterBottomFixedEncoder = shooterBottomFixedSparkMax.getEncoder();
@@ -159,11 +156,11 @@ public class ShooterIOSparkMax implements ShooterIO {
 
     inputs.shooterSensorTriggerVoltage = shooterIRSensor.getVoltage();
 
-    Color colorDetected = colorSensorV3.getColor();
+    Color colorDetected = Color.kWhite;
     inputs.colorDetected =
         new double[] {colorDetected.red, colorDetected.blue, colorDetected.green};
-    inputs.proximity = colorSensorV3.getProximity();
-    inputs.irOutputRaw = colorSensorV3.getIR();
+    inputs.proximity = 0;
+    inputs.irOutputRaw = 0;
   }
 
   @Override

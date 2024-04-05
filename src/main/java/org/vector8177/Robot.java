@@ -13,6 +13,8 @@
 
 package org.vector8177;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -30,6 +32,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
  * project.
  */
 public class Robot extends LoggedRobot {
+  private static final String Optional = null;
   private Command autonomousCommand;
   private RobotContainer robotContainer;
 
@@ -163,4 +166,9 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {}
+
+  public static boolean isRedAlliance() {
+    java.util.Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
+    return alliance.isPresent() && alliance.get() == Alliance.Red;
+  }
 }
