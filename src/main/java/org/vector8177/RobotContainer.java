@@ -265,7 +265,7 @@ public class RobotContainer {
         .onTrue(
             runOnce(
                 () -> {
-                  shooter.setPosition(Units.degreesToRadians(90));
+                  shooter.setPosition(Units.degreesToRadians(93.5));
                   shooter.setShooterSpeed(4500);
                   shooter.currentState = ShooterState.SHOOT;
                 }));

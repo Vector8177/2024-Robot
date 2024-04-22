@@ -158,8 +158,8 @@ public class Shooter extends SubsystemBase {
     return inputs.shooterSensorTriggerVoltage;
   }
 
-  public double getIRReading() {
-    return inputs.proximity;
+  public boolean getIRReading() {
+    return inputs.noteDetectedIR;
   }
 
   public boolean getShooterOccupied() {
@@ -200,7 +200,7 @@ public class Shooter extends SubsystemBase {
 
     Logger.recordOutput("Shooter/SetPoints", targetPosition);
 
-    if (getIRReading() > ShooterConstants.SHOOTER_IR_TARGET_VAL) {
+    if (getIRReading()) {
       shooterOccupied = true;
       Logger.recordOutput("Shooter/ShooterOccupied", shooterOccupied);
     } else {

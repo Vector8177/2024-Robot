@@ -7,7 +7,7 @@ import org.vector8177.util.SparkUtils.Sensor;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 
@@ -33,9 +33,11 @@ public class ShooterIOSparkMax implements ShooterIO {
 
   private final AbsoluteEncoder shooterPivotAbsoluteEncoder;
 
+  private final DigitalInput shooterIR;
+
   private Rotation2d pivotRelativeOffset = new Rotation2d();
 
-  private final AnalogInput shooterIRSensor;
+  //   private final AnalogInput shooterIRSensor;
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
 
   //   private final ColorSensorV3 colorSensorV3;
@@ -49,7 +51,9 @@ public class ShooterIOSparkMax implements ShooterIO {
     shooterIndexerSparkMax =
         new CANSparkMax(ShooterConstants.SHOOTER_INDEXER_ID, MotorType.kBrushless);
 
-    shooterIRSensor = new AnalogInput(ShooterConstants.SHOOTER_IR_SENSOR_PORT);
+    // shooterIRSensor = new AnalogInput(ShooterConstants.SHOOTER_IR_SENSOR_PORT);
+
+    shooterIR = new DigitalInput(0);
 
     // colorSensorV3 = new ColorSensorV3(i2cPort);
     // colorSensorV3.configureProximitySensor(
@@ -154,13 +158,16 @@ public class ShooterIOSparkMax implements ShooterIO {
     inputs.shooterPivotAbsolutePosition =
         Rotation2d.fromRadians(shooterPivotAbsoluteEncoder.getPosition());
 
-    inputs.shooterSensorTriggerVoltage = shooterIRSensor.getVoltage();
+    // inputs.shooterSensorTriggerVoltage = shooterIRSensor.getVoltage();
+    // shooterIR.
 
     Color colorDetected = Color.kWhite;
     inputs.colorDetected =
         new double[] {colorDetected.red, colorDetected.blue, colorDetected.green};
     inputs.proximity = 0;
     inputs.irOutputRaw = 0;
+
+    inputs.noteDetectedIR = !shooterIR.get();
   }
 
   @Override

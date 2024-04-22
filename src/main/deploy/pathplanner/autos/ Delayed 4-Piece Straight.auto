@@ -1,0 +1,207 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3533001663498863,
+      "y": 5.595244965087426
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Fender Shot Position"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Shoot Sequence"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake Sequence"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Central Speaker-Note"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Enable AutoAlign"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Shoot Sequence"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Disable AutoAlign"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake Sequence"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Central Speaker-Note 2"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Central Speaker-Note 2ALIGN"
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Shoot Sequence"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Disable AutoAlign"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake Sequence"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Center-LeftNote"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftNoteCenter"
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Enable AutoAlign"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.2
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Shoot Sequence"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake Sequence"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Center Double"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

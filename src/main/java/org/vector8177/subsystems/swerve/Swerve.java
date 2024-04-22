@@ -311,9 +311,6 @@ public class Swerve extends SubsystemBase {
     if (currentModeSupplier.get() == DriveMode.AUTO_ALIGN) {
       double omegaVel = autoAlignController.updateDrive();
       speeds = new ChassisSpeeds(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, omegaVel);
-    } else if (currentModeSupplier.get() == DriveMode.AMP_ALIGN) {
-      double omegaVel = autoAlignController.updateDriveAmp();
-      speeds = new ChassisSpeeds(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, omegaVel);
     }
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);

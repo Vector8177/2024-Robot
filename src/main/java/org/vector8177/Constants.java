@@ -222,7 +222,9 @@ public final class Constants {
 
     public static final double SHOOTER_PIVOT_INTAKE_POSITION = 2.12d;
 
-    public static final double SHOOTER_PIVOT_AMP_POSITION = 5.931d;
+    // public static final double SHOOTER_PIVOT_AMP_POSITION = 5.931d;
+
+    public static final double SHOOTER_PIVOT_AMP_POSITION = 6.059d;
 
     public static final double SHOOTER_FENDER_AIM = 2.601d;
 
@@ -244,7 +246,7 @@ public final class Constants {
     // public static final double SHOOTER_PIVOT_KP = 0d;
     public static final double SHOOTER_PIVOT_KI = 0d;
     public static final double SHOOTER_PIVOT_KD = 0d;
-    public static final double PIVOT_TOLERANCE = 0.2;
+    public static final double PIVOT_TOLERANCE = 0.1;
 
     // Shooter Top Wheel PID
     public static final double SHOOTER_SPEED_KP = .0001d;
