@@ -7,6 +7,7 @@ import org.vector8177.Constants.SwerveConstants;
 import org.vector8177.subsystems.swerve.Swerve;
 import org.vector8177.util.LoggedTunableNumber;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -22,208 +23,194 @@ import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class AutoAlignController {
-  private static LoggedTunableNumber thetakP =
-      new LoggedTunableNumber(
-          "AutoAlign/thetakP", Constants.SwerveConstants.AutoAlignConstants.thetaP);
-  private static LoggedTunableNumber thetakD =
-      new LoggedTunableNumber(
-          "AutoAlign/thetakP", Constants.SwerveConstants.AutoAlignConstants.thetaD);
-  private static LoggedTunableNumber thetaTolerance =
-      new LoggedTunableNumber(
-          "AutoAlign/thetaTolerance", Constants.SwerveConstants.AutoAlignConstants.thetaTolerance);
-  private static LoggedTunableNumber maxAngularVelocity =
-      new LoggedTunableNumber(
-          "AutoAlign/angularVelocity",
-          Constants.SwerveConstants.AutoAlignConstants.maxAngularVelocity);
-  private static LoggedTunableNumber maxAngularAcceleration =
-      new LoggedTunableNumber(
-          "AutoAlign/maxAngularAcceleration",
-          Constants.SwerveConstants.AutoAlignConstants.maxAngularAcceleration);
+    private static LoggedTunableNumber thetakP = new LoggedTunableNumber(
+            "AutoAlign/thetakP", Constants.SwerveConstants.AutoAlignConstants.thetaP);
+    private static LoggedTunableNumber thetakD = new LoggedTunableNumber(
+            "AutoAlign/thetakP", Constants.SwerveConstants.AutoAlignConstants.thetaD);
+    private static LoggedTunableNumber thetaTolerance = new LoggedTunableNumber(
+            "AutoAlign/thetaTolerance", Constants.SwerveConstants.AutoAlignConstants.thetaTolerance);
+    private static LoggedTunableNumber maxAngularVelocity = new LoggedTunableNumber(
+            "AutoAlign/angularVelocity",
+            Constants.SwerveConstants.AutoAlignConstants.maxAngularVelocity);
+    private static LoggedTunableNumber maxAngularAcceleration = new LoggedTunableNumber(
+            "AutoAlign/maxAngularAcceleration",
+            Constants.SwerveConstants.AutoAlignConstants.maxAngularAcceleration);
 
-  private static final double CLOSE_RPM = 3000;
-  private static final double FAR_RPM = 5000;
+    private static final double CLOSE_RPM = 3000;
+    private static final double FAR_RPM = 5000;
 
-  private static final double CLOSE_DIST = 1;
-  private static final double FAR_DIST = 4.5;
+    private static final double CLOSE_DIST = 1;
+    private static final double FAR_DIST = 4.5;
 
-  private Pose2d goalPose = SPEAKER_POSE.getBluePose();
+    private Pose2d goalPose = SPEAKER_POSE.getBluePose();
 
-  private ProfiledPIDController thetaController;
-  private ProfiledPIDController linearController;
+    private PIDController thetaController;
+    private ProfiledPIDController linearController;
 
-  private final Swerve swerve;
+    private final Swerve swerve;
 
-  private BooleanSupplier isRedSupp;
+    private BooleanSupplier isRedSupp;
 
-  public AutoAlignController(BooleanSupplier isRedAlliance, Swerve swerve) {
-    this.isRedSupp = isRedAlliance;
-    this.swerve = swerve;
+    public AutoAlignController(BooleanSupplier isRedAlliance, Swerve swerve) {
+        this.isRedSupp = isRedAlliance;
+        this.swerve = swerve;
 
-    thetaController =
-        new ProfiledPIDController(
-            thetakP.get(),
-            0,
-            thetakD.get(),
-            new TrapezoidProfile.Constraints(
-                SwerveConstants.MODULE_LIMITS.maxSteeringVelocity(),
-                SwerveConstants.MODULE_LIMITS.maxSteeringAcceleration()));
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-    thetaController.setTolerance(Units.degreesToRadians(1.5));
+        thetaController = new PIDController(
+                thetakP.get(), 0, thetakD.get());
 
-    linearController =
-        new ProfiledPIDController(
-            drivekP,
-            drivekI,
-            drivekD,
-            new TrapezoidProfile.Constraints(
-                SwerveConstants.MODULE_LIMITS.maxDriveVelocity() / 8,
-                SwerveConstants.MODULE_LIMITS.maxDriveAcceleration() / 8));
+        // thetaController =
+        // new ProfiledPIDController(
+        // thetakP.get(),
+        // 0,
+        // thetakD.get(),
+        // new TrapezoidProfile.Constraints(
+        // SwerveConstants.MODULE_LIMITS.maxSteeringVelocity(),
+        // SwerveConstants.MODULE_LIMITS.maxSteeringAcceleration()));
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        thetaController.setTolerance(Units.degreesToRadians(1.5));
 
-    Pose2d currentPose = swerve.getPose();
-    ChassisSpeeds fieldVel = swerve.getSpeeds();
+        linearController = new ProfiledPIDController(
+                drivekP,
+                drivekI,
+                drivekD,
+                new TrapezoidProfile.Constraints(
+                        SwerveConstants.MODULE_LIMITS.maxDriveVelocity() / 8,
+                        SwerveConstants.MODULE_LIMITS.maxDriveAcceleration() / 8));
 
-    Rotation2d rotationToTarget =
-        goalPose.getTranslation().minus(currentPose.getTranslation()).getAngle();
-    thetaController.reset(currentPose.getRotation().getRadians(), fieldVel.omegaRadiansPerSecond);
+        Pose2d currentPose = swerve.getPose();
+        ChassisSpeeds fieldVel = swerve.getSpeeds();
 
-    thetaController.setGoal(goalPose.getRotation().getRadians());
-    Logger.recordOutput("AutoAlign/goalPose", goalPose);
-    Logger.recordOutput("AutoAlign/targetRotation", rotationToTarget);
-  }
+        Rotation2d rotationToTarget = goalPose.getTranslation().minus(currentPose.getTranslation()).getAngle();
+        thetaController.reset();
+        // thetaController.
+        // thetaController.setGoal(goalPose.getRotation().getRadians());
+        Logger.recordOutput("AutoAlign/goalPose", goalPose);
+        Logger.recordOutput("AutoAlign/targetRotation", rotationToTarget);
+    }
 
-  public double updateDrive() {
-    this.goalPose =
-        isRedSupp.getAsBoolean() ? SPEAKER_POSE.getRedPose() : SPEAKER_POSE.getBluePose();
-    Pose2d currentPose = swerve.getPose();
-    Rotation2d rotationToTarget =
-        goalPose
-            .getTranslation()
-            .minus(currentPose.getTranslation())
-            .getAngle()
-            .plus(Rotation2d.fromDegrees(180));
+    public double updateDrive() {
+        this.goalPose = isRedSupp.getAsBoolean() ? SPEAKER_POSE.getRedPose() : SPEAKER_POSE.getBluePose();
+        Pose2d currentPose = swerve.getPose();
+        Rotation2d rotationToTarget = goalPose
+                .getTranslation()
+                .minus(currentPose.getTranslation())
+                .getAngle()
+                .plus(Rotation2d.fromDegrees(180));
 
-    Logger.recordOutput(
-        "AutoAlign/Speaker/RotationTarget",
-        new Pose2d(currentPose.getTranslation(), rotationToTarget));
+        Logger.recordOutput(
+                "AutoAlign/Speaker/RotationTarget",
+                new Pose2d(currentPose.getTranslation(), rotationToTarget));
 
-    Pose3d speaker =
-        new Pose3d(
-            new Translation3d(goalPose.getX(), goalPose.getY(), Constants.SPEAKER_HEIGHT),
-            new Rotation3d());
+        Pose3d speaker = new Pose3d(
+                new Translation3d(goalPose.getX(), goalPose.getY(), Constants.SPEAKER_HEIGHT),
+                new Rotation3d());
 
-    Logger.recordOutput("AutoAlign/Speaker/TargetPose", speaker);
+        Logger.recordOutput("AutoAlign/Speaker/TargetPose", speaker);
 
-    Logger.recordOutput(
-        "AutoAlign/Trajectory",
-        speaker.toPose2d().getTranslation().minus(currentPose.getTranslation()));
+        Logger.recordOutput(
+                "AutoAlign/Trajectory",
+                speaker.toPose2d().getTranslation().minus(currentPose.getTranslation()));
 
-    Logger.recordOutput(
-        "AutoAlign/Speaker/Error", currentPose.getRotation().minus(rotationToTarget).getRadians());
+        Logger.recordOutput(
+                "AutoAlign/Speaker/Error", currentPose.getRotation().minus(rotationToTarget).getRadians());
 
-    thetaController.setGoal(rotationToTarget.getRadians());
+        // thetaController.setGoal(rotationToTarget.getRadians());
 
-    double angularVelocity =
-        (thetaController.calculate(
+        double angularVelocity = (thetaController.calculate(
                 currentPose.getRotation().getRadians(), rotationToTarget.getRadians())
-            + thetaController.getSetpoint().velocity
-            + Math.signum(currentPose.getRotation().minus(rotationToTarget).getRadians())
-                * 0.03
-                * Math.PI);
+                + Math.signum(currentPose.getRotation().minus(rotationToTarget).getRadians())
+                        * 0.03
+                        * Math.PI);
 
-    if (Math.abs(angularVelocity) <= MIN_THETA_CONTROL_EFFORT) {
-      angularVelocity = 0;
+        if (Math.abs(angularVelocity) <= MIN_THETA_CONTROL_EFFORT) {
+            angularVelocity = 0;
+        }
+
+        if (thetaController.atSetpoint()) {
+            angularVelocity = 0;
+        }
+
+        Logger.recordOutput("AutoAlign/Speaker/AtSetpoint", thetaController.atSetpoint());
+        Logger.recordOutput("AutoAlign/Speaker/Setpoint", angularVelocity);
+
+        return angularVelocity;
     }
 
-    if (thetaController.atSetpoint()) {
-      angularVelocity = 0;
+    public double updateAngle() {
+        Pose2d currentPose = swerve.getPose();
+        this.goalPose = isRedSupp.getAsBoolean() ? SPEAKER_POSE.getRedPose() : SPEAKER_POSE.getBluePose();
+
+        Translation2d targ = goalPose.getTranslation();
+        Logger.recordOutput("AutoAlign/Speaker/Trans", targ);
+
+        Logger.recordOutput("AutoAlign/Speaker/Shooter/Current", currentPose);
+        Logger.recordOutput("AutoAlign/Speaker/Shooter/Target", goalPose);
+        double distToTarget = goalPose.getTranslation().getDistance(currentPose.getTranslation());
+        Logger.recordOutput("AutoAlign/Speaker/ShooterPose/Distance", distToTarget);
+        double returnVal = Rotation2d.fromDegrees(90).getRadians()
+                + Math.atan((Constants.SPEAKER_HEIGHT - Constants.SHOOTER_HEIGHT) / distToTarget);
+        Logger.recordOutput(
+                "AutoAlign/ShooterPose/ShooterTargetPoseRaw",
+                Units.radiansToDegrees(
+                        Math.atan((Constants.SPEAKER_HEIGHT - Constants.SHOOTER_HEIGHT) / distToTarget)));
+
+        Logger.recordOutput(
+                "AutoAlign/ShooterPose/ShooterTargetPose", Units.radiansToDegrees(returnVal));
+
+        return returnVal;
     }
 
-    Logger.recordOutput("AutoAlign/Speaker/AtSetpoint", thetaController.atSetpoint());
-    Logger.recordOutput("AutoAlign/Speaker/Setpoint", angularVelocity);
+    public double getShooterTarget() {
+        Pose2d currentPose = swerve.getPose();
+        this.goalPose = isRedSupp.getAsBoolean() ? SPEAKER_POSE.getRedPose() : SPEAKER_POSE.getBluePose();
 
-    return angularVelocity;
-  }
+        double distance = currentPose.getTranslation().getDistance(goalPose.getTranslation());
 
-  public double updateAngle() {
-    Pose2d currentPose = swerve.getPose();
-    this.goalPose =
-        isRedSupp.getAsBoolean() ? SPEAKER_POSE.getRedPose() : SPEAKER_POSE.getBluePose();
+        double target = CLOSE_RPM
+                + (FAR_RPM - CLOSE_RPM)
+                        * Math.abs((FAR_DIST - CLOSE_DIST) - distance)
+                        / (FAR_DIST - CLOSE_DIST);
 
-    Translation2d targ = goalPose.getTranslation();
-    Logger.recordOutput("AutoAlign/Speaker/Trans", targ);
+        Logger.recordOutput("AutoAlign/Shooter/TargetWheelSpeed", target);
+        return target;
+    }
 
-    Logger.recordOutput("AutoAlign/Speaker/Shooter/Current", currentPose);
-    Logger.recordOutput("AutoAlign/Speaker/Shooter/Target", goalPose);
-    double distToTarget = goalPose.getTranslation().getDistance(currentPose.getTranslation());
-    Logger.recordOutput("AutoAlign/Speaker/ShooterPose/Distance", distToTarget);
-    double returnVal =
-        Rotation2d.fromDegrees(90).getRadians()
-            + Math.atan((Constants.SPEAKER_HEIGHT - Constants.SHOOTER_HEIGHT) / distToTarget);
-    Logger.recordOutput(
-        "AutoAlign/ShooterPose/ShooterTargetPoseRaw",
-        Units.radiansToDegrees(
-            Math.atan((Constants.SPEAKER_HEIGHT - Constants.SHOOTER_HEIGHT) / distToTarget)));
+    public double getDistanceToSpeaker() {
+        Pose2d currentPose = swerve.getPose();
+        this.goalPose = isRedSupp.getAsBoolean() ? SPEAKER_POSE.getRedPose() : SPEAKER_POSE.getBluePose();
 
-    Logger.recordOutput(
-        "AutoAlign/ShooterPose/ShooterTargetPose", Units.radiansToDegrees(returnVal));
+        double distance = currentPose.getTranslation().getDistance(goalPose.getTranslation());
 
-    return returnVal;
-  }
+        return distance;
+    }
 
-  public double getShooterTarget() {
-    Pose2d currentPose = swerve.getPose();
-    this.goalPose =
-        isRedSupp.getAsBoolean() ? SPEAKER_POSE.getRedPose() : SPEAKER_POSE.getBluePose();
+    public double updateDriveAmp() {
+        Pose2d currentPose = swerve.getPose();
+        this.goalPose = isRedSupp.getAsBoolean() ? AMP_POSE.getRedPose() : AMP_POSE.getBluePose();
+        Rotation2d rotationTarget = isRedSupp.getAsBoolean() ? Rotation2d.fromDegrees(90) : Rotation2d.fromDegrees(-90);
+        Logger.recordOutput(
+                "AutoAlign/Amp/GoalPose", new Pose2d(goalPose.getTranslation(), rotationTarget));
 
-    double distance = currentPose.getTranslation().getDistance(goalPose.getTranslation());
+        double distance = currentPose.getTranslation().getDistance(goalPose.getTranslation());
+        // double scalarizedLinearVelocity = linearController.calculate(distance, 0);
 
-    double target =
-        CLOSE_RPM
-            + (FAR_RPM - CLOSE_RPM)
-                * Math.abs((FAR_DIST - CLOSE_DIST) - distance)
-                / (FAR_DIST - CLOSE_DIST);
+        // var driveVelocity =
+        // new Pose2d(
+        // new Translation2d(),
+        // currentPose.getTranslation().minus(goalPose.getTranslation()).getAngle())
+        // .transformBy(
+        // GeomUtil.toTransform2d(MathUtil.clamp(scalarizedLinearVelocity, -1, 1), 0));
 
-    Logger.recordOutput("AutoAlign/Shooter/TargetWheelSpeed", target);
-    return target;
-  }
+        var thetaVelocity = thetaController.calculate(
+                currentPose.getRotation().getRadians(), rotationTarget.getRadians());
 
-  public double getDistanceToSpeaker() {
-    Pose2d currentPose = swerve.getPose();
-    this.goalPose =
-        isRedSupp.getAsBoolean() ? SPEAKER_POSE.getRedPose() : SPEAKER_POSE.getBluePose();
+        if (Math.abs(thetaVelocity) <= MIN_THETA_CONTROL_EFFORT)
+            thetaVelocity = 0;
 
-    double distance = currentPose.getTranslation().getDistance(goalPose.getTranslation());
+        return thetaVelocity;
 
-    return distance;
-  }
-
-  public double updateDriveAmp() {
-    Pose2d currentPose = swerve.getPose();
-    this.goalPose = isRedSupp.getAsBoolean() ? AMP_POSE.getRedPose() : AMP_POSE.getBluePose();
-    Rotation2d rotationTarget =
-        isRedSupp.getAsBoolean() ? Rotation2d.fromDegrees(90) : Rotation2d.fromDegrees(-90);
-    Logger.recordOutput(
-        "AutoAlign/Amp/GoalPose", new Pose2d(goalPose.getTranslation(), rotationTarget));
-
-    double distance = currentPose.getTranslation().getDistance(goalPose.getTranslation());
-    // double scalarizedLinearVelocity = linearController.calculate(distance, 0);
-
-    // var driveVelocity =
-    //     new Pose2d(
-    //             new Translation2d(),
-    //             currentPose.getTranslation().minus(goalPose.getTranslation()).getAngle())
-    //         .transformBy(
-    //             GeomUtil.toTransform2d(MathUtil.clamp(scalarizedLinearVelocity, -1, 1), 0));
-
-    var thetaVelocity =
-        thetaController.calculate(
-            currentPose.getRotation().getRadians(), rotationTarget.getRadians());
-
-    if (Math.abs(thetaVelocity) <= MIN_THETA_CONTROL_EFFORT) thetaVelocity = 0;
-
-    return thetaVelocity;
-
-    // return ChassisSpeeds.fromFieldRelativeSpeeds(
-    //     driveVelocity.getX(), driveVelocity.getY(), thetaVelocity, swerve.getRotation());
-  }
+        // return ChassisSpeeds.fromFieldRelativeSpeeds(
+        // driveVelocity.getX(), driveVelocity.getY(), thetaVelocity,
+        // swerve.getRotation());
+    }
 }
