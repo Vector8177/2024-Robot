@@ -251,6 +251,8 @@ public class Swerve extends SubsystemBase {
       // Apply update
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
 
+      Logger.recordOutput("Odometry/WheelOdo", getPose());
+
       // if (s_Vision != null) {
       // Pose2d currentPose = getPose();
       // List<Optional<EstimatedRobotPose>> vPoses =
@@ -274,7 +276,10 @@ public class Swerve extends SubsystemBase {
       Pose3d currentVisionPose = aprilTagVisionInputs.visionPoses[i];
       if (currentTimeStamp >= 1.0
           && isInBetween(currentVisionPose.getX(), 0, 16.5, false)
-          && isInBetween(currentVisionPose.getY(), 0, 8.5, false)) {
+          && isInBetween(currentVisionPose.getY(), 0, 8.5, false)
+          && isInBetween(currentVisionPose.getZ(), -.75, .75, true)
+          && isInBetween(currentVisionPose.getRotation().getX(), -.2, .2, false)
+          && isInBetween(currentVisionPose.getRotation().getY(), -.2, .2, false)) {
         Logger.recordOutput("Odometry/VisionPose" + i, currentVisionPose.toPose2d());
         Logger.recordOutput(
             "Odometry/AprilTagStdDevs" + i,
@@ -305,9 +310,6 @@ public class Swerve extends SubsystemBase {
     // Calculate module setpoints\
     if (currentModeSupplier.get() == DriveMode.AUTO_ALIGN) {
       double omegaVel = autoAlignController.updateDrive();
-      speeds = new ChassisSpeeds(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, omegaVel);
-    } else if (currentModeSupplier.get() == DriveMode.AMP_ALIGN) {
-      double omegaVel = autoAlignController.updateDriveAmp();
       speeds = new ChassisSpeeds(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, omegaVel);
     }
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);

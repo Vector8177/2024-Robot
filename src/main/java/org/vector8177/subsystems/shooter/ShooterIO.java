@@ -30,6 +30,8 @@ public interface ShooterIO {
     public double[] colorDetected = new double[3];
     public int proximity = 0;
     public double irOutputRaw = 0.0;
+
+    public boolean noteDetectedIR = false;
   }
 
   public default void updateInputs(ShooterIOInputs inputs) {}

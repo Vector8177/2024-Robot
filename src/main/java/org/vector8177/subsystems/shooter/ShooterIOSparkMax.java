@@ -7,7 +7,7 @@ import org.vector8177.util.SparkUtils.Sensor;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 
@@ -15,9 +15,6 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ColorSensorV3;
-import com.revrobotics.ColorSensorV3.ProximitySensorMeasurementRate;
-import com.revrobotics.ColorSensorV3.ProximitySensorResolution;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import java.util.Set;
@@ -36,12 +33,14 @@ public class ShooterIOSparkMax implements ShooterIO {
 
   private final AbsoluteEncoder shooterPivotAbsoluteEncoder;
 
+  private final DigitalInput shooterIR;
+
   private Rotation2d pivotRelativeOffset = new Rotation2d();
 
-  private final AnalogInput shooterIRSensor;
+  //   private final AnalogInput shooterIRSensor;
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
 
-  private final ColorSensorV3 colorSensorV3;
+  //   private final ColorSensorV3 colorSensorV3;
 
   public ShooterIOSparkMax() {
     shooterTopFixedSparkMax =
@@ -52,11 +51,13 @@ public class ShooterIOSparkMax implements ShooterIO {
     shooterIndexerSparkMax =
         new CANSparkMax(ShooterConstants.SHOOTER_INDEXER_ID, MotorType.kBrushless);
 
-    shooterIRSensor = new AnalogInput(ShooterConstants.SHOOTER_IR_SENSOR_PORT);
+    // shooterIRSensor = new AnalogInput(ShooterConstants.SHOOTER_IR_SENSOR_PORT);
 
-    colorSensorV3 = new ColorSensorV3(i2cPort);
-    colorSensorV3.configureProximitySensor(
-        ProximitySensorResolution.kProxRes11bit, ProximitySensorMeasurementRate.kProxRate12ms);
+    shooterIR = new DigitalInput(0);
+
+    // colorSensorV3 = new ColorSensorV3(i2cPort);
+    // colorSensorV3.configureProximitySensor(
+    //     ProximitySensorResolution.kProxRes11bit, ProximitySensorMeasurementRate.kProxRate12ms);
 
     shooterTopFixedSparkMax.restoreFactoryDefaults();
     shooterBottomFixedSparkMax.restoreFactoryDefaults();
@@ -71,7 +72,7 @@ public class ShooterIOSparkMax implements ShooterIO {
     shooterTopFixedSparkMax.setSmartCurrentLimit(24);
     shooterBottomFixedSparkMax.setSmartCurrentLimit(24);
     shooterPivotSparkMax.setSmartCurrentLimit(20);
-    shooterIndexerSparkMax.setSmartCurrentLimit(35);
+    shooterIndexerSparkMax.setSmartCurrentLimit(40);
 
     shooterTopFixedEncoder = shooterTopFixedSparkMax.getEncoder();
     shooterBottomFixedEncoder = shooterBottomFixedSparkMax.getEncoder();
@@ -148,8 +149,8 @@ public class ShooterIOSparkMax implements ShooterIO {
 
     inputs.shooterIndexerAppliedVolts =
         shooterIndexerSparkMax.getAppliedOutput() * shooterIndexerSparkMax.getBusVoltage();
-    // inputs.shooterIndexerVelocityRadPerSec =
-    //     Units.rotationsPerMinuteToRadiansPerSecond(shooterIndexerEncoder.getVelocity());
+    inputs.shooterIndexerVelocityRadPerSec =
+        Units.rotationsPerMinuteToRadiansPerSecond(shooterIndexerEncoder.getVelocity());
     inputs.shooterIndexerCurrentAmps = new double[] {shooterIndexerSparkMax.getOutputCurrent()};
 
     inputs.shooterPivotRelativePosition =
@@ -157,13 +158,16 @@ public class ShooterIOSparkMax implements ShooterIO {
     inputs.shooterPivotAbsolutePosition =
         Rotation2d.fromRadians(shooterPivotAbsoluteEncoder.getPosition());
 
-    inputs.shooterSensorTriggerVoltage = shooterIRSensor.getVoltage();
+    // inputs.shooterSensorTriggerVoltage = shooterIRSensor.getVoltage();
+    // shooterIR.
 
-    Color colorDetected = colorSensorV3.getColor();
+    Color colorDetected = Color.kWhite;
     inputs.colorDetected =
         new double[] {colorDetected.red, colorDetected.blue, colorDetected.green};
-    inputs.proximity = colorSensorV3.getProximity();
-    inputs.irOutputRaw = colorSensorV3.getIR();
+    inputs.proximity = 0;
+    inputs.irOutputRaw = 0;
+
+    inputs.noteDetectedIR = !shooterIR.get();
   }
 
   @Override

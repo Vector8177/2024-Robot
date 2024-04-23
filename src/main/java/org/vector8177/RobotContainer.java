@@ -238,7 +238,13 @@ public class RobotContainer {
             () -> -driverController.getRightX(),
             driverController.leftBumper()));
 
-    // climber.satorController.rightBumper()));
+    // climber.setDefaultCommand(
+    //     MainCommands.runClimber(
+    //         climber,
+    //         operatorController.leftBumper(),
+    //         operatorController.povUp(),
+    //         operatorController.rightBumper(),
+    //         operatorController.povUp()));
 
     driverController
         .y()
@@ -259,7 +265,7 @@ public class RobotContainer {
         .onTrue(
             runOnce(
                 () -> {
-                  shooter.setPosition(Units.degreesToRadians(90));
+                  shooter.setPosition(Units.degreesToRadians(93.5));
                   shooter.setShooterSpeed(4500);
                   shooter.currentState = ShooterState.SHOOT;
                 }));

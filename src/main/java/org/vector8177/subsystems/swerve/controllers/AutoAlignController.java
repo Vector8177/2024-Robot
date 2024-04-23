@@ -117,12 +117,18 @@ public class AutoAlignController {
         "AutoAlign/Trajectory",
         speaker.toPose2d().getTranslation().minus(currentPose.getTranslation()));
 
+    Logger.recordOutput(
+        "AutoAlign/Speaker/Error", currentPose.getRotation().minus(rotationToTarget).getRadians());
+
     thetaController.setGoal(rotationToTarget.getRadians());
 
     double angularVelocity =
-        thetaController.calculate(
+        (thetaController.calculate(
                 currentPose.getRotation().getRadians(), rotationToTarget.getRadians())
-            + thetaController.getSetpoint().velocity;
+            + thetaController.getSetpoint().velocity
+            + Math.signum(currentPose.getRotation().minus(rotationToTarget).getRadians())
+                * 0.03
+                * Math.PI);
 
     if (Math.abs(angularVelocity) <= MIN_THETA_CONTROL_EFFORT) {
       angularVelocity = 0;

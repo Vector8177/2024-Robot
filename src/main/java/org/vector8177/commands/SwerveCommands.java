@@ -13,6 +13,7 @@
 
 package org.vector8177.commands;
 
+import org.vector8177.Robot;
 import org.vector8177.subsystems.shooter.Shooter;
 import org.vector8177.subsystems.swerve.Swerve;
 
@@ -49,6 +50,7 @@ public class SwerveCommands {
           //   double linearMagnitude =
           //       MathUtil.applyDeadband(
           //           Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), DEADBAND);
+          double allianceTrans = Robot.isRedAlliance() ? -1 : 1;
           double linearMagnitude =
               MathUtil.applyDeadband(
                   Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), DEADBAND);
@@ -56,7 +58,9 @@ public class SwerveCommands {
             linearMagnitude /= 2d;
           }
           Rotation2d linearDirection =
-              new Rotation2d(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+              new Rotation2d(
+                  xSupplier.getAsDouble() * allianceTrans, ySupplier.getAsDouble() * allianceTrans);
+
           double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
           // Square values
           omega = Math.copySign(omega * omega, omega);
