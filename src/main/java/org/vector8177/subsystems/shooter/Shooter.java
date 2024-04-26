@@ -138,6 +138,10 @@ public class Shooter extends SubsystemBase {
     io.setShooterIndexerVoltage(speed * ShooterConstants.MAX_MOTOR_VOLTAGE);
   }
 
+  public double getPosition() {
+    return inputs.shooterPivotAbsolutePosition.getRadians();
+  }
+
   public void disableClosedLoop() {
     wheelTargetSpeed = null;
   }

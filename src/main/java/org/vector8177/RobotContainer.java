@@ -19,6 +19,7 @@ import org.vector8177.Constants.ShooterConstants;
 import org.vector8177.Constants.ShooterState;
 import org.vector8177.Constants.SwerveConstants.DriveMode;
 import org.vector8177.Constants.VisionConstants;
+import org.vector8177.commands.MainCommands;
 import org.vector8177.commands.SwerveCommands;
 import org.vector8177.subsystems.hood.Hood;
 import org.vector8177.subsystems.hood.HoodIO;
@@ -46,7 +47,6 @@ import org.vector8177.util.CommandXboxControllerSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -238,6 +238,9 @@ public class RobotContainer {
             () -> -driverController.getRightX(),
             driverController.leftBumper()));
 
+    shooter.setDefaultCommand(
+        MainCommands.manualShoot(shooter, () -> operatorController.getRightY()));
+
     // climber.setDefaultCommand(
     //     MainCommands.runClimber(
     //         climber,
@@ -260,15 +263,15 @@ public class RobotContainer {
 
     driverController.a().onTrue(toggleAmpAlign());
 
-    driverController
-        .povRight()
-        .onTrue(
-            runOnce(
-                () -> {
-                  shooter.setPosition(Units.degreesToRadians(93.5));
-                  shooter.setShooterSpeed(4500);
-                  shooter.currentState = ShooterState.SHOOT;
-                }));
+    // driverController
+    //     .povRight()
+    //     .onTrue(
+    //         runOnce(
+    //             () -> {
+    //               shooter.setPosition(Units.degreesToRadians(93.5));
+    //               shooter.setShooterSpeed(4500);
+    //               shooter.currentState = ShooterState.SHOOT;
+    //             }));
     // driverController.povUp().onTrue(runOnce(() ->
     // shooter.setPosition(Units.degreesToRadians(0))));
     // driverController
@@ -280,9 +283,9 @@ public class RobotContainer {
 
     operatorController.povDown().onTrue(setShooterShootPosition(shooter, hood));
 
-    operatorController
-        .a()
-        .onTrue(runShooter(shooter, () -> shooterSpeedMap.get(swerve.calculateDistanceToStage())));
+    // operatorController
+    //     .a()
+    // .onTrue(runShooter(shooter, () -> shooterSpeedMap.get(swerve.calculateDistanceToStage())));
 
     operatorController.x().onTrue(runOnce(() -> shooter.setShooterSpeed(2000)));
 
@@ -307,9 +310,9 @@ public class RobotContainer {
 
     driverController.povDown().onTrue(runOnce(() -> swerve.useVision = !swerve.useVision));
 
-    operatorController.povRight().onTrue(setShooterAmpPosition(shooter, hood));
+    // operatorController.povRight().onTrue(setShooterAmpPosition(shooter, hood));
 
-    operatorController.povLeft().onTrue(setShooterShootPosition(shooter, hood));
+    // operatorController.povLeft().onTrue(setShooterShootPosition(shooter, hood));
   }
 
   /**

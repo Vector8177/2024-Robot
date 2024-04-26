@@ -16,6 +16,7 @@ import org.vector8177.subsystems.intake.Intake;
 import org.vector8177.subsystems.shooter.Shooter;
 import org.vector8177.util.CommandXboxControllerSubsystem;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 
@@ -23,6 +24,7 @@ import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.Logger;
 
 public class MainCommands {
   private static IntakeActiveState intakeState = IntakeActiveState.ACTIVE;
@@ -318,5 +320,17 @@ public class MainCommands {
           climber.setRightClimberPosition(rightPositionVal + climber.getRightClimberPosition());
         },
         climber);
+  }
+
+  public static Command manualShoot(Shooter shooter, DoubleSupplier valSupp) {
+    return run(
+        () -> {
+          Logger.recordOutput("Shooter/XboX", valSupp.getAsDouble());
+          double shooterInc = 0;
+          shooterInc += MathUtil.applyDeadband(valSupp.getAsDouble(), .15) * 0.5;
+          Logger.recordOutput("Shooter/CommandedIncrement", shooterInc);
+          shooter.setPosition(shooter.getPosition() + shooterInc);
+        },
+        shooter);
   }
 }
